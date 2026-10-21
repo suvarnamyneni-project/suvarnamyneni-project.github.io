@@ -68,7 +68,8 @@ function initTilt() {
 
     const paint = (px, py) => {
       const rise = getComputedStyle(card).getPropertyValue("--rise").trim() || "0px";
-      card.style.transform = `perspective(900px) rotateX(${(-py * 3.2).toFixed(2)}deg) rotateY(${(px * 4.2).toFixed(2)}deg) translateY(calc(-6px + ${rise}))`;
+      const lift = getComputedStyle(card).getPropertyValue("--lift").trim() || "0px";
+      card.style.transform = `perspective(900px) rotateX(${(-py * 3.2).toFixed(2)}deg) rotateY(${(px * 4.2).toFixed(2)}deg) translateY(calc(-6px + ${rise} + ${lift}))`;
     };
 
     card.addEventListener("pointermove", (event) => {
@@ -441,6 +442,7 @@ function initZoom() {
 }
 
 initLenis();
+if (window.mountRound2) window.mountRound2();
 initReveals();
 initTilt();
 initNavState();
@@ -448,3 +450,4 @@ initNavState();
 if (!reduceMotion && document.documentElement.classList.contains("has-zoom")) {
   initZoom();
 }
+if (window.bindRound2) window.bindRound2();
