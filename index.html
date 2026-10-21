@@ -24,6 +24,7 @@
   <link rel="preload" href="assets/hero-desk.jpg" as="image">
   <link rel="preload" href="assets/fonts/manrope-600.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/effects.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -50,8 +51,10 @@
       var screens = mobile ? 0.85 : 1.35;
       var root = document.documentElement;
       root.classList.add("has-zoom");
+      root.classList.add("has-motion");
       root.style.setProperty("--vh", window.innerHeight + "px");
       root.style.setProperty("--spacer", (screens + 1) * window.innerHeight + "px");
+      setTimeout(function () { root.classList.add("ready"); }, 1600);
     })();
   </script>
 </head>
@@ -59,38 +62,79 @@
   <a class="skip-link" href="#work">Skip to work</a>
   <header class="site-header">
     <div class="wrap header-inner">
-      <a class="brand-chip" href="#top">
+      <a class="brand-chip" href="#top" data-caption="Suvarna Myneni">
         <span class="brand-name">Suvarna Myneni</span>
         <span class="brand-role">AI-driven Senior UX Designer</span>
       </a>
       <nav class="site-nav" aria-label="Primary">
-        <a href="#work">Work</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">
+          Menu
+        </button>
+        <div id="nav-menu" class="nav-menu">
+          <a href="#work" data-caption="Selected work">Work</a>
+          <a href="#about" data-caption="About">About</a>
+          <a href="#contact" data-caption="Contact">Contact</a>
+        </div>
       </nav>
     </div>
   </header>
+  <div class="nav-backdrop" hidden></div>
+  <div class="mobile-top-fade" aria-hidden="true"></div>
 
   <main>
     <section class="hero-stage" id="top">
       <div class="scene">
-        <img
-          src="assets/hero-desk.jpg"
-          width="2400"
-          height="1350"
-          alt="A wooden desk on a floating mossy island above the clouds at dusk, with an open laptop at the centre."
-          fetchpriority="high"
-        >
-        <div class="hero-scrim" aria-hidden="true"></div>
+        <div class="scene-bob">
+          <div class="sky-wash" aria-hidden="true"></div>
+          <div class="scene-shift">
+            <img
+              src="assets/hero-desk.jpg"
+              width="2400"
+              height="1350"
+              alt="A wooden desk on a floating mossy island above the clouds at dusk, with an open laptop at the centre."
+              fetchpriority="high"
+            >
+            <div class="hero-scrim" aria-hidden="true"></div>
+            <div class="hotspots">
+              <button type="button" class="hotspot hotspot-lamp" data-hotspot="lamp" data-caption="Lamp">
+                <svg class="lamp-icon" viewBox="0 0 64 64" aria-hidden="true">
+                  <path d="M18 28 H46 L40 40 H24 Z" fill="#F4F7FB" stroke="#0B1F3A" stroke-width="2.4" stroke-linejoin="round"/>
+                  <path d="M32 40 V52 M24 52 H40" fill="none" stroke="#0B1F3A" stroke-width="2.4" stroke-linecap="round"/>
+                  <circle cx="32" cy="22" r="3" fill="#2F6FED"/>
+                </svg>
+                <span class="sr-only">Lamp</span>
+              </button>
+              <button type="button" class="hotspot hotspot-plane" data-hotspot="plane" data-caption="Paper plane. Copies the email address.">
+                <svg class="plane-icon" viewBox="0 0 64 64" aria-hidden="true">
+                  <path d="M6 34 L58 8 L36 58 L28 36 Z" fill="#F4F7FB" stroke="#0B1F3A" stroke-width="2.5" stroke-linejoin="round"/>
+                  <path d="M28 36 L58 8" fill="none" stroke="#2F6FED" stroke-width="2"/>
+                </svg>
+                <span class="sr-only">Paper plane, copy email address</span>
+              </button>
+              <button type="button" class="hotspot hotspot-notebook" data-hotspot="work" data-caption="Notebook. Jump to selected work.">
+                <svg class="notebook-icon" viewBox="0 0 88 64" aria-hidden="true">
+                  <path d="M8 8 L42 4 V60 L8 56 Z" fill="#F4F7FB" stroke="#0B1F3A" stroke-width="2.2" stroke-linejoin="round"/>
+                  <path d="M46 4 L80 8 V56 L46 60 Z" fill="#F7F4EF" stroke="#0B1F3A" stroke-width="2.2" stroke-linejoin="round"/>
+                  <path d="M16 20 H34 M16 28 H32 M16 36 H34" fill="none" stroke="#2F6FED" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+                <span class="sr-only">Notebook, jump to selected work</span>
+              </button>
+            </div>
+          </div>
+          <canvas class="seed-field" id="seed-field" aria-hidden="true"></canvas>
+        </div>
       </div>
       <div class="veil" aria-hidden="true"></div>
+      <div class="unfold" id="unfold" aria-hidden="true" inert>
+        <div class="unfold-plane" id="unfold-plane"></div>
+      </div>
       <div class="hero-copy">
         <h1>I design AI that knows when to <span class="h1-mark">hand off to a human.</span></h1>
         <p class="hero-sub">AI-driven Senior UX Designer, 8+ years across eXp Realty, Amazon and ICICI Bank. Based in Hyderabad, India.</p>
       </div>
       <p class="scroll-pill">
         <span class="scroll-pill-label">Scroll into the laptop</span>
-        <a href="#work"><span class="when-motion">or jump to the work</span><span class="when-static">Jump to the work</span></a>
+        <a href="#work" data-caption="Jump to selected work"><span class="when-motion">or jump to the work</span><span class="when-static">Jump to the work</span></a>
       </p>
     </section>
     <div class="hero-spacer" aria-hidden="true"></div>
@@ -346,7 +390,10 @@
       <div class="wrap contact-copy">
         <h2 id="contact-heading">Contact</h2>
         <p class="contact-note">Based in Hyderabad, India.</p>
-        <a class="email" href="mailto:suvarnamyneni@gmail.com">suvarnamyneni@gmail.com</a>
+        <div class="email-row">
+          <a class="email" href="mailto:suvarnamyneni@gmail.com" data-caption="Email Suvarna">suvarnamyneni@gmail.com</a>
+          <button type="button" class="copy-email" data-caption="Copy email address" aria-live="polite">Copy</button>
+        </div>
         <ul class="contact-links">
           <li><a href="https://www.linkedin.com/in/suvarnamyneni/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a></li>
           <li><a href="https://motiveux.wixsite.com/suvarnaproject" target="_blank" rel="noopener noreferrer">Wix portfolio<span class="sr-only"> (opens in a new tab)</span></a></li>
@@ -362,8 +409,25 @@
     </div>
   </footer>
 
+  <div class="cursor" id="cursor" hidden aria-hidden="true">
+    <div class="cursor-sprite">
+      <svg viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M6 3 L22 14 L13 15.5 L10.5 24 Z" fill="#F4F7FB" stroke="#0B1F3A" stroke-width="1.6" stroke-linejoin="round"/>
+        <circle cx="20" cy="20" r="2.3" fill="#2F6FED"/>
+      </svg>
+    </div>
+    <p class="cursor-bubble"></p>
+  </div>
+  <div class="select-box" id="select-box" hidden aria-hidden="true">
+    <span class="select-size"></span>
+    <i></i><i></i><i></i><i></i>
+  </div>
+  <div class="toast-stack" id="toast-stack" aria-live="polite"></div>
+
   <script src="js/vendor/gsap.min.js"></script>
   <script src="js/vendor/ScrollTrigger.min.js"></script>
+  <script src="js/vendor/lenis.min.js"></script>
+  <script src="js/effects.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
