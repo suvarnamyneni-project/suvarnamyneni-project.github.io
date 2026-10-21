@@ -1,9 +1,8 @@
 /**
- * Laptop screen as percentages of assets/hero-desk.jpg.
- * Retune this one box when the final illustration replaces the placeholder.
- * The placeholder is framed so the screen sits at about x 40–57, y 32–50.
+ * Laptop screen as percentages of assets/art/hero.webp.
+ * The painted laptop sits near the middle of the island.
  */
-const LAPTOP_SCREEN = { x: 40, y: 32, w: 17, h: 18 };
+const LAPTOP_SCREEN = { x: 42, y: 50, w: 15, h: 13 };
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";

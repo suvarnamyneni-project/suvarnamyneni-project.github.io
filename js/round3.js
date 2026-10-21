@@ -247,6 +247,18 @@
     });
   }
 
+  function initAlsoMore() {
+    const button = document.querySelector(".view-more");
+    const panel = document.getElementById("also-more");
+    if (!button || !panel) return;
+    button.addEventListener("click", () => {
+      const open = button.getAttribute("aria-expanded") === "true";
+      button.setAttribute("aria-expanded", open ? "false" : "true");
+      panel.hidden = open;
+      button.textContent = open ? "View more" : "View less";
+    });
+  }
+
   function initKudos() {
     const mount = document.getElementById("kudos-mount");
     const about = document.getElementById("about");
@@ -263,36 +275,29 @@
 
     function render(quotes) {
       if (!quotes.length) return;
-      const dialog = document.createElement("dialog");
-      dialog.id = "kudo-dialog";
-      dialog.setAttribute("aria-labelledby", "kudo-title");
-      dialog.innerHTML = '<div class="kudo-card"><button type="button" class="hire-close">Close</button><h2 id="kudo-title">Kudo</h2><p class="kudo-quote"></p><p class="kudo-by" hidden></p></div>';
-      document.body.appendChild(dialog);
-      const quoteNode = dialog.querySelector(".kudo-quote");
-      const byNode = dialog.querySelector(".kudo-by");
-      dialog.querySelector("button").addEventListener("click", () => dialog.close());
-
-      const orbit = document.createElement("div");
-      orbit.className = "kudos-orbit";
       const wrap = document.createElement("div");
       wrap.className = "kudos";
-      quotes.slice(0, 8).forEach((item, index, list) => {
-        const bubble = document.createElement("button");
-        bubble.type = "button";
-        bubble.className = "kudo";
-        bubble.style.setProperty("--a", `${(360 / list.length) * index}deg`);
-        bubble.textContent = String(index + 1);
-        const label = item.by ? `Kudo from ${item.by}` : `Kudo ${index + 1}`;
-        bubble.setAttribute("aria-label", label);
-        bubble.addEventListener("click", () => {
-          quoteNode.textContent = item.quote;
-          byNode.hidden = !item.by;
-          byNode.textContent = item.by;
-          if (!dialog.open) dialog.showModal();
-        });
-        orbit.appendChild(bubble);
+      const heading = document.createElement("h2");
+      heading.id = "kudos-heading";
+      heading.textContent = "Kudos";
+      const list = document.createElement("ul");
+      list.className = "kudos-list";
+      quotes.forEach((item) => {
+        const card = document.createElement("li");
+        card.className = "kudo-card glass";
+        const quote = document.createElement("blockquote");
+        quote.className = "kudo-quote";
+        quote.textContent = item.quote;
+        card.appendChild(quote);
+        if (item.by) {
+          const by = document.createElement("p");
+          by.className = "kudo-by";
+          by.textContent = item.by;
+          card.appendChild(by);
+        }
+        list.appendChild(card);
       });
-      wrap.appendChild(orbit);
+      wrap.append(heading, list);
       mount.appendChild(wrap);
       mount.hidden = false;
     }
@@ -879,6 +884,7 @@
     initFacts,
     initChips,
     initSprint,
+    initAlsoMore,
     initKudos,
     initSky,
     initSling,

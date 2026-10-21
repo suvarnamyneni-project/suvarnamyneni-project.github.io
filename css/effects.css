@@ -191,25 +191,35 @@ html.has-motion.is-zooming .scene-bob {
   width: 100%;
   height: 100%;
   overflow: visible;
+  opacity: 0;
   filter: drop-shadow(0 8px 10px rgba(11, 31, 58, 0.28));
 }
 
-.lamp-icon {
-  display: none;
+.hotspot-plane.is-away svg {
+  opacity: 1;
 }
 
-.hotspot-lamp {
-  left: 26%;
-  top: 36%;
-  width: 10%;
-  height: 14%;
+.hotspot:hover,
+.hotspot:focus-visible {
+  outline: 2px solid rgba(163, 71, 40, 0.55);
+  outline-offset: 3px;
+  border-radius: 16px;
 }
+
+.hotspot-laptop { left: 42%; top: 50%; width: 16%; height: 16%; }
+.hotspot-house { left: 60%; top: 47%; width: 14%; height: 18%; }
+.hotspot-basket { left: 26%; top: 54%; width: 13%; height: 15%; }
+.hotspot-coffee { left: 36%; top: 61%; width: 8%; height: 10%; }
+.hotspot-sketch { left: 50%; top: 64%; width: 13%; height: 12%; }
+.hotspot-phone { left: 18%; top: 60%; width: 8%; height: 13%; }
+.hotspot-card { left: 72%; top: 58%; width: 9%; height: 9%; }
+.hotspot-chat { left: 56%; top: 40%; width: 11%; height: 12%; }
 
 .hotspot-plane {
-  left: 6%;
-  top: 15%;
-  width: 4.6%;
-  height: 8%;
+  left: 8%;
+  top: 16%;
+  width: 12%;
+  height: 14%;
 }
 
 .plane-icon {
@@ -502,31 +512,6 @@ html.has-fine-cursor * {
     background: linear-gradient(to bottom, var(--bg) 30%, transparent);
   }
 
-  /* The mobile crop shows the centre of the desk. Pull objects into that band. */
-  .lamp-icon {
-    display: block;
-  }
-
-  .hotspot-lamp {
-    left: 37.5%;
-    top: 54%;
-    width: 8%;
-    height: 11%;
-  }
-
-  .hotspot-plane {
-    left: 46%;
-    top: 63%;
-    width: 8%;
-    height: 10%;
-  }
-
-  .hotspot-notebook {
-    left: 55%;
-    top: 53%;
-    width: 8%;
-    height: 12%;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

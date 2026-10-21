@@ -171,8 +171,12 @@
     document.querySelectorAll(".hotspot").forEach((button) => {
       button.addEventListener("click", async () => {
         const kind = button.getAttribute("data-hotspot");
-        if (kind === "lamp") {
-          showToast("A lamp on the desk.");
+        if (kind === "coffee") {
+          showToast("Coffee on the desk.");
+          return;
+        }
+        if (kind === "card") {
+          showToast("A card on the desk.");
           return;
         }
         if (kind === "plane") {
