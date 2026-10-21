@@ -162,13 +162,18 @@
       year.className = "tl-year";
       year.setAttribute("aria-hidden", "true");
       year.textContent = PATH_STOPS[index].year;
-      item.appendChild(year);
+      const when = item.querySelector(".when");
+      const body = item.querySelector(":scope > div:not(.marker)");
+      const copy = document.createElement("div");
+      copy.className = "tl-copy";
+      if (when) copy.appendChild(when);
+      if (body) copy.appendChild(body);
+      item.append(year, copy);
       const icon = document.createElement("div");
       icon.className = "tl-icon";
       icon.setAttribute("aria-hidden", "true");
       icon.innerHTML = ICONS[index] || ICONS[0];
-      const copy = item.querySelector(":scope > div:not(.marker)") || item;
-      copy.appendChild(icon);
+      (body || copy).appendChild(icon);
     });
 
     const stage = document.createElement("div");
@@ -375,11 +380,19 @@
   function buildPathCurve() {
     if (!pathUI) return;
     const items = pathUI.items;
+    const points = items.map((item, index) => {
+      const year = item.querySelector(".tl-year");
+      const copy = item.querySelector(".tl-copy");
+      const gapTop = item.offsetTop + (year ? year.offsetTop + year.offsetHeight : 0) + 8;
+      const gapBottom = item.offsetTop + (copy ? copy.offsetTop : item.offsetHeight * 0.7) - 16;
+      const span = Math.max(12, gapBottom - gapTop);
+      const along = index % 2 === 0 ? 0.28 : 0.72;
+      return {
+        x: item.offsetLeft + item.offsetWidth * 0.42,
+        y: Math.min(gapBottom, gapTop + span * along),
+      };
+    });
     const height = pathUI.viewport.clientHeight || pathUI.track.clientHeight || 420;
-    const points = items.map((item, index) => ({
-      x: item.offsetLeft + item.offsetWidth * 0.38,
-      y: height * (index % 2 === 0 ? 0.28 : 0.62),
-    }));
     sizeRoute(pathUI.route, pathUI.track.scrollWidth, height);
     paintRoute(pathUI.route, points);
     pathUI.points = points;
