@@ -46,10 +46,14 @@
   </script>
   <script>
     (function () {
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var root = document.documentElement;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var stack = reduce || window.matchMedia("(max-width: 1024px), (pointer: coarse)").matches;
+      root.classList.toggle("is-stack", stack);
+      root.classList.toggle("has-rail", !stack);
+      if (reduce) return;
       var mobile = window.matchMedia("(max-width: 759px)").matches;
       var screens = mobile ? 0.85 : 1.35;
-      var root = document.documentElement;
       root.classList.add("has-zoom");
       root.classList.add("has-motion");
       root.style.setProperty("--vh", window.innerHeight + "px");
@@ -428,6 +432,7 @@
   <script src="js/vendor/ScrollTrigger.min.js"></script>
   <script src="js/vendor/lenis.min.js"></script>
   <script src="js/effects.js"></script>
+  <script src="js/rail.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
