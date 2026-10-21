@@ -349,10 +349,17 @@ function initZoom() {
     const centerY = startY + (metrics.height / 2 - startY) * eased;
     let x = centerX - metrics.screenX * scale;
     let y = centerY - metrics.screenY * scale;
+    /* At rest the desk sits below the headline and bio, in the lower half.
+       The drop eases out as the zoom takes over the laptop. */
+    const skyFloor = metrics.height * (mobile ? 0 : 0.44);
+    const laptopTop = metrics.imageHeight * (LAPTOP_SCREEN.y / 100);
+    const restDrop = Math.max(0, skyFloor - (y + laptopTop));
+    y += restDrop * (1 - eased);
     const minX = metrics.width - metrics.imageWidth * scale;
     const minY = metrics.height - metrics.imageHeight * scale;
     x = Math.min(0, Math.max(minX, x));
-    y = Math.min(0, Math.max(minY, y));
+    const yLimit = restDrop * (1 - eased);
+    y = Math.min(yLimit, Math.max(minY, y));
 
     scene.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
 

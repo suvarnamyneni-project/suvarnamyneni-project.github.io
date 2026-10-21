@@ -198,7 +198,7 @@ h3,
 /* Hero. */
 
 .hero-stage {
-  background: #f6dcc8;
+  background: linear-gradient(180deg, #fbf6ee 0%, #f6dcc8 46%, #efcbb4 100%);
   color: var(--ink);
 }
 
@@ -208,8 +208,8 @@ h3,
 
 .hero-scrim {
   background:
-    linear-gradient(180deg, rgba(253, 240, 226, 0.92) 0%, rgba(253, 240, 226, 0.55) 16%, rgba(253, 240, 226, 0.08) 34%, transparent 48%),
-    linear-gradient(0deg, rgba(253, 240, 226, 0.9) 0%, rgba(253, 240, 226, 0.35) 14%, transparent 30%);
+    linear-gradient(180deg, rgba(253, 240, 226, 0.97) 0%, rgba(253, 240, 226, 0.94) 18%, rgba(253, 240, 226, 0.42) 32%, rgba(253, 240, 226, 0) 42%),
+    linear-gradient(0deg, rgba(253, 240, 226, 0.72) 0%, rgba(253, 240, 226, 0.2) 12%, transparent 22%);
 }
 
 .hero-copy {
@@ -217,7 +217,7 @@ h3,
   right: auto;
   transform: translateX(-50%);
   width: min(920px, calc(100% - 48px));
-  top: calc(env(safe-area-inset-top) + 132px);
+  top: calc(env(safe-area-inset-top) + 104px);
   display: block;
   text-align: center;
 }
@@ -244,15 +244,22 @@ h3,
   display: block;
 }
 
+.hero-sub,
+.hero-sub strong {
+  font-family: Switzer, "Segoe UI", sans-serif;
+  font-synthesis: none;
+}
+
 .hero-sub {
   position: static;
   left: auto;
   right: auto;
   bottom: auto;
-  margin: 0.85rem auto 0;
-  max-width: 40rem;
-  font-size: clamp(1.02rem, 1.2vw, 1.125rem);
-  line-height: 1.5;
+  margin: 0.7rem auto 0;
+  max-width: 44rem;
+  font-size: clamp(1.02rem, 1.15vw, 1.125rem);
+  font-weight: 400;
+  line-height: 1.45;
   color: var(--muted);
   text-shadow: none;
 }
@@ -322,6 +329,14 @@ html.has-motion.ready .hero-copy h1 .word {
 
 html.is-stack #unfold {
   display: none;
+}
+
+/* Reduced motion skips the zoom script, so the desk still has to sit below the type. */
+@media (min-width: 901px) {
+  html:not(.has-zoom) .scene {
+    top: 18%;
+    bottom: -18%;
+  }
 }
 
 .hero-stage.is-handed .unfold,
