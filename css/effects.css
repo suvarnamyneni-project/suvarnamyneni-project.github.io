@@ -272,7 +272,14 @@ html.has-motion.is-zooming .scene-bob {
   transform-origin: 0 0;
   opacity: 0;
   background: var(--bg);
+  color: var(--navy);
   will-change: transform, opacity;
+}
+
+/* The hero paints its own type white. Work headings must stay navy on the light screen at every zoom, including the settled page. */
+.section-head h2,
+.project h3 {
+  color: var(--navy);
 }
 
 .unfold-plane .panel {
