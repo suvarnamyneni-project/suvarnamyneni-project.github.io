@@ -11,12 +11,14 @@
     `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 24 32 14 54 24 32 34 Z" fill="none" stroke="#0B1F3A" stroke-width="2.4"/><path d="M10 24 v16 l22 10 22-10 V24" fill="none" stroke="#0B1F3A" stroke-width="2.4"/><path d="M32 34 v16" stroke="#2F6FED" stroke-width="2.4"/></svg>`,
     `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="18" width="44" height="28" rx="4" fill="none" stroke="#0B1F3A" stroke-width="2.4"/><path d="M10 28 h44" stroke="#2F6FED" stroke-width="2.4"/></svg>`,
     `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 14 h14 v36 H18 a8 8 0 0 1-8-8 V22 a8 8 0 0 1 8-8z" fill="none" stroke="#0B1F3A" stroke-width="2.4"/><path d="M46 14 H32 v36 h14 a8 8 0 0 0 8-8 V22 a8 8 0 0 0-8-8z" fill="none" stroke="#0B1F3A" stroke-width="2.4"/></svg>`,
+    `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 28 32 14 58 28 32 42 Z" fill="none" stroke="#0B1F3A" stroke-width="2.4" stroke-linejoin="round"/><path d="M18 34 v8 c0 8 28 8 28 0 v-8" fill="none" stroke="#0B1F3A" stroke-width="2.4"/><path d="M58 28 v16" stroke="#2F6FED" stroke-width="2.4" stroke-linecap="round"/></svg>`,
   ];
   const PATH_STOPS = [
     { year: "2023", label: "eXp Realty, February 2023 to present" },
     { year: "2020", label: "Amazon, August 2020 to February 2023" },
     { year: "2018", label: "ICICI Bank, October 2018 to August 2020" },
-    { year: "2018", label: "Manipal University, postgraduate degree in Design, 2018" },
+    { year: "2018", label: "Manipal University, Postgraduate in Design, 2018" },
+    { year: "2017", label: "Osmania University, MCA (Master of Computer Applications), 2017" },
   ];
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
