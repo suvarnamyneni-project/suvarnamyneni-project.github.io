@@ -2,8 +2,8 @@
  * Site interactions that do not own the laptop zoom.
  * Catalog: cursor, captions, hints, glass menu, day colour,
  * copy button, glides, parallax, seeds, headline words, hotspots.
- * Round 3 can pass skill names through window.deskSeeds.setSkills.
- * This file never draws those names.
+ * Skill names stay empty until a real list is passed to
+ * window.deskSeeds.setSkills. This file never draws those names.
  */
 (function () {
   const root = document.documentElement;
@@ -245,9 +245,7 @@
       });
       node.parentNode.replaceChild(fragment, node);
     });
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => root.classList.add("ready"));
-    });
+    root.classList.add("ready");
   }
 
   function initCaptions() {
@@ -523,6 +521,9 @@
     }
     frame();
   }
+
+  window.deskCopy = copyEmail;
+  window.deskToast = showToast;
 
   initMenu();
   initGlides();
