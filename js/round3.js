@@ -94,55 +94,6 @@
     const about = document.getElementById("about");
     const portrait = document.querySelector(".portrait");
     if (!about || !portrait) return;
-    const face = portrait.querySelector(".portrait-face");
-    const tags = [...portrait.querySelectorAll(".float-tag")];
-
-    function setMood(name) {
-      portrait.classList.remove("is-thoughtful", "is-smile", "is-calm", "is-laugh");
-      if (name) portrait.classList.add(name);
-    }
-
-    function pointEyes(clientX, clientY) {
-      if (!face) return;
-      const rect = face.getBoundingClientRect();
-      const ex = (clientX - (rect.left + rect.width / 2)) / (rect.width * 0.35);
-      const ey = (clientY - (rect.top + rect.height * 0.45)) / (rect.height * 0.35);
-      portrait.style.setProperty("--eye-x", clamp(ex, -1, 1).toFixed(3));
-      portrait.style.setProperty("--eye-y", clamp(ey, -1, 1).toFixed(3));
-    }
-
-    function lookAt(tag) {
-      const mood = tag.getAttribute("data-mood") || "";
-      setMood(mood);
-      const rect = tag.getBoundingClientRect();
-      pointEyes(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      portrait.dataset.lockEyes = "1";
-    }
-
-    tags.forEach((tag) => {
-      tag.addEventListener("pointerenter", (event) => {
-        if (event.pointerType === "touch") return;
-        lookAt(tag);
-      });
-      tag.addEventListener("focus", () => lookAt(tag));
-      tag.addEventListener("pointerleave", (event) => {
-        if (event.pointerType === "touch") return;
-        portrait.dataset.lockEyes = "";
-        setMood("");
-      });
-      tag.addEventListener("blur", () => {
-        portrait.dataset.lockEyes = "";
-        setMood("");
-      });
-      tag.addEventListener("click", () => lookAt(tag));
-    });
-
-    portrait.addEventListener("click", (event) => {
-      const node = event.target;
-      if (node && node.closest && node.closest(".float-tag")) return;
-      portrait.dataset.lockEyes = "";
-      setMood("");
-    });
 
     let aboutNear = false;
     whenNear(about, "120px", (near) => {
@@ -157,8 +108,6 @@
         const my = event.clientY / window.innerHeight - 0.5;
         portrait.style.setProperty("--mx", mx.toFixed(3));
         portrait.style.setProperty("--my", my.toFixed(3));
-        if (portrait.dataset.lockEyes === "1") return;
-        pointEyes(event.clientX, event.clientY);
       }, { passive: true });
     }
   }
