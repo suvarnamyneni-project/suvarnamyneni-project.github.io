@@ -1,9 +1,10 @@
 /**
- * Laptop screen as percentages of assets/hero-desk.jpg.
- * Retune this one box when the final illustration replaces the placeholder.
- * The placeholder is framed so the screen sits at about x 40–57, y 32–50.
+ * Laptop screen as percentages of assets/art/hero.webp.
+ * The painted laptop sits near the middle of the island.
+ * ROOF_TOP is the peak of the house roof, which has to stay below the bio.
  */
-const LAPTOP_SCREEN = { x: 40, y: 32, w: 17, h: 18 };
+const LAPTOP_SCREEN = { x: 42, y: 50, w: 15, h: 13 };
+const ROOF_TOP = 27;
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";
@@ -23,7 +24,7 @@ function initLenis() {
   if (reduceMotion || !window.Lenis || !window.gsap) return null;
   const lenis = new window.Lenis({
     autoRaf: false,
-    lerp: 0.08,
+    lerp: 0.06,
     smoothWheel: true,
     syncTouch: false,
     anchors: false,
@@ -95,7 +96,11 @@ function initTilt() {
 function initNavState() {
   const links = [...document.querySelectorAll(".site-nav a")];
   const sections = links
-    .map((link) => document.querySelector(link.getAttribute("href")))
+    .map((link) => {
+      const href = link.getAttribute("href") || "";
+      if (!href.startsWith("#")) return null;
+      return document.querySelector(href);
+    })
     .filter(Boolean);
 
   if (!("IntersectionObserver" in window)) return;
@@ -311,9 +316,16 @@ function initZoom() {
     plane.style.transform = matrix3dFromQuad(metrics.width, metrics.height, quad);
 
     let handoff = 1;
+    const workTop = work ? work.getBoundingClientRect().top : metrics.height;
+    const covered = Boolean(work) && workTop < metrics.height * 0.62;
+    hero.classList.toggle("is-handed", covered && amount > 0.2);
+    if (covered && amount > 0.2) {
+      plane.style.opacity = "0";
+      plane.style.visibility = "hidden";
+      return;
+    }
     if (amount > 0.94 && work) {
-      const workTop = work.getBoundingClientRect().top;
-      handoff = smoothstep(metrics.height * 0.22, metrics.height * 0.78, workTop);
+      handoff = smoothstep(metrics.height * 0.7, metrics.height * 0.95, workTop);
     }
     const opacity = reveal * handoff;
     plane.style.opacity = opacity.toFixed(3);
@@ -331,17 +343,23 @@ function initZoom() {
     const mobile = isMobile();
     const eased = smoothstep(0, 1, amount);
     const target = mobile ? Math.min(metrics.scaleToFill, 1.45) : metrics.scaleToFill;
-    const scale = 1 + (target - 1) * eased;
-    const startX = metrics.baseX + metrics.screenX;
-    const startY = metrics.baseY + metrics.screenY;
-    const centerX = startX + (metrics.width / 2 - startX) * eased;
-    const centerY = startY + (metrics.height / 2 - startY) * eased;
-    let x = centerX - metrics.screenX * scale;
-    let y = centerY - metrics.screenY * scale;
+    /* Scale around the top of the painting until the roof clears the bio.
+       The zoom then eases from that rest frame into the laptop. */
+    const copyBottom = copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top;
+    const clearance = copyBottom + 36;
+    const roofSpan = metrics.imageHeight * (ROOF_TOP / 100);
+    const restScale = Math.max(1, clearance / roofSpan);
+    const scale = restScale + (target - restScale) * eased;
+    const restX = (metrics.width - metrics.imageWidth * restScale) / 2;
+    const restY = 0;
+    const zoomX = metrics.width / 2 - metrics.screenX * target;
+    const zoomY = metrics.height / 2 - metrics.screenY * target;
+    let x = restX + (zoomX - restX) * eased;
+    let y = restY + (zoomY - restY) * eased;
     const minX = metrics.width - metrics.imageWidth * scale;
     const minY = metrics.height - metrics.imageHeight * scale;
     x = Math.min(0, Math.max(minX, x));
-    y = Math.min(0, Math.max(minY, y));
+    y = Math.min(restY, Math.max(minY, y));
 
     scene.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
 
@@ -428,6 +446,14 @@ function initZoom() {
     applyZoom(progress);
     window.ScrollTrigger.refresh();
   });
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      measure();
+      applyZoom(progress);
+      window.ScrollTrigger.refresh();
+    });
+  }
 
   if (location.hash) {
     const target = document.querySelector(location.hash);
