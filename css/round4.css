@@ -191,6 +191,10 @@ h3,
   display: none;
 }
 
+.nav-cv[hidden] {
+  display: none !important;
+}
+
 .mobile-top-fade {
   background: linear-gradient(#fdf0e2 42%, rgba(253, 240, 226, 0));
 }
@@ -331,11 +335,52 @@ html.is-stack #unfold {
   display: none;
 }
 
+/* Phone and coarse pointer: the bio is a cream glass card with dark type. */
+@media (max-width: 900px) {
+  html.is-stack .hero-copy {
+    pointer-events: auto;
+  }
+
+  html.is-stack .hero-copy h1 {
+    margin: 0 auto;
+  }
+
+  html.is-stack .hero-sub {
+    position: static;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: 0.85rem auto 0;
+    max-width: 40rem;
+    padding: 12px 14px;
+    border-radius: 18px;
+    background: rgba(253, 240, 226, 0.94);
+    color: #2b3236;
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 10px 28px rgba(80, 40, 20, 0.12);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
+    text-shadow: none;
+  }
+
+  html.is-stack .hero-sub strong {
+    color: #2b3236;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @media (max-width: 900px) {
+    html.is-stack .hero-sub {
+      background: #fdf0e2;
+    }
+  }
+}
+
 /* Reduced motion skips the zoom script, so the desk still has to sit below the type. */
 @media (min-width: 901px) {
   html:not(.has-zoom) .scene {
-    top: 18%;
-    bottom: -18%;
+    top: 22%;
+    bottom: -28%;
   }
 }
 
@@ -1300,7 +1345,7 @@ html.has-rail .timeline h3 {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 18px 40px -24px rgba(80, 40, 30, 0.55);
   }
 
-  .site-nav.is-open .nav-menu a {
+  .site-nav.is-open .nav-menu a:not([hidden]) {
     min-height: 44px;
     display: flex;
     align-items: center;

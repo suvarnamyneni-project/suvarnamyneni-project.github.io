@@ -861,40 +861,6 @@ a {
     padding-bottom: 8px;
   }
 
-  .hero-copy {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: block;
-    pointer-events: none;
-  }
-
-  .hero-copy h1,
-  .hero-sub {
-    pointer-events: auto;
-  }
-
-  .hero-copy h1 {
-    margin: calc(env(safe-area-inset-top) + 132px) 20px 0;
-    max-width: 16em;
-    font-size: clamp(1.7rem, 7.4vw, 2.05rem);
-  }
-
-  .hero-sub {
-    position: absolute;
-    left: 16px;
-    right: 16px;
-    bottom: calc(124px + env(safe-area-inset-bottom));
-    margin: 0;
-    max-width: none;
-    padding: 10px 12px;
-    border-radius: 16px;
-    background: rgba(11, 31, 58, 0.62);
-    backdrop-filter: blur(10px);
-    font-size: 0.92rem;
-  }
-
   .feature-pair,
   .work-grid {
     grid-template-columns: 1fr;

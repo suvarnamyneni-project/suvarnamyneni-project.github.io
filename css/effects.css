@@ -496,7 +496,7 @@ html.has-fine-cursor * {
     display: flex;
   }
 
-  .nav-menu a {
+  .nav-menu a:not([hidden]) {
     padding: 12px 14px;
   }
 
@@ -1903,7 +1903,7 @@ html.has-motion .sling-plane.is-return {
   transition: left 0.35s ease, top 0.35s ease;
 }
 
-html.has-motion .nav-menu a {
+html.has-motion .nav-menu a:not([hidden]) {
   display: inline-block;
 }
 

@@ -1,8 +1,10 @@
 /**
  * Laptop screen as percentages of assets/art/hero.webp.
  * The painted laptop sits near the middle of the island.
+ * ROOF_TOP is the peak of the house roof, which has to stay below the bio.
  */
 const LAPTOP_SCREEN = { x: 42, y: 50, w: 15, h: 13 };
+const ROOF_TOP = 27;
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";
@@ -341,24 +343,23 @@ function initZoom() {
     const mobile = isMobile();
     const eased = smoothstep(0, 1, amount);
     const target = mobile ? Math.min(metrics.scaleToFill, 1.45) : metrics.scaleToFill;
-    const scale = 1 + (target - 1) * eased;
-    const startX = metrics.baseX + metrics.screenX;
-    const startY = metrics.baseY + metrics.screenY;
-    const centerX = startX + (metrics.width / 2 - startX) * eased;
-    const centerY = startY + (metrics.height / 2 - startY) * eased;
-    let x = centerX - metrics.screenX * scale;
-    let y = centerY - metrics.screenY * scale;
-    /* At rest the desk sits below the headline and bio, in the lower half.
-       The drop eases out as the zoom takes over the laptop. */
-    const skyFloor = metrics.height * (mobile ? 0 : 0.44);
-    const laptopTop = metrics.imageHeight * (LAPTOP_SCREEN.y / 100);
-    const restDrop = Math.max(0, skyFloor - (y + laptopTop));
-    y += restDrop * (1 - eased);
+    /* Scale around the top of the painting until the roof clears the bio.
+       The zoom then eases from that rest frame into the laptop. */
+    const copyBottom = copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top;
+    const clearance = copyBottom + 36;
+    const roofSpan = metrics.imageHeight * (ROOF_TOP / 100);
+    const restScale = Math.max(1, clearance / roofSpan);
+    const scale = restScale + (target - restScale) * eased;
+    const restX = (metrics.width - metrics.imageWidth * restScale) / 2;
+    const restY = 0;
+    const zoomX = metrics.width / 2 - metrics.screenX * target;
+    const zoomY = metrics.height / 2 - metrics.screenY * target;
+    let x = restX + (zoomX - restX) * eased;
+    let y = restY + (zoomY - restY) * eased;
     const minX = metrics.width - metrics.imageWidth * scale;
     const minY = metrics.height - metrics.imageHeight * scale;
     x = Math.min(0, Math.max(minX, x));
-    const yLimit = restDrop * (1 - eased);
-    y = Math.min(yLimit, Math.max(minY, y));
+    y = Math.min(restY, Math.max(minY, y));
 
     scene.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
 
@@ -445,6 +446,14 @@ function initZoom() {
     applyZoom(progress);
     window.ScrollTrigger.refresh();
   });
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      measure();
+      applyZoom(progress);
+      window.ScrollTrigger.refresh();
+    });
+  }
 
   if (location.hash) {
     const target = document.querySelector(location.hash);

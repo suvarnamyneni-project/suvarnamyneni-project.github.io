@@ -34,8 +34,8 @@
     img { max-width: 100%; display: block; }
     h1, p { margin: 0; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-    .site-header { position: fixed; z-index: 20; inset: 16px 22px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0; background: none; pointer-events: none; color: #2b3236; }
-    .site-header > * { pointer-events: auto; }
+    html .site-header { position: fixed; z-index: 20; inset: 16px 22px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0; background: none; pointer-events: none; color: #2b3236; }
+    html .site-header > * { pointer-events: auto; }
     .brand-chip, .site-nav { display: flex; align-items: center; border-radius: 999px; text-decoration: none; color: #2b3236; background: rgba(255,251,247,.86); border: 1px solid rgba(255,255,255,.7); }
     .brand-chip { gap: 10px; padding: 5px 16px 5px 5px; }
     .brand-chip > span { display: flex; flex-direction: column; line-height: 1.15; }
@@ -45,16 +45,16 @@
     .site-nav { position: relative; gap: 2px; padding: 5px; }
     .nav-menu { display: flex; align-items: center; gap: 2px; }
     .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 .875rem/1 Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
-    .nav-contact, .nav-toggle, .nav-cv[hidden] { display: none; }
-    .hero-stage { position: relative; min-height: 100vh; min-height: 100dvh; overflow: hidden; background: #f6dcc8; color: #2b3236; }
-    .scene, .hero-scrim { position: absolute; inset: 0; }
-    .scene img { width: 100%; height: 100%; object-fit: cover; }
-    .hero-copy { position: absolute; z-index: 3; left: 50%; transform: translateX(-50%); width: min(920px, calc(100% - 48px)); top: calc(env(safe-area-inset-top) + 104px); text-align: center; }
-    .hero-copy h1 { max-width: 18em; margin: 0 auto; font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: clamp(2.35rem, 4.35vw, 3.875rem); letter-spacing: -.035em; line-height: 1.02; color: #2b3236; }
+    .nav-contact, .nav-toggle, .nav-cv, .nav-cv[hidden] { display: none; }
+    html .hero-stage { position: relative; height: 100vh; height: 100dvh; overflow: hidden; background: #fbf6ee; color: #2b3236; }
+    html .scene, html .scene-bob, html .scene-shift, html .scene picture, html .hero-scrim { position: absolute; inset: 0; width: 100%; height: 100%; }
+    html .scene img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; aspect-ratio: 16 / 9; object-fit: cover; object-position: center center; }
+    html .hero-copy { position: absolute; z-index: 3; display: block; grid-template-columns: none; left: 50%; right: auto; transform: translateX(-50%); width: min(920px, calc(100% - 48px)); top: calc(env(safe-area-inset-top) + 104px); text-align: center; }
+    html .hero-copy h1 { max-width: 18em; margin: 0 auto; font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: clamp(2.35rem, 4.35vw, 3.875rem); letter-spacing: -.035em; line-height: 1.02; color: #2b3236; text-shadow: none; }
     .h1-break { display: block; }
-    .hero-sub, .hero-sub strong { font-family: Switzer, "Segoe UI", sans-serif; font-synthesis: none; }
-    .hero-sub { position: static; margin: .7rem auto 0; max-width: 44rem; font-size: clamp(1.02rem, 1.15vw, 1.125rem); font-weight: 400; line-height: 1.45; color: #41484c; }
-    .hero-sub strong { color: #2b3236; font-weight: 600; }
+    html .hero-sub, html .hero-sub strong { font-family: Switzer, "Segoe UI", sans-serif; font-synthesis: none; }
+    html .hero-sub { position: static; left: auto; right: auto; bottom: auto; margin: .7rem auto 0; max-width: 44rem; padding: 0; background: none; font-size: clamp(1.02rem, 1.15vw, 1.125rem); font-weight: 400; line-height: 1.45; color: #41484c; text-shadow: none; }
+    html .hero-sub strong { color: #2b3236; font-weight: 600; }
     .scroll-pill { position: absolute; z-index: 4; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; gap: 10px; margin: 0; padding: 8px 14px 8px 16px; border-radius: 999px; background: rgba(255,251,247,.86); color: #2b3236; font-size: .86rem; white-space: nowrap; }
     .scroll-pill a { color: #a34728; font-weight: 600; }
     .hero-spacer { display: none; }
@@ -63,12 +63,23 @@
     @media (max-width: 900px) {
       .hero-copy h1 { font-size: clamp(2rem, 8vw, 2.6rem); }
     }
+    @media (max-width: 900px) {
+      html.is-stack .hero-sub {
+        margin: 0.85rem auto 0;
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(253, 240, 226, 0.94);
+        color: #2b3236;
+        border: 1px solid rgba(255, 255, 255, 0.75);
+      }
+      html.is-stack .hero-sub strong { color: #2b3236; }
+    }
     @media (max-width: 759px) {
-      .site-header { left: 12px; right: 12px; top: 12px; }
+      html .site-header { left: 12px; right: 12px; top: 12px; }
       .brand-role, .nav-menu { display: none; }
       .brand-avatar { width: 32px; height: 32px; }
       .nav-contact, .nav-toggle { display: inline-flex; align-items: center; min-height: 44px; }
-      .hero-copy { top: calc(env(safe-area-inset-top) + 88px); width: min(100% - 32px, 560px); }
+      html .hero-copy { top: calc(env(safe-area-inset-top) + 88px); width: min(100% - 32px, 560px); }
     }
   </style>
   <link rel="stylesheet" href="css/styles.css" media="print" onload="this.media='all'">
@@ -134,7 +145,6 @@
         <a href="#path" data-caption="Path">Path</a>
         <a href="#about" data-caption="About">About</a>
         <a href="#contact" data-caption="Contact">Contact</a>
-        <a class="nav-cv" href="assets/Suvarna-Myneni-CV.pdf" hidden>CV</a>
       </div>
       <a class="nav-contact" href="#contact">Contact</a>
       <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">
