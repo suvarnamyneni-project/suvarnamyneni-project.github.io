@@ -1,9 +1,25 @@
 /**
  * Remaining catalog effects: about portrait, facts, stacking toy,
  * hidden kudos, contact sky, stars, slingshot, and the hire dialog.
- * Skill names are left empty. Quotes render only from data/kudos.json.
+ * Skill names come from the CV. Quotes render only from data/kudos.json.
  */
 (function () {
+  const SKILLS = [
+    "Journey Mapping",
+    "Service Blueprinting",
+    "Design Systems",
+    "Accessibility (WCAG)",
+    "Usability Testing",
+    "User Research",
+    "Figma",
+    "Cursor",
+    "Claude",
+    "Lovable",
+    "AI Workflow Automation",
+    "Agent-Driven Prototyping",
+    "HTML/CSS",
+    "Stakeholder Management",
+  ];
   const root = document.documentElement;
   const motion = root.classList.contains("has-motion");
   const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -636,7 +652,10 @@
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
       hideAim();
-      status.textContent = "Copied";
+      status.textContent = "Delivered.";
+      const done = document.getElementById("sling-done");
+      if (done) done.hidden = false;
+      setStep(3);
       burst();
       let ok = false;
       if (window.deskCopy) ok = await window.deskCopy();
@@ -651,11 +670,18 @@
       }, motion ? 620 : 0);
     }
 
+    function setStep(step) {
+      document.querySelectorAll("#sling-steps li").forEach((item) => {
+        item.classList.toggle("is-on", item.dataset.step === String(step));
+      });
+    }
+
     function miss() {
       flying = false;
       misses += 1;
       status.textContent = "Aim higher.";
       if (misses >= 2 && mail) mail.hidden = false;
+      setStep(1);
       resetPlane();
     }
 
@@ -723,6 +749,7 @@
       if (event.button !== 0 || flying || resolving) return;
       dragging = true;
       dragged = false;
+      setStep(1);
       plane.classList.remove("is-return");
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
@@ -739,7 +766,10 @@
       x = clamp(x, 0, Math.max(0, stage.clientWidth - 48));
       y = clamp(y, 0, Math.max(0, stage.clientHeight - 48));
       const origin = samples[0];
-      if (Math.hypot(x - origin.x, y - origin.y) > 6) dragged = true;
+      if (Math.hypot(x - origin.x, y - origin.y) > 6) {
+        dragged = true;
+        setStep(2);
+      }
       place(x, y);
       samples.push({ x, y, t: performance.now() });
       if (samples.length > 6) samples.shift();
@@ -764,6 +794,7 @@
         else resetPlane();
         return;
       }
+      setStep(3);
       startPhysics(plane.offsetLeft, plane.offsetTop, vel.vx, vel.vy);
     }
 
@@ -809,7 +840,38 @@
     });
   }
 
+  function initSkills() {
+    if (window.deskSeeds && window.deskSeeds.setSkills) window.deskSeeds.setSkills(SKILLS);
+  }
+
+  function initDeskMetrics() {
+    const nums = [...document.querySelectorAll(".desk-card .metric-num")];
+    if (!nums.length || !motion || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const target = Number(el.dataset.value);
+        if (!Number.isFinite(target)) return;
+        const prefix = el.dataset.prefix || "";
+        const suffix = el.dataset.suffix || "";
+        const started = performance.now();
+        const step = (now) => {
+          const t = Math.min(1, (now - started) / 680);
+          const eased = 1 - (1 - t) ** 3;
+          el.textContent = `${prefix}${Math.round(eased * target)}${suffix}`;
+          if (t < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+        observer.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+    nums.forEach((el) => observer.observe(el));
+  }
+
   [
+    initSkills,
+    initDeskMetrics,
     initLazyImages,
     initCaseOpen,
     initCursorIcons,

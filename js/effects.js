@@ -199,8 +199,8 @@
     function paint() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const t = max > 0 ? clamp01(window.scrollY / max) : 0;
-      root.style.setProperty("--bg", mixHex("#f4f7fb", "#e7d5de", t));
-      root.style.setProperty("--paper", mixHex("#ffffff", "#f8f1f3", t));
+      root.style.setProperty("--bg", mixHex("#fdf0e2", "#f6e0cc", t));
+      root.style.setProperty("--paper", mixHex("#fdf0e2", "#f8e6d4", t));
       if (work && window.matchMedia("(max-width: 759px)").matches) {
         const top = work.getBoundingClientRect().top;
         root.classList.toggle("past-hero", top < window.innerHeight * 0.72);
@@ -486,6 +486,14 @@
     });
 
     let time = 0;
+    let pointer = null;
+    let caught = -1;
+    const skillNode = document.getElementById("seed-skill");
+    window.addEventListener("pointermove", (event) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top, v: Math.hypot(gustX, gustY) };
+    }, { passive: true });
+
     function frame() {
       requestAnimationFrame(frame);
       if (!running || root.classList.contains("is-zooming") && window.deskZoom > 0.82) return;
@@ -493,31 +501,56 @@
       context.clearRect(0, 0, width, height);
       gustX *= 0.92;
       gustY *= 0.92;
-      seeds.forEach((seed) => {
+      const slow = !pointer || pointer.v < 18;
+      let nextCaught = -1;
+      seeds.forEach((seed, index) => {
+        const homeX = seed.vx + Math.sin(time * 0.7 + seed.phase) * 0.18;
+        const homeY = seed.vy + Math.cos(time * 0.55 + seed.phase) * 0.12;
         seed.vx = (seed.vx + gustX * 0.04) * 0.96;
         seed.vy = (seed.vy + gustY * 0.04) * 0.96;
-        seed.x += seed.vx + Math.sin(time * 0.7 + seed.phase) * 0.18;
-        seed.y += seed.vy + Math.cos(time * 0.55 + seed.phase) * 0.12;
+        if (pointer && slow) {
+          const dx = pointer.x - seed.x;
+          const dy = pointer.y - seed.y;
+          if (dx * dx + dy * dy < 34 * 34) nextCaught = index;
+        }
+        if (nextCaught === index && pointer) {
+          seed.x += (pointer.x - seed.x) * 0.18;
+          seed.y += (pointer.y - 18 - seed.y) * 0.18;
+        } else {
+          seed.x += homeX;
+          seed.y += homeY;
+        }
         if (seed.x < -20) seed.x = width + 20;
         if (seed.x > width + 20) seed.x = -20;
         if (seed.y < -20) seed.y = height + 20;
         if (seed.y > height + 20) seed.y = -20;
         context.save();
         context.translate(seed.x, seed.y);
-        context.rotate(Math.sin(time + seed.phase) * seed.spin);
+        context.rotate(Math.sin(time + seed.phase) * 0.4);
         context.beginPath();
-        context.ellipse(0, 0, seed.size * 0.55, seed.size, 0, 0, Math.PI * 2);
-        context.fillStyle = "#f4f7fb";
-        context.fill();
-        context.lineWidth = 1.2;
-        context.strokeStyle = "#0b1f3a";
+        context.moveTo(0, 8);
+        context.quadraticCurveTo(1.4, 1, 0, -2);
+        context.strokeStyle = "#5c4a3a";
+        context.lineWidth = 1.15;
         context.stroke();
         context.beginPath();
-        context.arc(seed.size * 0.15, 0, 1.1, 0, Math.PI * 2);
-        context.fillStyle = "#2f6fed";
+        context.ellipse(0, -4, seed.size * 0.7, seed.size * 0.42, -0.5, 0, Math.PI * 2);
+        context.fillStyle = "#fff8ef";
         context.fill();
+        context.strokeStyle = "#a34728";
+        context.stroke();
         context.restore();
       });
+      if (skillNode) {
+        const show = nextCaught > -1 && api.skills.length && pointer;
+        skillNode.hidden = !show;
+        if (show) {
+          skillNode.textContent = api.skills[nextCaught % api.skills.length];
+          skillNode.style.left = `${pointer.x + 16}px`;
+          skillNode.style.top = `${pointer.y - 28}px`;
+        }
+      }
+      caught = nextCaught;
     }
     frame();
   }

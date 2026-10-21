@@ -1,47 +1,68 @@
+/* General Sans and Switzer are self-hosted from Fontshare under the ITF Free Font License. */
 @font-face {
-  font-family: Manrope;
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("../assets/fonts/manrope-400.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: Manrope;
+  font-family: "General Sans";
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url("../assets/fonts/manrope-500.woff2") format("woff2");
+  src: url("../assets/fonts/general-sans-500.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: Manrope;
+  font-family: "General Sans";
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url("../assets/fonts/manrope-600.woff2") format("woff2");
+  src: url("../assets/fonts/general-sans-600.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: Manrope;
+  font-family: "General Sans";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("../assets/fonts/manrope-700.woff2") format("woff2");
+  src: url("../assets/fonts/general-sans-700.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Switzer;
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/switzer-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Switzer;
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/switzer-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: Switzer;
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../assets/fonts/switzer-600.woff2") format("woff2");
 }
 
 :root {
-  --navy: #0b1f3a;
-  --bg: #f4f7fb;
-  --accent: #2f6fed;
-  --white: #ffffff;
-  --muted: #3d4f68;
-  --line: rgba(11, 31, 58, 0.1);
+  --navy: #2b3236;
+  --ink: #2b3236;
+  --bg: #fdf0e2;
+  --paper: #fdf0e2;
+  --accent: #a34728;
+  --white: #fffdfb;
+  --muted: #41484c;
+  --line: rgba(43, 50, 54, 0.1);
   --max: 1120px;
   --gutter: max(20px, calc((100% - var(--max)) / 2));
   --header: 76px;
-  --shadow: 0 16px 40px rgba(11, 31, 58, 0.06);
+  --shadow: 0 16px 40px rgba(120, 70, 50, 0.08);
   --radius: 22px;
+  --display: "General Sans", Switzer, "Segoe UI", sans-serif;
+  --sans: Switzer, "Segoe UI", sans-serif;
 }
 
 *,
@@ -56,11 +77,13 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--navy);
-  font-family: Manrope, "Segoe UI", sans-serif;
+  background-color: var(--bg);
+  background-image: radial-gradient(rgba(43, 50, 54, 0.16) 1.1px, transparent 1.2px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--sans);
   font-size: 1.0625rem;
-  line-height: 1.6;
+  line-height: 1.5;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
@@ -614,8 +637,8 @@ a {
 
 .reveal {
   opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transform: translateY(30px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal.is-visible {

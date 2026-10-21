@@ -23,7 +23,7 @@ function initLenis() {
   if (reduceMotion || !window.Lenis || !window.gsap) return null;
   const lenis = new window.Lenis({
     autoRaf: false,
-    lerp: 0.08,
+    lerp: 0.06,
     smoothWheel: true,
     syncTouch: false,
     anchors: false,
@@ -95,7 +95,11 @@ function initTilt() {
 function initNavState() {
   const links = [...document.querySelectorAll(".site-nav a")];
   const sections = links
-    .map((link) => document.querySelector(link.getAttribute("href")))
+    .map((link) => {
+      const href = link.getAttribute("href") || "";
+      if (!href.startsWith("#")) return null;
+      return document.querySelector(href);
+    })
     .filter(Boolean);
 
   if (!("IntersectionObserver" in window)) return;
@@ -311,9 +315,16 @@ function initZoom() {
     plane.style.transform = matrix3dFromQuad(metrics.width, metrics.height, quad);
 
     let handoff = 1;
+    const workTop = work ? work.getBoundingClientRect().top : metrics.height;
+    const covered = Boolean(work) && workTop < metrics.height * 0.62;
+    hero.classList.toggle("is-handed", covered && amount > 0.2);
+    if (covered && amount > 0.2) {
+      plane.style.opacity = "0";
+      plane.style.visibility = "hidden";
+      return;
+    }
     if (amount > 0.94 && work) {
-      const workTop = work.getBoundingClientRect().top;
-      handoff = smoothstep(metrics.height * 0.22, metrics.height * 0.78, workTop);
+      handoff = smoothstep(metrics.height * 0.7, metrics.height * 0.95, workTop);
     }
     const opacity = reveal * handoff;
     plane.style.opacity = opacity.toFixed(3);

@@ -3,9 +3,9 @@
  * Phone, tablet, coarse pointers, and reduced motion stay vertical.
  */
 (function () {
-  const STACK_QUERY = "(max-width: 1024px), (pointer: coarse)";
+  const STACK_QUERY = "(max-width: 900px), (pointer: coarse)";
   const ANIMS = ["sway", "hop", "swipe", "snap"];
-  const PLANE = `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 34 L58 8 L36 58 L28 36 Z" fill="#F4F7FB" stroke="#0B1F3A" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 36 L58 8" fill="none" stroke="#2F6FED" stroke-width="2"/></svg>`;
+  const PLANE = `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 34 L58 8 L36 58 L28 36 Z" fill="#FFFDFB" stroke="#2B3236" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 36 L58 8" fill="none" stroke="#A34728" stroke-width="2"/></svg>`;
   const ICONS = [
     `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="16" width="48" height="30" rx="4" fill="none" stroke="#0B1F3A" stroke-width="2.4"/><path d="M22 46 h20 M32 46 v8" stroke="#2F6FED" stroke-width="2.4" stroke-linecap="round"/></svg>`,
     `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 24 32 14 54 24 32 34 Z" fill="none" stroke="#0B1F3A" stroke-width="2.4"/><path d="M10 24 v16 l22 10 22-10 V24" fill="none" stroke="#0B1F3A" stroke-width="2.4"/><path d="M32 34 v16" stroke="#2F6FED" stroke-width="2.4"/></svg>`,
@@ -14,11 +14,12 @@
     `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 28 32 14 58 28 32 42 Z" fill="none" stroke="#0B1F3A" stroke-width="2.4" stroke-linejoin="round"/><path d="M18 34 v8 c0 8 28 8 28 0 v-8" fill="none" stroke="#0B1F3A" stroke-width="2.4"/><path d="M58 28 v16" stroke="#2F6FED" stroke-width="2.4" stroke-linecap="round"/></svg>`,
   ];
   const PATH_STOPS = [
-    { year: "2023", label: "eXp Realty, February 2023 to present" },
-    { year: "2020", label: "Amazon, August 2020 to February 2023" },
-    { year: "2018", label: "ICICI Bank, October 2018 to August 2020" },
-    { year: "2018", label: "Manipal University, Postgraduate in Design, 2018" },
-    { year: "2017", label: "Osmania University, MCA (Master of Computer Applications), 2017" },
+    { year: "2023", rail: "2023", label: "eXp Realty, February 2023 to present" },
+    { year: "2020", rail: "2020", label: "Amazon, July 2020 to 2023" },
+    { year: "2018", rail: "ICICI", label: "ICICI Bank, October 2018 to June 2020" },
+    { year: "2018", rail: "Manipal", label: "Manipal Academy of Higher Education, PG Diploma in Design, 2018" },
+    { year: "2017", rail: "2017", label: "Osmania University, M.C.A., 2017" },
+    { year: "2014", rail: "2014", label: "Andhra University, B.Sc Computers, 2014" },
   ];
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -38,11 +39,7 @@
   }
 
   function yearFor(card) {
-    const tags = [...card.querySelectorAll(".tags li")].map((item) => item.textContent.trim());
-    if (tags.includes("ICICI Bank")) return "2018–2020";
-    if (tags.includes("eXp Realty")) return "2023–";
-    if (tags.includes("Amazon")) return "2020–2023";
-    return "";
+    return card.dataset.stamp || "";
   }
 
   function smoothPath(points) {
@@ -113,7 +110,7 @@
 
     cards.forEach((card, index) => {
       card.style.setProperty("--i", String(index));
-      const featured = card.classList.contains("feature") || card.classList.contains("feature-lead");
+      const featured = card.classList.contains("feature") || card.classList.contains("feature-lead") || card.classList.contains("rail-end");
       if (!featured) {
         card.classList.add("rail-more");
         card.dataset.anim = ANIMS[index % ANIMS.length];
@@ -155,6 +152,7 @@
     const section = document.getElementById("path");
     if (!section || section.querySelector(".tl-stage")) return;
     const heading = section.querySelector("h2");
+    const sub = section.querySelector(".section-sub");
     const list = section.querySelector(".timeline");
     if (!list) return;
     const items = [...list.children];
@@ -171,11 +169,17 @@
       if (when) copy.appendChild(when);
       if (body) copy.appendChild(body);
       item.append(year, copy);
-      const icon = document.createElement("div");
-      icon.className = "tl-icon";
-      icon.setAttribute("aria-hidden", "true");
-      icon.innerHTML = ICONS[index] || ICONS[0];
-      (body || copy).appendChild(icon);
+      const art = item.querySelector(".tl-art");
+      if (art) {
+        art.classList.add("tl-icon");
+        item.insertBefore(art, copy);
+      } else {
+        const icon = document.createElement("div");
+        icon.className = "tl-icon";
+        icon.setAttribute("aria-hidden", "true");
+        icon.innerHTML = ICONS[index] || ICONS[0];
+        (body || copy).appendChild(icon);
+      }
     });
 
     const stage = document.createElement("div");
@@ -185,6 +189,7 @@
     const headWrap = document.createElement("div");
     headWrap.className = "wrap";
     if (heading) headWrap.appendChild(heading);
+    if (sub) headWrap.appendChild(sub);
     const viewport = document.createElement("div");
     viewport.className = "tl-viewport";
     const track = document.createElement("div");
@@ -207,7 +212,7 @@
     const buttons = PATH_STOPS.map((stop, index) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = stop.year;
+      button.textContent = stop.rail || stop.year;
       button.setAttribute("aria-label", stop.label);
       button.addEventListener("click", () => scrollToStop(index));
       nav.appendChild(button);
@@ -284,15 +289,28 @@
     card.classList.toggle("is-lit", on);
     if (on) card.style.setProperty("--lift", "-8px");
     else card.style.removeProperty("--lift");
+    if (on && !was) animateMetrics(card);
+  }
+
+  function animateMetrics(card) {
     if (!motion) return;
-    const numeral = card.querySelector(".thumb-index");
-    if (!numeral) return;
-    const target = Number(numeral.dataset.value || "0");
-    if (on && !was) runCount(numeral, target);
-    if (!on && was) {
-      numeral.dataset.token = String(Number(numeral.dataset.token || "0") + 1);
-      numeral.textContent = "00";
-    }
+    card.querySelectorAll(".metric-num").forEach((el) => {
+      const target = Number(el.dataset.value);
+      if (!Number.isFinite(target)) return;
+      const prefix = el.dataset.prefix || "";
+      const suffix = el.dataset.suffix || "";
+      const token = String(Number(el.dataset.token || "0") + 1);
+      el.dataset.token = token;
+      const started = performance.now();
+      const step = (now) => {
+        if (el.dataset.token !== token) return;
+        const t = Math.min(1, (now - started) / 680);
+        const eased = 1 - (1 - t) ** 3;
+        el.textContent = `${prefix}${Math.round(eased * target)}${suffix}`;
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
   }
 
   function sizeRoute(route, width, height) {
@@ -340,7 +358,7 @@
     const height = rail.viewport.clientHeight || rail.track.clientHeight || 400;
     const points = cards.map((card, index) => ({
       x: card.offsetLeft + card.offsetWidth * 0.55,
-      y: height * (0.32 + Math.sin(index * 1.15) * 0.16),
+      y: index % 2 === 0 ? height * 0.1 : height * 0.9,
     }));
     if (cards.length) {
       const first = cards[0];
@@ -531,7 +549,7 @@
       const numeral = card.querySelector(".thumb-index");
       if (!numeral) return;
       numeral.dataset.token = String(Number(numeral.dataset.token || "0") + 1);
-      numeral.textContent = "00";
+      numeral.textContent = String(numeral.dataset.value || "").padStart(2, "0");
       card.classList.remove("is-lit");
       card.style.removeProperty("--lift");
     });
