@@ -1282,7 +1282,7 @@ html.has-fine-cursor #kudo-dialog * {
 
 .portrait.is-smile .cheek,
 .portrait.is-laugh .cheek {
-  opacity: 0.55;
+  opacity: 0.35;
 }
 
 .portrait.is-laugh .eye {
@@ -1297,11 +1297,11 @@ html.has-fine-cursor #kudo-dialog * {
 }
 
 .portrait.is-thoughtful .brow-l {
-  transform: translateY(-3px) rotate(-14deg);
+  transform: translateY(-2px) rotate(-6deg);
 }
 
 .portrait.is-thoughtful .brow-r {
-  transform: translateY(-3px) rotate(14deg);
+  transform: translateY(-2px) rotate(6deg);
 }
 
 .float-tags {
