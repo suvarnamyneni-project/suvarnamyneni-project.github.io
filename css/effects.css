@@ -1135,11 +1135,18 @@ html.has-fine-cursor #kudo-dialog * {
 
 .portrait {
   position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+  row-gap: 16px;
+  align-items: center;
   perspective: 900px;
 }
 
 .portrait-art {
   position: relative;
+  grid-column: 1 / -1;
+  grid-row: 2;
   border-radius: 28px;
   overflow: hidden;
   background: #f4efe6;
@@ -1161,20 +1168,17 @@ html.has-fine-cursor #kudo-dialog * {
 }
 
 .float-tags {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  transform: translate3d(calc(var(--mx, 0) * 14px), calc(var(--my, 0) * 10px), 0);
+  display: contents;
 }
 
 .float-tag {
-  position: absolute;
-  pointer-events: auto;
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   height: 44px;
+  max-width: 100%;
   padding: 0 14px 0 10px;
   line-height: 1;
   white-space: nowrap;
@@ -1185,13 +1189,13 @@ html.has-fine-cursor #kudo-dialog * {
   font: inherit;
   font-size: 0.88rem;
   font-weight: 700;
-  box-shadow: 0 10px 24px rgba(11, 31, 58, 0.12);
+  box-shadow: 0 8px 18px rgba(11, 31, 58, 0.14), 0 0 0 1px rgba(11, 31, 58, 0.06);
 }
 
-.float-tag:nth-child(1) { top: 12px; left: 10px; }
-.float-tag:nth-child(2) { top: 46%; right: 8px; }
-.float-tag:nth-child(3) { top: 38%; left: 8px; }
-.float-tag:nth-child(4) { bottom: 12px; right: 10px; }
+.float-tag:nth-child(1) { grid-column: 1; grid-row: 1; justify-self: start; }
+.float-tag:nth-child(2) { grid-column: 2; grid-row: 1; justify-self: end; }
+.float-tag:nth-child(3) { grid-column: 1; grid-row: 3; justify-self: start; }
+.float-tag:nth-child(4) { grid-column: 2; grid-row: 3; justify-self: end; }
 
 .float-tag:hover,
 .float-tag:focus-visible {
@@ -1992,7 +1996,33 @@ html.has-motion .nav-menu a {
     grid-template-columns: 1fr;
   }
 
-  .float-tag {
+  .portrait {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .portrait-art {
+    grid-row: auto;
+    grid-column: auto;
+  }
+
+  .float-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    order: 2;
+  }
+
+  .float-tag,
+  .float-tag:nth-child(1),
+  .float-tag:nth-child(2),
+  .float-tag:nth-child(3),
+  .float-tag:nth-child(4) {
+    grid-row: auto;
+    grid-column: auto;
+    justify-self: auto;
     font-size: 0.82rem;
   }
 
