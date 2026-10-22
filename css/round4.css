@@ -3000,7 +3000,8 @@ html.is-zooming .hover-hint {
   object-position: center center;
 }
 
-/* Path: sticky horizontal rail on desktop, stacked stages on a phone. */
+/* Path: a horizontal track on every screen. Desktop and touch pin it and
+   slide sideways with the page scroll. Reduced motion uses a snap row. */
 
 #path.panel {
   padding: 0;
@@ -3294,13 +3295,23 @@ html.has-motion .path-ep:nth-of-type(even) .path-art img {
   border-radius: 8px;
 }
 
-html.has-rail .path-stick {
+html.has-motion .path-stick {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
+  touch-action: pan-y;
 }
 
-html.has-rail .path-track {
+html.has-motion.is-stack .path-pin {
+  height: calc(100dvh + var(--path-travel, 280vw));
+}
+
+html.has-motion.is-stack .path-stick {
+  position: sticky;
+  top: 0;
+}
+
+html.has-motion .path-track {
   display: flex;
   align-items: stretch;
   height: 100%;
@@ -3309,7 +3320,7 @@ html.has-rail .path-track {
   will-change: transform;
 }
 
-html.has-rail .path-ep {
+html.has-motion .path-ep {
   flex: 0 0 68vw;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -3320,140 +3331,134 @@ html.has-rail .path-ep {
   padding: 228px 0 120px;
 }
 
-html.has-rail .path-copy {
+html.has-motion .path-copy {
   max-width: none;
 }
 
-html.is-stack .path-stick {
-  height: auto;
-  overflow: visible;
-  padding: 108px 6vw 72px;
-}
-
-html.is-stack .path-head {
-  position: relative;
-  top: auto;
-  left: auto;
-  right: auto;
-  margin: 0 0 28px;
-}
-
-html.is-stack #path .path-head h2 {
-  font-size: clamp(2.4rem, 4vw, 3.6rem);
-}
-
-html.is-stack .path-track {
-  display: grid;
-  width: 100%;
-  height: auto;
-  padding: 0;
-  gap: 64px;
-  transform: none !important;
-}
-
-html.is-stack .path-ep {
-  width: min(760px, 100%);
-  height: auto;
-  margin-inline: auto;
-  display: grid;
-  grid-template-columns: minmax(180px, 280px) minmax(0, 1fr);
-  align-items: center;
-  gap: 28px;
-  padding: 0;
-}
-
-html.is-stack .path-yr {
-  font-size: clamp(4.5rem, 10vw, 7.5rem);
-  top: auto;
-  bottom: 4px;
-}
-
-html.is-stack .path-art {
-  width: min(280px, 100%);
-}
-
-html.is-stack .path-weave,
-html.is-stack .path-plane {
-  display: none;
-}
-
-html.is-stack .path-scrub {
-  position: relative;
-  left: auto;
-  bottom: auto;
-  transform: none;
-  margin: 36px auto 0;
-}
-
 @media (max-width: 900px) {
-  html.is-stack .path-stick,
-  #path .path-stick {
-    padding: 118px 20px 84px;
-  }
-
-  html.is-stack #path .path-head h2,
-  #path .path-head h2 {
+  html.has-motion #path .path-head h2,
+  html.is-path-snap #path .path-head h2 {
     font-size: 34px;
     letter-spacing: -0.035em;
     line-height: 1;
   }
 
-  html.is-stack .path-head,
-  #path .path-head {
-    margin-bottom: 8px;
+  html.has-motion .path-head {
+    top: 96px;
+    left: 18px;
+    right: 18px;
   }
 
-  html.is-stack .path-track,
-  #path .path-track {
-    gap: 36px;
+  html.has-motion .path-track {
+    padding-left: 18px;
   }
 
-  html.is-stack .path-ep,
-  #path .path-ep {
-    width: min(320px, 100%);
+  html.has-motion .path-ep,
+  html.is-path-snap .path-ep {
+    flex: 0 0 74vw;
+    margin-right: 4vw;
     grid-template-columns: 1fr;
-    gap: 14px;
+    align-content: center;
     justify-items: center;
+    gap: 12px;
+    padding: 148px 0 96px;
   }
 
-  html.is-stack .path-art,
-  #path .path-art {
-    width: 224px;
-    height: 224px;
+  html.has-motion .path-art,
+  html.is-path-snap .path-art {
+    width: min(52vw, 250px);
+    height: auto;
   }
 
-  html.is-stack #path .path-yr,
-  #path .path-yr {
-    position: static;
-    left: auto;
-    right: auto;
-    top: auto;
+  html.has-motion .path-yr,
+  html.is-path-snap .path-yr {
+    top: 20vh;
     bottom: auto;
-    width: auto;
-    transform: none;
-    justify-self: start;
-    text-align: left;
-    font-size: 56px;
-    letter-spacing: -0.06em;
-    line-height: 0.8;
+    font-size: 96px;
     -webkit-text-stroke: 1.2px rgba(224, 119, 79, 0.45);
   }
 
-  html.is-stack .path-copy,
-  #path .path-copy {
-    max-width: 320px;
+  html.has-motion .path-copy,
+  html.is-path-snap .path-copy {
+    max-width: min(320px, 82vw);
   }
 
-  html.is-stack .path-copy h3,
-  #path .path-copy h3 {
+  html.has-motion .path-copy h3,
+  html.is-path-snap .path-copy h3 {
     font-size: 26px;
     letter-spacing: -0.03em;
     line-height: 1.05;
   }
 
-  html.is-stack .path-scrub,
-  #path .path-scrub {
+  html.has-motion .path-scrub,
+  html.is-path-snap .path-scrub {
+    width: calc(100% - 36px);
+    bottom: 16px;
+    height: 44px;
+    padding: 0 14px;
+  }
+
+  html.has-motion .path-scrub button span,
+  html.is-path-snap .path-scrub button span {
     display: none;
+  }
+}
+
+html.is-path-snap .path-pin {
+  height: auto;
+}
+
+html.is-path-snap .path-stick {
+  height: auto;
+  overflow: visible;
+  padding: 108px 0 28px;
+}
+
+html.is-path-snap .path-head {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  margin: 0 0 12px;
+  padding: 0 20px;
+}
+
+html.is-path-snap .path-track {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  padding-left: 18px;
+  transform: none !important;
+}
+
+html.is-path-snap .path-ep {
+  display: grid;
+  align-items: center;
+  gap: 3vw;
+  height: auto;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+html.is-path-snap .path-scrub {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  margin: 18px auto 0;
+}
+
+@media (min-width: 901px) {
+  html.is-path-snap .path-ep {
+    flex: 0 0 68vw;
+    margin-right: 0;
+    grid-template-columns: 1fr 1fr;
+    padding: 24px 0;
   }
 }
 
