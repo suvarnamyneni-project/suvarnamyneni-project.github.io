@@ -1332,7 +1332,9 @@ html.is-stack .timeline .when {
 /* About. The section is opaque so the fixed hero, and the work clone inside it, cannot show through. */
 
 #about {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: radial-gradient(rgba(43, 50, 54, 0.16) 1.1px, transparent 1.2px);
+  background-size: 22px 22px;
 }
 
 .about-grid {
@@ -1597,22 +1599,24 @@ html.has-motion #about.tags-in .float-tag.is-held {
 .skill-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 22px 0 0;
+  gap: 14px;
+  width: min(100%, 860px);
+  margin: 28px 0 0;
   padding: 0;
   list-style: none;
 }
 
-.chip {
-  font: 500 0.84rem/1 var(--sans);
-  padding: 8px 13px;
-  cursor: pointer;
-}
-
-.chip:hover,
-.chip[aria-pressed="true"] {
-  background: #f3d2c4;
-  color: var(--ink);
+.skill-chips li {
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: rgba(255, 253, 251, 0.92);
+  border: 1px solid rgba(90, 60, 40, 0.1);
+  color: #2b3236;
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 /* Contact sky and the paper-plane throw. */
