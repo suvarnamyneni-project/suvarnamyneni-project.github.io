@@ -1,7 +1,8 @@
 /**
  * Round 2: pinned work rail and path timeline.
  * The work rail stays vertical on phone, tablet, and coarse pointers.
- * The path stays horizontal. Desktop pins and snaps each stage to rest.
+ * The path stays horizontal. Desktop pins with the vertical scroll and eases
+ * to a stage only after the wheel stops, always in the direction of travel.
  * Touch, narrow screens, and reduced motion use a native scroll-snap row.
  */
 (function () {
@@ -139,19 +140,43 @@
     if (pathIsSnap()) track.style.transform = "none";
     const width = episodes[0].offsetWidth;
     const height = stick.clientHeight || window.innerHeight;
+    const snap = pathIsSnap();
+    const boardHeight = snap ? Math.max(1, track.clientHeight) : height;
     const boardWidth = Math.max(track.scrollWidth, pathBoard.maxShift + width);
-    route.svg.setAttribute("viewBox", `0 0 ${boardWidth} ${height}`);
+    const trackBox = track.getBoundingClientRect();
+    const laneFor = (episode) => {
+      const art = episode.querySelector(".path-art");
+      const title = episode.querySelector("h3");
+      const artBox = art ? art.getBoundingClientRect() : null;
+      if (!artBox || artBox.height < 20) {
+        return { high: boardHeight * 0.46, low: boardHeight * 0.58 };
+      }
+      const artTop = artBox.top - trackBox.top;
+      const titleTop = title ? title.getBoundingClientRect().top - trackBox.top : artBox.bottom - trackBox.top + 36;
+      // Keep the 36px plane, including a rotated corner, above the role title.
+      const maxCenter = titleTop - 30;
+      const low = Math.min(artTop + artBox.height * 0.78, maxCenter);
+      const high = Math.min(artTop + artBox.height * 0.52, maxCenter - 12);
+      const floor = artTop + 18;
+      return { high: Math.max(floor, high), low: Math.max(floor, low) };
+    };
+    route.svg.setAttribute("viewBox", `0 0 ${boardWidth} ${boardHeight}`);
     route.svg.style.width = `${boardWidth}px`;
-    route.svg.style.height = `${height}px`;
-    route.rect.setAttribute("height", String(height));
+    route.svg.style.height = `${boardHeight}px`;
+    route.rect.setAttribute("height", String(boardHeight));
     const points = [];
     episodes.forEach((episode, index) => {
       const x = episode.offsetLeft;
       const episodeWidth = episode.offsetWidth;
-      if (index === 0) points.push({ x: Math.max(0, x - 36), y: height * 0.68 });
-      points.push({ x: x + episodeWidth * 0.15, y: height * 0.79 });
-      points.push({ x: x + episodeWidth * 0.5, y: height * 0.4 });
-      points.push({ x: x + episodeWidth * 0.88, y: height * 0.74 });
+      const lane = snap ? laneFor(episode) : null;
+      const yStart = lane ? lane.high : boardHeight * 0.68;
+      const yLow = lane ? lane.low : boardHeight * 0.79;
+      const yHigh = lane ? lane.high : boardHeight * 0.4;
+      const yEnd = lane ? lane.low : boardHeight * 0.74;
+      if (index === 0) points.push({ x: Math.max(0, x - 36), y: yStart });
+      points.push({ x: x + episodeWidth * 0.15, y: yLow });
+      points.push({ x: x + episodeWidth * 0.5, y: yHigh });
+      points.push({ x: x + episodeWidth * 0.88, y: yEnd });
     });
     paintWeave(route, points);
     const total = route.length || 1;
@@ -254,6 +279,7 @@
       return;
     }
     if (pathTrigger) {
+      pathAim = next;
       const y = pathTrigger.start + (pathTrigger.end - pathTrigger.start) * progress;
       scrollTo(y, { duration: 0.95, easing: smootherstep });
       return;
@@ -303,6 +329,14 @@
       travel: 1,
       stationFrac: [],
     };
+    episodes.forEach((episode) => {
+      const img = episode.querySelector("img");
+      if (!img || img.complete) return;
+      img.addEventListener("load", () => {
+        layoutPath();
+        if (pathIsSnap()) syncSnapPath();
+      }, { once: true });
+    });
     buttons.forEach((button, index) => {
       button.addEventListener("click", () => scrollToPathIndex(index));
     });
@@ -919,34 +953,107 @@
   }
 
   let pathSettleTimer = 0;
-  let pathSettling = false;
+  let pathGestureActive = false;
+  let pathGestureDelta = 0;
+  let pathGestureOrigin = 0;
+  let pathAim = null;
 
-  function settlePathSnap() {
-    if (pathSettling || !pathTrigger || !pathBoard || pathIsSnap()) return;
+  function pathSteps() {
+    return Math.max(1, (pathBoard && pathBoard.episodes.length - 1) || 1);
+  }
+
+  function pathIndexAt(y) {
+    if (!pathTrigger) return 0;
     const start = pathTrigger.start;
     const end = pathTrigger.end;
     const span = end - start;
-    if (span <= 1) return;
-    const y = currentScroll();
-    if (y < start - 4 || y > end + 4) return;
-    const steps = Math.max(1, pathBoard.episodes.length - 1);
-    const nearest = Math.round(clamp01((y - start) / span) * steps) / steps;
-    const target = start + span * nearest;
-    if (Math.abs(target - y) < 2) return;
-    pathSettling = true;
-    scrollTo(target, {
-      duration: 0.5,
-      easing: smootherstep,
-      force: true,
-      onComplete: () => { pathSettling = false; },
-    });
-    window.setTimeout(() => { pathSettling = false; }, 700);
+    const steps = pathSteps();
+    if (!(span > 1)) return 0;
+    if (y < start - 2) return -1;
+    if (y > end + 2) return steps + 1;
+    return Math.round(clamp01((y - start) / span) * steps);
   }
 
-  function queuePathSettle() {
-    if (pathSettling || !pathTrigger || pathIsSnap()) return;
+  function pathWheelDelta(event) {
+    if (event.shiftKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+      return Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    }
+    return event.deltaY;
+  }
+
+  function originForGesture(yNow) {
+    const seen = pathIndexAt(yNow);
+    const lenis = window.deskLenis;
+    if (pathAim == null || !lenis || !lenis.isScrolling) return seen;
+    const steps = pathSteps();
+    if (pathAim === seen) return pathAim;
+    if (pathAim >= 0 && pathAim <= steps && Math.abs(pathAim - seen) <= 1) return pathAim;
+    if (pathAim === steps + 1 && seen >= steps) return pathAim;
+    if (pathAim < 0 && seen <= 0) return pathAim;
+    return seen;
+  }
+
+  // The wheel updates Lenis immediately. This runs only after the ticks pause,
+  // and it eases toward the stage in the direction of travel. A short gesture
+  // that never crosses halfway still advances one stage. A position outside
+  // the pin is left alone so the page can enter About or scroll back up.
+  function settlePathSnap() {
+    pathGestureActive = false;
+    if (!pathTrigger || !pathBoard || pathIsSnap()) return;
+    const start = pathTrigger.start;
+    const end = pathTrigger.end;
+    const span = end - start;
+    if (!(span > 1)) return;
+    const lenis = window.deskLenis;
+    const yTarget = lenis ? lenis.targetScroll : currentScroll();
+    const dir = pathGestureDelta > 0 ? 1 : pathGestureDelta < 0 ? -1 : 0;
+    const origin = pathGestureOrigin;
+    const deliberate = Math.abs(pathGestureDelta) >= 40;
+    pathGestureDelta = 0;
+    const steps = pathSteps();
+    const beganInside = origin >= 0 && origin <= steps;
+
+    if (yTarget < start - 2 || yTarget > end + 2) {
+      pathAim = yTarget > end ? steps + 1 : -1;
+      return;
+    }
+
+    let nearest = Math.round(clamp01((yTarget - start) / span) * steps);
+    if (deliberate && beganInside) {
+      if (dir > 0 && nearest <= origin) nearest = origin + 1;
+      else if (dir < 0 && nearest >= origin) nearest = origin - 1;
+    }
+    if (nearest > steps || nearest < 0) {
+      pathAim = nearest > steps ? steps + 1 : -1;
+      return;
+    }
+
+    pathAim = nearest;
+    const target = start + (span * nearest) / steps;
+    if (Math.abs(target - yTarget) < 2 && Math.abs(target - currentScroll()) < 2) return;
+    scrollTo(target, {
+      duration: 0.42,
+      easing: smootherstep,
+      programmatic: false,
+      force: true,
+    });
+  }
+
+  function notePathWheel(event) {
+    if (pathIsSnap() || !pathTrigger || !pathBoard) return;
+    if (event.ctrlKey || event.altKey || event.metaKey) return;
+    const delta = pathWheelDelta(event);
+    if (!delta || Math.abs(delta) < 0.5) return;
+    const lenis = window.deskLenis;
+    if (!pathGestureActive) {
+      const yNow = lenis ? lenis.animatedScroll : currentScroll();
+      pathGestureOrigin = originForGesture(yNow);
+      pathGestureDelta = 0;
+      pathGestureActive = true;
+    }
+    pathGestureDelta += delta;
     window.clearTimeout(pathSettleTimer);
-    pathSettleTimer = window.setTimeout(settlePathSnap, 140);
+    pathSettleTimer = window.setTimeout(settlePathSnap, 320);
   }
 
   let pathSettleBound = false;
@@ -1015,7 +1122,7 @@
         pin: pathBoard.stick,
         start: "top top",
         end: () => `+=${Math.max(1, steps * window.innerHeight)}`,
-        scrub: 0.2,
+        scrub: 0,
         invalidateOnRefresh: true,
         anticipatePin: 1,
         onRefresh: () => layoutPath(),
@@ -1024,7 +1131,7 @@
       applyPathBoard(0);
       if (!pathSettleBound) {
         pathSettleBound = true;
-        window.addEventListener("wheel", queuePathSettle, { passive: true });
+        window.addEventListener("wheel", notePathWheel, { passive: true });
       }
     } else if (pathBoard) {
       layoutPath();
