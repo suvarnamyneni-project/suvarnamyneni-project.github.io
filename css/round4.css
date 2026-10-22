@@ -2456,9 +2456,15 @@ html.is-night .brand-chip {
   }
 
   .brand-role,
-  .brand-last,
-  .nav-menu,
-  .mode-switch-dock {
+  .brand-last {
+    display: none;
+  }
+
+  .site-header .nav-menu {
+    display: none;
+  }
+
+  .mode-switch.mode-switch-dock {
     display: none;
   }
 
@@ -2493,12 +2499,14 @@ html.is-night .brand-chip {
     line-height: normal;
   }
 
-  .site-nav.is-open .nav-menu {
+  .site-header .site-nav.is-open .nav-menu {
     display: grid;
     position: absolute;
+    z-index: 5;
     right: 0;
     top: calc(100% + 8px);
-    min-width: 190px;
+    width: 180px;
+    min-width: 180px;
     padding: 6px;
     border-radius: 22px;
     background: rgb(255, 250, 245);
@@ -2508,18 +2516,19 @@ html.is-night .brand-chip {
     box-shadow: rgba(80, 40, 30, 0.55) 0px 18px 40px -24px;
   }
 
-  .site-nav.is-open .nav-menu > a:not([hidden]) {
+  .site-header .site-nav.is-open .nav-menu > a:not([hidden]) {
     min-height: 44px;
     display: flex;
     align-items: center;
+    padding: 7px 12px;
   }
 
-  .site-nav.is-open .mode-switch-menu {
+  .site-header .site-nav.is-open .mode-switch-menu {
     display: flex;
     margin-top: 4px;
   }
 
-  .site-nav.is-open .mode-switch-menu a {
+  .site-header .site-nav.is-open .mode-switch-menu a {
     flex: 1;
     justify-content: center;
     min-height: 36px;
