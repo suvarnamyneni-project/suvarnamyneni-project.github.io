@@ -58,7 +58,7 @@
     html .hero-sub, html .hero-sub strong { font-family: Switzer, "Segoe UI", sans-serif; font-synthesis: none; }
     html .hero-sub { position: static; left: auto; right: auto; bottom: auto; margin: .7rem auto 0; max-width: 44rem; padding: 0; background: none; font-size: clamp(1.02rem, 1.15vw, 1.125rem); font-weight: 400; line-height: 1.45; color: #41484c; text-shadow: none; }
     html .hero-sub strong { color: #2b3236; font-weight: 600; }
-    .scroll-pill { position: absolute; z-index: 4; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; gap: 10px; margin: 0; padding: 8px 14px 8px 12px; border-radius: 999px; background: rgba(255,251,247,.86); color: #2b3236; font-size: .86rem; white-space: nowrap; max-width: calc(100% - 24px); }
+    .scroll-pill { position: absolute; z-index: 4; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; justify-content: center; gap: 16px; margin: 0; padding: 12px 28px; border-radius: 999px; background: rgba(255,251,247,.86); color: #2b3236; font-size: .95rem; white-space: nowrap; max-width: calc(100% - 48px); min-width: min(520px, calc(100% - 48px)); }
     .scroll-pill a { color: #a34728; font-weight: 600; }
     .scroll-mouse, .scroll-mouse svg { width: 14px; height: 20px; display: block; flex: none; }
     .scroll-rule { width: 1px; align-self: stretch; background: rgba(43,50,54,.22); }
@@ -82,6 +82,8 @@
     html .hotspot-kit { left: 59.8%; top: 24.3%; width: 11.3%; height: 20%; }
     html .hotspot-phone { left: 67.9%; top: 39.6%; width: 6%; height: 15.3%; z-index: 5; }
     html .hotspot-plant { left: 71.5%; top: 32%; width: 6.1%; height: 14%; z-index: 4; }
+    html .hotspot-note { left: 32.7%; top: 45.2%; width: 4%; height: 4.2%; z-index: 6; }
+    html.is-stack .hotspot-note { display: none; }
     .hero-spacer { display: none; }
     .unfold, .veil, .hotspots, .seed-field { position: absolute; inset: 0; pointer-events: none; }
     html.is-stack #unfold { display: none; }
@@ -100,6 +102,9 @@
         border: 1px solid rgba(255, 255, 255, 0.75);
       }
       html.is-stack .hero-sub strong { color: #2b3236; }
+    }
+    @media (max-width: 900px) {
+      .scroll-pill { gap: 8px; padding: 8px 12px; font-size: .8rem; min-width: 0; max-width: calc(100vw - 28px - env(safe-area-inset-left) - env(safe-area-inset-right)); white-space: normal; text-align: center; }
     }
     @media (max-width: 759px) {
       html .site-header { left: 12px; right: 12px; top: 12px; }
@@ -232,6 +237,7 @@
               <a class="hotspot hotspot-kit" href="#deal-desk" data-card="deal-desk" data-label="Components" data-story="Design systems for eXp's agent tools: +40% daily active users."><span class="sr-only">Components. Design systems for eXp's agent tools: +40% daily active users.</span></a>
               <a class="hotspot hotspot-phone" href="https://myneni.wixsite.com/imobile" target="_blank" rel="noopener noreferrer" data-label="Phone" data-story="Redesigning the iMobile banking app at ICICI Bank."><span class="sr-only">Phone. Redesigning the iMobile banking app at ICICI Bank. Opens in a new tab.</span></a>
               <a class="hotspot hotspot-plant" href="#about" data-label="Plant" data-story="Growing designers: I've mentored 5 junior designers."><span class="sr-only">Plant. Growing designers: I've mentored 5 junior designers.</span></a>
+              <button type="button" class="hotspot hotspot-note" data-label="Sticky note" data-story="Ideas start small: a sticky note, a sketch, then a prototype."><span class="sr-only">Sticky note. Ideas start small: a sticky note, a sketch, then a prototype.</span></button>
             </div>
           </div>
           </div>
@@ -392,9 +398,7 @@
               <span class="go" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </a>
           </article>
-        </div>
-        <button type="button" class="view-more" aria-expanded="false" aria-controls="also-more">View more</button>
-        <div id="also-more" class="desk-grid" hidden>
+          <div id="also-more" hidden>
           <article class="project desk-card desk-extra reveal" data-anim="hop" data-cursor-icon="card" style="--i:1">
             <div class="art-slot ph ph-card" data-art="agent-transactions" aria-hidden="true"></div>
             <p class="kicker">eXp Realty, 2023–present</p>
@@ -465,7 +469,9 @@
               <span class="go" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </a>
           </article>
+          </div>
         </div>
+        <button type="button" class="view-more" aria-expanded="false" aria-controls="also-more">View more</button>
       </div>
     </section>
 
@@ -621,15 +627,15 @@
           <div class="portrait">
             <div class="portrait-art">
               <picture class="about-illustration">
-                <source type="image/webp" srcset="assets/art/portrait-800.webp 800w, assets/art/portrait.webp 1200w" sizes="(max-width: 900px) 80vw, 420px">
-                <img src="assets/art/portrait-800.jpg" alt="Painted portrait of Suvarna Myneni, with long dark hair and a purple top." width="800" height="1067" loading="lazy" decoding="async">
+                <source type="image/webp" srcset="assets/about-illustration-800.webp 800w, assets/about-illustration.webp 1024w" sizes="(max-width: 900px) 80vw, 420px">
+                <img src="assets/about-illustration-800.jpg" alt="Suvarna at a laptop on a pink desk, with stickers, a child, books and a note that says Progress not Perfection." width="800" height="800" loading="lazy" decoding="async">
               </picture>
             </div>
             <div class="float-tags" role="group" aria-label="Fields">
-              <span class="float-tag">Fintech</span>
-              <span class="float-tag">E-commerce</span>
-              <span class="float-tag">Real Estate</span>
-              <span class="float-tag">AI</span>
+              <span class="float-tag"><span class="float-face">Fintech</span></span>
+              <span class="float-tag"><span class="float-face">E-commerce</span></span>
+              <span class="float-tag"><span class="float-face">Real Estate</span></span>
+              <span class="float-tag"><span class="float-face">AI</span></span>
             </div>
           </div>
           <div class="about-copy">
