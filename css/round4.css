@@ -1599,33 +1599,23 @@ html.has-motion #about.tags-in .float-tag.is-held {
 .skill-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 14px;
+  width: min(100%, 860px);
   margin: 28px 0 0;
   padding: 0;
   list-style: none;
 }
 
-@media (min-width: 901px) {
-  .skill-chips {
-    display: grid;
-    grid-template-columns: repeat(4, max-content);
-    justify-content: start;
-    justify-items: start;
-    width: max-content;
-    max-width: 100%;
-  }
-}
-
 .skill-chips li {
-  padding: 12px 20px;
+  padding: 14px 22px;
   border-radius: 999px;
   background: rgba(255, 253, 251, 0.92);
   border: 1px solid rgba(90, 60, 40, 0.1);
   color: #2b3236;
   font-family: var(--sans);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.15;
   white-space: nowrap;
 }
 
