@@ -86,6 +86,109 @@
   function mountRound2() {
     mountRail();
     mountPath();
+    mountPathBoard();
+  }
+
+  function mountPathBoard() {
+    const section = document.getElementById("path");
+    const scroller = section && section.querySelector(".path-scroller");
+    if (!scroller || scroller.dataset.ready === "true") return;
+    const stops = [...scroller.querySelectorAll(".path-stop")];
+    const buttons = [...section.querySelectorAll(".path-nav button")];
+    const plane = section.querySelector(".path-plane");
+    const stage = section.querySelector(".path-stage");
+    const visibleRoute = () => {
+      const paths = [...section.querySelectorAll(".path-route path")];
+      return paths.find((path) => getComputedStyle(path).display !== "none") || paths[0];
+    };
+    if (!stops.length) return;
+    scroller.dataset.ready = "true";
+
+    const setActive = (index) => {
+      buttons.forEach((button, buttonIndex) => {
+        if (buttonIndex === index) button.setAttribute("aria-current", "true");
+        else button.removeAttribute("aria-current");
+      });
+    };
+
+    const activeIndex = () => {
+      const viewLeft = scroller.scrollLeft;
+      const viewRight = viewLeft + scroller.clientWidth;
+      let best = 0;
+      let bestVisible = -1;
+      stops.forEach((stop, index) => {
+        const left = stop.offsetLeft;
+        const right = left + stop.offsetWidth;
+        const visible = Math.min(right, viewRight) - Math.max(left, viewLeft);
+        if (visible > bestVisible) {
+          bestVisible = visible;
+          best = index;
+        }
+      });
+      return best;
+    };
+
+    const placePlane = () => {
+      const route = visibleRoute();
+      if (!plane || !route || !stage) return;
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      const t = max <= 1 ? 0 : scroller.scrollLeft / max;
+      const length = route.getTotalLength() || 1;
+      const point = route.getPointAtLength(length * t);
+      const ahead = route.getPointAtLength(Math.min(length, length * t + 12));
+      const box = route.ownerSVGElement.viewBox.baseVal;
+      const width = stage.clientWidth || 1;
+      const height = stage.clientHeight || 1;
+      const x = (point.x / box.width) * width;
+      const y = (point.y / box.height) * height;
+      const ax = (ahead.x / box.width) * width;
+      const ay = (ahead.y / box.height) * height;
+      const angle = Math.atan2(ay - y, ax - x) * (180 / Math.PI);
+      plane.style.transform = `translate(${(x - 23).toFixed(1)}px, ${(y - 23).toFixed(1)}px) rotate(${angle.toFixed(1)}deg)`;
+    };
+
+    const scrollToIndex = (index) => {
+      const stop = stops[index];
+      if (!stop) return;
+      scroller.scrollTo({
+        left: stop.offsetLeft,
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
+    };
+
+    scroller.addEventListener("scroll", () => {
+      setActive(activeIndex());
+      placePlane();
+    }, { passive: true });
+
+    scroller.addEventListener("wheel", (event) => {
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      const max = scroller.scrollWidth - scroller.clientWidth;
+      if (max <= 1) return;
+      const next = scroller.scrollLeft + event.deltaY;
+      if (next < 0 || next > max) return;
+      event.preventDefault();
+      event.stopPropagation();
+      scroller.scrollLeft = next;
+    }, { passive: false });
+
+    scroller.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+      event.preventDefault();
+      const current = activeIndex();
+      const next = event.key === "ArrowRight"
+        ? Math.min(stops.length - 1, current + 1)
+        : Math.max(0, current - 1);
+      scrollToIndex(next);
+    });
+
+    buttons.forEach((button, index) => {
+      button.addEventListener("click", () => scrollToIndex(index));
+    });
+
+    setActive(0);
+    placePlane();
+    window.addEventListener("resize", () => placePlane());
   }
 
   function mountRail() {
@@ -655,7 +758,7 @@
     armStackObserver();
     bindDrag();
 
-    if (!stack && window.ScrollTrigger && rail && pathUI) {
+    if (!stack && window.ScrollTrigger && rail) {
       buildRailPath();
       railTrigger = window.ScrollTrigger.create({
         trigger: rail.stage,
@@ -670,21 +773,23 @@
         },
         onUpdate: (self) => applyRail(self.progress),
       });
-      buildPathCurve();
-      const travel = Math.round(window.innerHeight * pathUI.items.length * 0.9);
-      pathTrigger = window.ScrollTrigger.create({
-        trigger: pathUI.stage,
-        pin: pathUI.sticky,
-        start: "top top",
-        end: () => `+=${travel}`,
-        scrub: true,
-        invalidateOnRefresh: true,
-        anticipatePin: 1,
-        onRefresh: () => buildPathCurve(),
-        onUpdate: (self) => applyPath(self.progress),
-      });
       applyRail(0);
-      applyPath(0);
+      if (pathUI) {
+        buildPathCurve();
+        const travel = Math.round(window.innerHeight * pathUI.items.length * 0.9);
+        pathTrigger = window.ScrollTrigger.create({
+          trigger: pathUI.stage,
+          pin: pathUI.sticky,
+          start: "top top",
+          end: () => `+=${travel}`,
+          scrub: true,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+          onRefresh: () => buildPathCurve(),
+          onUpdate: (self) => applyPath(self.progress),
+        });
+        applyPath(0);
+      }
     } else {
       if (rail) rail.track.style.transform = "";
       applyStackPath();

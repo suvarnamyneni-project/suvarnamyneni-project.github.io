@@ -10,7 +10,9 @@ h3,
 .fact-num,
 .metric-num,
 .brand-name,
-.tl-year {
+.tl-year,
+.path-year,
+.path-copy h3 {
   font-family: var(--display);
 }
 
@@ -872,10 +874,25 @@ html.has-rail .timeline h3 {
   display: inline-block;
   padding: 8px 12px;
   border-radius: 999px;
-  background: var(--accent);
-  color: #fff !important;
+  background: rgba(255, 251, 247, 0.92);
+  color: var(--ink);
+  border: 1px solid rgba(43, 50, 54, 0.14);
   font-weight: 600;
   font-size: 0.82rem;
+}
+
+html.has-rail .timeline .when,
+html.is-stack .timeline .when {
+  background: rgba(255, 251, 247, 0.92);
+  color: var(--ink);
+  -webkit-text-stroke: 0;
+}
+
+.role-date {
+  margin: 4px 0 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink);
 }
 
 /* About. */
@@ -1406,8 +1423,312 @@ html.is-stack .timeline li {
 
   html.has-motion .desk-card .art-slot,
   .project:hover .thumb,
-  .project:hover .go {
+  .project:hover .go,
+  .path-art img {
     animation: none;
     transform: none;
+  }
+}
+
+/* Path: horizontal snap stops. The work rail stays pinned; this track does not. */
+
+html.has-rail #path.panel,
+html.is-stack #path.panel {
+  padding: 96px 0 72px;
+}
+
+.path-intro {
+  margin-bottom: 8px;
+}
+
+.path-board {
+  margin-top: 18px;
+}
+
+.path-stage {
+  position: relative;
+}
+
+.path-route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.path-route path {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1.4 12;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.path-route-mobile {
+  display: none;
+}
+
+.path-plane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  width: 46px;
+  height: 46px;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 8px rgba(43, 50, 54, 0.18));
+}
+
+.path-plane svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.path-scroller {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+}
+
+.path-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.path-stop {
+  flex: 0 0 calc(100% - clamp(120px, 14vw, 210px));
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: grid;
+  grid-template-columns: minmax(180px, 40%) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(16px, 3vw, 48px);
+  box-sizing: border-box;
+  min-height: clamp(520px, 64vh, 680px);
+  padding: 12px clamp(20px, 4vw, 64px) 28px clamp(12px, 3vw, 48px);
+}
+
+.path-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 280px;
+}
+
+.path-year {
+  position: absolute;
+  z-index: 0;
+  left: 46%;
+  top: 48%;
+  transform: translate(-50%, -52%);
+  margin: 0;
+  font-size: clamp(9.5rem, 18vw, 16rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.78;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(163, 71, 40, 0.55);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.path-art picture {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+}
+
+.path-art img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 26px 16px rgba(70, 42, 24, 0.28));
+}
+
+@keyframes path-float {
+  0%,
+  100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+html.has-motion .path-art img {
+  animation: path-float 6.4s ease-in-out infinite;
+}
+
+html.has-motion .path-stop:nth-child(2n) .path-art img {
+  animation-delay: -2.4s;
+}
+
+.path-copy h3 {
+  max-width: 9.2em;
+  font-size: clamp(2.5rem, 4.5vw, 4.35rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+}
+
+.path-pill {
+  display: inline-block;
+  margin: 0 0 16px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fffdfb;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.path-org {
+  margin: 14px 0 0;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.path-role {
+  margin: 6px 0 0;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.path-desc {
+  margin: 12px 0 0;
+  max-width: 34rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+.path-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.path-tags li {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #fffdfb;
+  color: var(--ink);
+  border: 1px solid rgba(43, 50, 54, 0.1);
+  box-shadow: 0 10px 18px -16px rgba(80, 40, 20, 0.7);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.path-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 16px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 18px auto 0;
+  padding: 10px 18px 12px;
+  border-radius: 999px;
+  background: rgba(255, 251, 247, 0.78);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 16px 36px -24px rgba(90, 50, 30, 0.45);
+  overflow-x: auto;
+}
+
+.path-nav button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 600 0.78rem/1 var(--sans);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.path-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  background: transparent;
+  display: block;
+}
+
+.path-nav button[aria-current="true"] .path-dot {
+  background: var(--accent);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .path-nav {
+    background: #fbf6ef;
+  }
+}
+
+@media (max-width: 900px) {
+  html.has-rail #path.panel,
+  html.is-stack #path.panel {
+    padding: 72px 0 56px;
+  }
+
+  .path-stop {
+    flex-basis: calc(100% - 36px);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-height: 0;
+    gap: 8px;
+    padding: 8px 18px 20px;
+  }
+
+  .path-art {
+    width: min(100%, 300px);
+    min-height: 0;
+    margin: 0 auto;
+  }
+
+  .path-route-desk {
+    display: none;
+  }
+
+  .path-route-mobile {
+    display: block;
+  }
+
+  .path-year {
+    font-size: clamp(7.5rem, 38vw, 10rem);
+  }
+
+  .path-nav {
+    gap: 2px 8px;
+    padding: 8px 10px 10px;
+  }
+
+  .path-nav button {
+    min-width: 36px;
+  }
+
+  .path-copy h3 {
+    font-size: clamp(2rem, 8.4vw, 2.7rem);
   }
 }
