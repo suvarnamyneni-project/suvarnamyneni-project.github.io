@@ -77,6 +77,7 @@
   let cards = [];
   let rail = null;
   let pathUI = null;
+  let pathBoard = null;
   let railTrigger = null;
   let pathTrigger = null;
   let cardObserver = null;
@@ -89,106 +90,175 @@
     mountPathBoard();
   }
 
+  function setPathActive(index, progress) {
+    if (!pathBoard) return;
+    pathBoard.buttons.forEach((button, buttonIndex) => {
+      const on = buttonIndex === index;
+      button.classList.toggle("is-passed", buttonIndex <= index);
+      button.classList.toggle("is-on", on);
+      if (on) button.setAttribute("aria-current", "true");
+      else button.removeAttribute("aria-current");
+    });
+    if (pathBoard.fill) pathBoard.fill.style.width = `${clamp01(progress) * 100}%`;
+  }
+
+  function paintWeave(route, points) {
+    const d = smoothPath(points);
+    route.ghost.setAttribute("d", d);
+    route.hot.setAttribute("d", d);
+    route.length = route.hot.getTotalLength ? route.hot.getTotalLength() : 0;
+  }
+
+  function layoutPath() {
+    if (!pathBoard) return;
+    const { track, episodes, stick, route } = pathBoard;
+    if (isStack() || !episodes[0] || episodes[0].offsetWidth < 40) {
+      track.style.transform = "none";
+      pathBoard.maxShift = 0;
+      pathBoard.travel = 1;
+      return;
+    }
+    const width = episodes[0].offsetWidth;
+    pathBoard.maxShift = Math.max(1, (episodes.length - 1) * width);
+    pathBoard.travel = Math.round(pathBoard.maxShift * 0.8);
+    const height = stick.clientHeight || window.innerHeight;
+    const boardWidth = Math.max(track.scrollWidth, pathBoard.maxShift + width);
+    route.svg.setAttribute("viewBox", `0 0 ${boardWidth} ${height}`);
+    route.svg.style.width = `${boardWidth}px`;
+    route.svg.style.height = `${height}px`;
+    route.rect.setAttribute("height", String(height));
+    const points = [];
+    episodes.forEach((episode, index) => {
+      const x = episode.offsetLeft;
+      const episodeWidth = episode.offsetWidth;
+      if (index === 0) points.push({ x: Math.max(0, x - 36), y: height * 0.68 });
+      points.push({ x: x + episodeWidth * 0.15, y: height * 0.79 });
+      points.push({ x: x + episodeWidth * 0.5, y: height * 0.4 });
+      points.push({ x: x + episodeWidth * 0.88, y: height * 0.74 });
+    });
+    paintWeave(route, points);
+    const total = route.length || 1;
+    pathBoard.stationFrac = episodes.map((episode) => {
+      const target = episode.offsetLeft + episode.offsetWidth * 0.5;
+      let best = 0;
+      let bestDist = Infinity;
+      for (let step = 0; step <= total; step += 8) {
+        const sample = route.hot.getPointAtLength(step);
+        const dist = Math.abs(sample.x - target);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = step / total;
+        }
+      }
+      return best;
+    });
+  }
+
+  function applyPathBoard(progress) {
+    if (!pathBoard || isStack()) return;
+    const p = clamp01(progress);
+    const count = pathBoard.episodes.length;
+    pathBoard.track.style.transform = `translate3d(${(-p * pathBoard.maxShift).toFixed(2)}px, 0, 0)`;
+    const index = Math.round(p * Math.max(1, count - 1));
+    setPathActive(Math.max(0, Math.min(count - 1, index)), p);
+    const fractions = pathBoard.stationFrac || [];
+    const route = pathBoard.route;
+    const length = route.length || 0;
+    if (!length || fractions.length < 2) return;
+    const t = fractions[0] + (fractions[fractions.length - 1] - fractions[0]) * p;
+    const dist = length * t;
+    const point = route.hot.getPointAtLength(dist);
+    const ahead = route.hot.getPointAtLength(Math.min(length, dist + 18));
+    route.rect.setAttribute("width", String(Math.max(0, point.x + 10)));
+    const angle = Math.atan2(ahead.y - point.y, ahead.x - point.x) * (180 / Math.PI);
+    if (pathBoard.plane) {
+      pathBoard.plane.style.transform = `translate(${(point.x - 18).toFixed(1)}px, ${(point.y - 18).toFixed(1)}px) rotate(${angle.toFixed(1)}deg)`;
+    }
+  }
+
+  function syncStackPath() {
+    if (!pathBoard || !isStack()) return;
+    let active = 0;
+    pathBoard.episodes.forEach((episode, index) => {
+      if (episode.getBoundingClientRect().top < window.innerHeight * 0.42) active = index;
+    });
+    const count = pathBoard.episodes.length;
+    setPathActive(active, count === 1 ? 0 : active / (count - 1));
+  }
+
+  function scrollToPathIndex(index) {
+    if (!pathBoard) return;
+    const count = pathBoard.episodes.length;
+    const next = Math.max(0, Math.min(count - 1, index));
+    if (!isStack() && pathTrigger) {
+      const progress = count === 1 ? 0 : next / (count - 1);
+      const y = pathTrigger.start + (pathTrigger.end - pathTrigger.start) * progress;
+      scrollTo(y, { duration: reduceMotion ? 0 : 0.95, easing: smootherstep });
+      return;
+    }
+    const episode = pathBoard.episodes[next];
+    if (episode) scrollTo(episode, { offset: -120, duration: reduceMotion ? 0 : 0.75, easing: smootherstep });
+  }
+
   function mountPathBoard() {
     const section = document.getElementById("path");
-    const scroller = section && section.querySelector(".path-scroller");
-    if (!scroller || scroller.dataset.ready === "true") return;
-    const stops = [...scroller.querySelectorAll(".path-stop")];
-    const buttons = [...section.querySelectorAll(".path-nav button")];
-    const plane = section.querySelector(".path-plane");
-    const stage = section.querySelector(".path-stage");
-    const visibleRoute = () => {
-      const paths = [...section.querySelectorAll(".path-route path")];
-      return paths.find((path) => getComputedStyle(path).display !== "none") || paths[0];
+    const track = section && section.querySelector(".path-track");
+    if (!track || track.dataset.ready === "true") return;
+    const episodes = [...track.querySelectorAll(".path-ep")];
+    const buttons = [...section.querySelectorAll(".path-scrub button")];
+    const pin = section.querySelector(".path-pin");
+    const stick = section.querySelector(".path-stick");
+    const svg = section.querySelector(".path-weave");
+    if (!episodes.length || !pin || !stick || !svg) return;
+    track.dataset.ready = "true";
+    const ns = "http://www.w3.org/2000/svg";
+    const ghost = document.createElementNS(ns, "path");
+    const hot = document.createElementNS(ns, "path");
+    const defs = document.createElementNS(ns, "defs");
+    const clip = document.createElementNS(ns, "clipPath");
+    const rect = document.createElementNS(ns, "rect");
+    ghost.setAttribute("class", "route-ghost");
+    hot.setAttribute("class", "route-hot");
+    clip.id = "path-weave-clip";
+    rect.setAttribute("x", "0");
+    rect.setAttribute("y", "0");
+    rect.setAttribute("width", "0");
+    rect.setAttribute("height", "100");
+    clip.appendChild(rect);
+    defs.appendChild(clip);
+    hot.setAttribute("clip-path", "url(#path-weave-clip)");
+    svg.append(defs, ghost, hot);
+    pathBoard = {
+      pin,
+      stick,
+      track,
+      episodes,
+      buttons,
+      fill: section.querySelector(".path-scrub-fill"),
+      plane: section.querySelector(".path-plane"),
+      route: { svg, ghost, hot, rect, length: 0 },
+      maxShift: 1,
+      travel: 1,
+      stationFrac: [],
     };
-    if (!stops.length) return;
-    scroller.dataset.ready = "true";
-
-    const setActive = (index) => {
-      buttons.forEach((button, buttonIndex) => {
-        if (buttonIndex === index) button.setAttribute("aria-current", "true");
-        else button.removeAttribute("aria-current");
-      });
-    };
-
-    const activeIndex = () => {
-      const viewLeft = scroller.scrollLeft;
-      const viewRight = viewLeft + scroller.clientWidth;
-      let best = 0;
-      let bestVisible = -1;
-      stops.forEach((stop, index) => {
-        const left = stop.offsetLeft;
-        const right = left + stop.offsetWidth;
-        const visible = Math.min(right, viewRight) - Math.max(left, viewLeft);
-        if (visible > bestVisible) {
-          bestVisible = visible;
-          best = index;
-        }
-      });
-      return best;
-    };
-
-    const placePlane = () => {
-      const route = visibleRoute();
-      if (!plane || !route || !stage) return;
-      const max = scroller.scrollWidth - scroller.clientWidth;
-      const t = max <= 1 ? 0 : scroller.scrollLeft / max;
-      const length = route.getTotalLength() || 1;
-      const point = route.getPointAtLength(length * t);
-      const ahead = route.getPointAtLength(Math.min(length, length * t + 12));
-      const box = route.ownerSVGElement.viewBox.baseVal;
-      const width = stage.clientWidth || 1;
-      const height = stage.clientHeight || 1;
-      const x = (point.x / box.width) * width;
-      const y = (point.y / box.height) * height;
-      const ax = (ahead.x / box.width) * width;
-      const ay = (ahead.y / box.height) * height;
-      const angle = Math.atan2(ay - y, ax - x) * (180 / Math.PI);
-      plane.style.transform = `translate(${(x - 23).toFixed(1)}px, ${(y - 23).toFixed(1)}px) rotate(${angle.toFixed(1)}deg)`;
-    };
-
-    const scrollToIndex = (index) => {
-      const stop = stops[index];
-      if (!stop) return;
-      scroller.scrollTo({
-        left: stop.offsetLeft,
-        behavior: reduceMotion ? "auto" : "smooth",
-      });
-    };
-
-    scroller.addEventListener("scroll", () => {
-      setActive(activeIndex());
-      placePlane();
-    }, { passive: true });
-
-    scroller.addEventListener("wheel", (event) => {
-      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
-      const max = scroller.scrollWidth - scroller.clientWidth;
-      if (max <= 1) return;
-      const next = scroller.scrollLeft + event.deltaY;
-      if (next < 0 || next > max) return;
-      event.preventDefault();
-      event.stopPropagation();
-      scroller.scrollLeft = next;
-    }, { passive: false });
-
-    scroller.addEventListener("keydown", (event) => {
-      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-      event.preventDefault();
-      const current = activeIndex();
-      const next = event.key === "ArrowRight"
-        ? Math.min(stops.length - 1, current + 1)
-        : Math.max(0, current - 1);
-      scrollToIndex(next);
-    });
-
     buttons.forEach((button, index) => {
-      button.addEventListener("click", () => scrollToIndex(index));
+      button.addEventListener("click", () => scrollToPathIndex(index));
     });
-
-    setActive(0);
-    placePlane();
-    window.addEventListener("resize", () => placePlane());
+    const scrub = section.querySelector(".path-scrub");
+    if (scrub) {
+      scrub.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+        event.preventDefault();
+        const current = buttons.findIndex((button) => button.getAttribute("aria-current") === "true");
+        const next = event.key === "ArrowRight"
+          ? Math.min(buttons.length - 1, current + 1)
+          : Math.max(0, current - 1);
+        scrollToPathIndex(next);
+        buttons[next].focus();
+      });
+    }
+    setPathActive(0, 0);
+    window.addEventListener("scroll", syncStackPath, { passive: true });
   }
 
   function mountRail() {
@@ -795,6 +865,25 @@
       applyStackPath();
     }
 
+    if (!stack && window.ScrollTrigger && pathBoard) {
+      layoutPath();
+      pathTrigger = window.ScrollTrigger.create({
+        trigger: pathBoard.pin,
+        pin: pathBoard.stick,
+        start: "top top",
+        end: () => `+=${Math.max(pathBoard.travel || 1, 1)}`,
+        scrub: true,
+        invalidateOnRefresh: true,
+        anticipatePin: 1,
+        onRefresh: () => layoutPath(),
+        onUpdate: (self) => applyPathBoard(self.progress),
+      });
+      applyPathBoard(0);
+    } else if (pathBoard) {
+      pathBoard.track.style.transform = "none";
+      syncStackPath();
+    }
+
     window.ScrollTrigger && window.ScrollTrigger.refresh();
   }
 
@@ -822,13 +911,9 @@
 
   function openPathStop(id) {
     const stop = document.getElementById(id);
-    const section = document.getElementById("path");
-    const scroller = document.querySelector(".path-scroller");
-    if (section) scrollTo(section, { offset: -8, duration: reduceMotion ? 0 : 0.85 });
-    if (!stop || !scroller) return;
-    window.setTimeout(() => {
-      scroller.scrollTo({ left: stop.offsetLeft, behavior: reduceMotion ? "auto" : "smooth" });
-    }, reduceMotion ? 0 : 420);
+    if (!pathBoard || !stop) return;
+    const index = pathBoard.episodes.indexOf(stop);
+    if (index >= 0) scrollToPathIndex(index);
   }
 
   window.mountRound2 = mountRound2;
