@@ -717,132 +717,157 @@
 
   function initFieldTags() {
     const tags = [...document.querySelectorAll("#about .float-tag")];
+    const shapes = [...document.querySelectorAll("#about .orbit-shape")];
+    const about = document.getElementById("about");
     const portrait = document.querySelector("#about .portrait");
-    const heading = document.getElementById("about-heading");
-    if (!tags.length || !portrait) return;
+    if (!tags.length || !about || !portrait) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const desktop = window.matchMedia("(min-width: 901px)").matches;
-    const hostLimit = () => portrait.getBoundingClientRect();
+
+    const reveal = () => about.classList.add("tags-in");
+    if (reduce || !("IntersectionObserver" in window)) reveal();
+    else {
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        reveal();
+        observer.disconnect();
+      }, { threshold: 0.2 });
+      observer.observe(about);
+    }
+
+    let dragging = false;
+    if (!reduce) {
+      about.addEventListener("pointermove", (event) => {
+        if (dragging || (event.pointerType && event.pointerType !== "mouse")) return;
+        const rect = portrait.getBoundingClientRect();
+        const nx = (event.clientX - rect.left - rect.width / 2) / Math.max(1, rect.width);
+        const ny = (event.clientY - rect.top - rect.height / 2) / Math.max(1, rect.height);
+        portrait.style.setProperty("--tag-x", Math.max(-1, Math.min(1, nx)).toFixed(3));
+        portrait.style.setProperty("--tag-y", Math.max(-1, Math.min(1, ny)).toFixed(3));
+      }, { passive: true });
+      about.addEventListener("pointerleave", () => {
+        if (dragging) return;
+        portrait.style.setProperty("--tag-x", "0");
+        portrait.style.setProperty("--tag-y", "0");
+      });
+    }
 
     tags.forEach((tag) => {
-      const face = tag.querySelector(".float-face");
       let drag = null;
-      let springing = false;
-
-      function baseRot() {
-        const raw = getComputedStyle(tag).getPropertyValue("--rot-a");
-        const n = parseFloat(raw);
-        return Number.isFinite(n) ? n : 0;
-      }
-
-      function blocksHeading(rect) {
-        if (!heading) return false;
-        const h = heading.getBoundingClientRect();
-        return rect.right > h.left + 4 && rect.left < h.right - 4 && rect.bottom > h.top + 4 && rect.top < h.bottom - 4;
-      }
-
-      tag.addEventListener("pointermove", (event) => {
-        if (!face || reduce || drag || !desktop) return;
-        const rect = tag.getBoundingClientRect();
-        const nx = (event.clientX - (rect.left + rect.width / 2)) / Math.max(1, rect.width / 2);
-        const ny = (event.clientY - (rect.top + rect.height / 2)) / Math.max(1, rect.height / 2);
-        const tilt = Math.max(-1, Math.min(1, nx));
-        const lift = Math.max(-1, Math.min(1, ny));
-        face.style.transform = `rotateX(${(-lift * 8).toFixed(2)}deg) rotateY(${(tilt * 10).toFixed(2)}deg)`;
-      });
-      tag.addEventListener("pointerleave", () => {
-        if (face && !drag) face.style.transform = "";
-      });
-      if (!desktop) return;
-
-      tag.addEventListener("pointerdown", (event) => {
-        if (event.button != null && event.button !== 0) return;
-        springing = false;
-        const rect = tag.getBoundingClientRect();
-        drag = {
-          id: event.pointerId,
-          ox: event.clientX,
-          oy: event.clientY,
-          x: 0,
-          y: 0,
-        };
-        tag.classList.add("is-dragging");
-        tag.setPointerCapture(event.pointerId);
-        const rot = baseRot();
-        tag.style.transform = `translate3d(0, 0, 0) rotate(${rot}deg)`;
-        if (face) face.style.transform = "";
-        event.preventDefault();
-      });
-
-      tag.addEventListener("pointermove", (event) => {
-        if (!drag || event.pointerId !== drag.id) return;
-        const host = hostLimit();
-        const rect = tag.getBoundingClientRect();
-        let x = event.clientX - drag.ox;
-        let y = event.clientY - drag.oy;
-        const next = {
-          left: rect.left - drag.x + x,
-          top: rect.top - drag.y + y,
-          right: rect.right - drag.x + x,
-          bottom: rect.bottom - drag.y + y,
-        };
-        if (next.left < host.left - 8) x += host.left - 8 - next.left;
-        if (next.right > host.right + 8) x -= next.right - (host.right + 8);
-        if (next.top < host.top - 6) y += host.top - 6 - next.top;
-        if (next.bottom > host.bottom + 12) y -= next.bottom - (host.bottom + 12);
-        const trial = {
-          left: rect.left - drag.x + x,
-          top: rect.top - drag.y + y,
-          right: rect.right - drag.x + x,
-          bottom: rect.bottom - drag.y + y,
-        };
-        if (blocksHeading(trial)) return;
-        drag.x = x;
-        drag.y = y;
-        const rot = baseRot() + Math.max(-12, Math.min(12, x * 0.06));
-        tag.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg)`;
-      });
-
-      function release(event) {
-        if (!drag || (event && event.pointerId !== drag.id)) return;
-        const from = { x: drag.x, y: drag.y, rot: baseRot() + Math.max(-12, Math.min(12, drag.x * 0.06)) };
-        drag = null;
-        const target = baseRot();
+      let x = 0;
+      let y = 0;
+      let vx = 0;
+      let vy = 0;
+      let frame = 0;
+      const place = (px, py) => {
+        tag.style.setProperty("--drag-x", `${px.toFixed(1)}px`);
+        tag.style.setProperty("--drag-y", `${py.toFixed(1)}px`);
+      };
+      const rest = () => {
+        const tx = parseFloat(portrait.style.getPropertyValue("--tag-x") || "0") * 16;
+        const ty = parseFloat(portrait.style.getPropertyValue("--tag-y") || "0") * 12;
+        return [Number.isFinite(tx) ? tx : 0, Number.isFinite(ty) ? ty : 0];
+      };
+      const settle = () => {
+        if (frame) cancelAnimationFrame(frame);
         if (reduce) {
-          tag.style.transform = "";
-          tag.classList.remove("is-dragging");
+          x = 0;
+          y = 0;
+          place(0, 0);
+          tag.classList.remove("is-drag", "is-held");
+          dragging = tags.some((node) => node.classList.contains("is-drag"));
           return;
         }
-        springing = true;
-        let x = from.x;
-        let y = from.y;
-        let rot = from.rot;
-        let vx = 0;
-        let vy = 0;
-        let vr = 0;
-        function frame() {
-          if (!springing) return;
-          vx = (vx + (0 - x) * 0.16) * 0.7;
-          vy = (vy + (0 - y) * 0.16) * 0.7;
-          vr = (vr + (target - rot) * 0.16) * 0.7;
+        const step = () => {
+          const [tx, ty] = rest();
+          vx = (vx + (tx - x) * 0.16) * 0.74;
+          vy = (vy + (ty - y) * 0.16) * 0.74;
           x += vx;
           y += vy;
-          rot += vr;
-          tag.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${rot}deg)`;
-          const settled = Math.hypot(x, y) < 0.6 && Math.abs(rot - target) < 0.5 && Math.hypot(vx, vy, vr) < 0.35;
-          if (settled) {
-            springing = false;
-            tag.style.transform = "";
-            tag.classList.remove("is-dragging");
+          if (Math.hypot(x - tx, y - ty) < 0.6 && Math.hypot(vx, vy) < 0.6) {
+            x = 0;
+            y = 0;
+            vx = 0;
+            vy = 0;
+            place(0, 0);
+            tag.classList.remove("is-drag", "is-held");
+            dragging = tags.some((node) => node.classList.contains("is-drag"));
             return;
           }
-          requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
-      }
-      tag.addEventListener("pointerup", release);
-      tag.addEventListener("pointercancel", release);
+          place(x, y);
+          frame = requestAnimationFrame(step);
+        };
+        frame = requestAnimationFrame(step);
+      };
+      tag.addEventListener("pointerdown", (event) => {
+        if (event.button != null && event.button !== 0) return;
+        if (frame) cancelAnimationFrame(frame);
+        const [tx, ty] = rest();
+        x = tx;
+        y = ty;
+        place(x, y);
+        dragging = true;
+        tag.classList.add("is-drag", "is-held");
+        tag.setPointerCapture(event.pointerId);
+        drag = { id: event.pointerId, lx: event.clientX, ly: event.clientY, t: performance.now() };
+      });
+      tag.addEventListener("pointermove", (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        const dx = event.clientX - drag.lx;
+        const dy = event.clientY - drag.ly;
+        const dt = Math.max(16, performance.now() - drag.t);
+        vx = (dx / dt) * 16;
+        vy = (dy / dt) * 16;
+        x += dx;
+        y += dy;
+        drag.lx = event.clientX;
+        drag.ly = event.clientY;
+        drag.t = performance.now();
+        place(x, y);
+      });
+      const end = (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        drag = null;
+        tag.classList.remove("is-held");
+        settle();
+      };
+      tag.addEventListener("pointerup", end);
+      tag.addEventListener("pointercancel", end);
     });
+
+    if (reduce || !shapes.length) return;
+    const orbit = shapes.map((shape, index) => ({
+      shape,
+      angle: index * 1.5 + 0.4,
+      speed: 0.34 + (index % 3) * 0.08,
+      rx: 0.4 + (index % 2) * 0.05,
+      ry: 0.36 + ((index + 1) % 2) * 0.06,
+      bob: index * 1.3,
+    }));
+    let last = performance.now();
+    let seen = true;
+    if ("IntersectionObserver" in window) {
+      const watch = new IntersectionObserver((entries) => {
+        seen = entries.some((entry) => entry.isIntersecting);
+      }, { rootMargin: "120px" });
+      watch.observe(portrait);
+    }
+    const fly = (now) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (seen) {
+        const width = portrait.clientWidth;
+        const height = portrait.clientHeight;
+        orbit.forEach((item) => {
+          item.angle += dt * item.speed;
+          const px = width * (0.5 + Math.cos(item.angle) * item.rx) - item.shape.offsetWidth / 2;
+          const py = height * (0.46 + Math.sin(item.angle) * item.ry) - item.shape.offsetHeight / 2 + Math.sin(now / 680 + item.bob) * 10;
+          const tilt = Math.sin(item.angle * 2) * 14;
+          item.shape.style.transform = `translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) rotate(${tilt.toFixed(1)}deg)`;
+        });
+      }
+      requestAnimationFrame(fly);
+    };
+    requestAnimationFrame(fly);
   }
 
   window.deskCopy = copyEmail;

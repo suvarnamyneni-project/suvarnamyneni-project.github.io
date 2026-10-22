@@ -1066,95 +1066,155 @@ html.is-stack .timeline .when {
   object-position: center center;
 }
 
+#about .float-orbit,
 #about .float-tags {
-  display: block;
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-.float-tag {
+#about .float-tags {
+  display: block;
+  z-index: 4;
+}
+
+.orbit-shape {
   position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 3;
+  display: block;
+  filter: drop-shadow(0 8px 8px rgba(110, 55, 25, 0.22));
+  pointer-events: none;
+}
+
+.orbit-bubble { width: 74px; }
+.orbit-bubble.small { width: 58px; }
+.orbit-pencil { width: 28px; }
+.orbit-note { width: 54px; }
+
+.orbit-shape svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#about .float-tag {
+  position: absolute;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  height: auto;
+  max-width: none;
   pointer-events: auto;
-  padding: 9px 14px;
-  font: 600 0.84rem/1 var(--sans);
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #2b3236;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  font: 600 15px/1 var(--sans);
+  white-space: nowrap;
+  overflow: visible;
+  translate: calc(var(--tag-x, 0) * 16px + var(--drag-x, 0px)) calc(var(--tag-y, 0) * 12px + var(--drag-y, 0px));
+  transition: translate 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.7s cubic-bezier(0.3, 1.6, 0.5, 1), opacity 0.5s;
+}
+
+#about .float-tag.is-drag {
+  translate: var(--drag-x, 0px) var(--drag-y, 0px);
+  transition: none;
+  cursor: grabbing;
+  z-index: 6;
+}
+
+.tag-bob {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+  width: max-content;
+  max-width: none;
+  padding: 9px 16px 9px 10px;
+  border-radius: 999px;
+  background: #fffaf3;
+  box-shadow: 0 14px 30px -14px rgba(120, 60, 30, 0.45);
   transform-origin: center center;
-  will-change: transform;
+}
+
+.tag-mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  background: #e07a45;
+  color: #fff;
+}
+
+.tag-mark svg {
+  width: 16px;
+  height: 16px;
+  display: block;
 }
 
 .float-face {
-  display: inline-block;
-  transform-origin: center center;
+  display: block;
+  flex: none;
+  white-space: nowrap;
 }
 
-.float-tag:nth-child(1) { left: -16px; top: 12%; }
-.float-tag:nth-child(2) { right: -12px; top: 24%; }
-.float-tag:nth-child(3) { left: -22px; bottom: 16%; }
-.float-tag:nth-child(4) { right: -8px; bottom: 14%; }
+#about .float-tag:nth-child(1) { left: auto; right: -8%; top: 12%; }
+#about .float-tag:nth-child(2) { left: -10%; right: auto; top: 36%; }
+#about .float-tag:nth-child(3) { left: -6%; right: auto; top: auto; bottom: 7%; }
+#about .float-tag:nth-child(4) { left: auto; right: -6%; top: 60%; }
+
+#about .float-tag:hover,
+#about .float-tag:focus-visible,
+#about .float-tag.is-held {
+  background: transparent;
+  color: #2b3236;
+}
 
 html.has-motion #about .float-tag,
 html.has-motion #about.is-live .float-tag {
-  animation-name: tag-wobble;
-  animation-duration: 7.6s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-delay: 0s;
+  animation: none;
+  opacity: 0;
+  scale: 0.6;
 }
 
-html.has-motion #about .float-tag:nth-child(1),
-html.has-motion #about.is-live .float-tag:nth-child(1) {
-  --rot-a: -8deg;
-  --rot-b: 7deg;
-  --dx: 5px;
-  --dy: -9px;
-  animation-duration: 7.4s;
-  animation-delay: -0.4s;
+html.has-motion #about.tags-in .float-tag {
+  opacity: 1;
+  scale: 1;
 }
 
-html.has-motion #about .float-tag:nth-child(2),
-html.has-motion #about.is-live .float-tag:nth-child(2) {
-  --rot-a: 7deg;
-  --rot-b: -9deg;
-  --dx: -6px;
-  --dy: -11px;
-  animation-duration: 8.6s;
-  animation-delay: -2.2s;
+html.has-motion #about.tags-in .tag-bob {
+  animation: tag-drift 5s ease-in-out infinite;
 }
 
-html.has-motion #about .float-tag:nth-child(3),
-html.has-motion #about.is-live .float-tag:nth-child(3) {
-  --rot-a: -6deg;
-  --rot-b: 10deg;
-  --dx: 7px;
-  --dy: -8px;
-  animation-duration: 6.8s;
-  animation-delay: -3.5s;
+html.has-motion #about.tags-in .float-tag:nth-child(2) .tag-bob { animation-delay: -1.6s; }
+html.has-motion #about.tags-in .float-tag:nth-child(3) .tag-bob { animation-delay: -3.2s; }
+html.has-motion #about.tags-in .float-tag:nth-child(4) .tag-bob { animation-delay: -4.4s; }
+
+@keyframes tag-drift {
+  0%, 100% { transform: translate3d(-14px, 10px, 0) rotate(3.5deg); }
+  50% { transform: translate3d(16px, -22px, 0) rotate(-4.5deg); }
 }
 
-html.has-motion #about .float-tag:nth-child(4),
-html.has-motion #about.is-live .float-tag:nth-child(4) {
-  --rot-a: 9deg;
-  --rot-b: -6deg;
-  --dx: -5px;
-  --dy: -10px;
-  animation-duration: 9.1s;
-  animation-delay: -1.3s;
+html.has-motion #about.tags-in .float-tag.is-drag .tag-bob {
+  animation-play-state: paused;
 }
 
-@keyframes tag-wobble {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--rot-a)); }
-  50% { transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rot-b)); }
-}
-
-html.has-motion #about.is-live .float-tag:hover,
-html.has-motion #about.is-live .float-tag:focus-visible {
-  animation-name: tag-wobble;
-  animation-play-state: running;
-}
-
-@media (min-width: 901px) {
-  .float-tag { cursor: grab; touch-action: none; }
-  .float-tag.is-dragging { cursor: grabbing; z-index: 5; animation: none; }
+html.has-motion #about.tags-in .float-tag:hover,
+html.has-motion #about.tags-in .float-tag:focus-visible,
+html.has-motion #about.tags-in .float-tag.is-held {
+  scale: 1.06;
 }
 
 .fact-cards {
@@ -1969,25 +2029,56 @@ html.is-night .brand-chip {
     max-width: 420px;
   }
 
+  #about.panel {
+    padding-top: 128px;
+  }
+
+  #about .portrait {
+    display: block;
+    width: min(78%, 340px);
+    margin-inline: auto;
+  }
+
   #about .float-tags {
-    position: static;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin: 0;
   }
 
-  .float-tag,
-  .float-tag:nth-child(1),
-  .float-tag:nth-child(2),
-  .float-tag:nth-child(3),
-  .float-tag:nth-child(4) {
-    position: static;
+  #about .float-tag,
+  #about .float-tag:nth-child(1),
+  #about .float-tag:nth-child(2),
+  #about .float-tag:nth-child(3),
+  #about .float-tag:nth-child(4) {
+    position: absolute;
+    width: max-content;
+    height: auto;
+    max-width: none;
+    font-size: 13.5px;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    overflow: visible;
   }
 
-  .float-tags {
-    margin-bottom: 18px;
+  #about .tag-bob {
+    padding: 6px 12px 6px 6px;
+    gap: 6px;
+    width: max-content;
+    background: #fffaf3;
   }
+  #about .tag-mark { width: 24px; height: 24px; }
+  #about .tag-mark svg { width: 14px; height: 14px; }
+  .orbit-bubble { width: 56px; }
+  .orbit-bubble.small { width: 46px; }
+  .orbit-pencil { width: 22px; }
+  .orbit-note { width: 42px; }
+
+  #about .float-tag:nth-child(1) { left: auto; right: 2%; top: 8%; bottom: auto; }
+  #about .float-tag:nth-child(2) { left: 0; right: auto; top: 34%; bottom: auto; }
+  #about .float-tag:nth-child(3) { left: 0; right: auto; top: auto; bottom: 8%; }
+  #about .float-tag:nth-child(4) { left: auto; right: 2%; top: 62%; bottom: auto; }
 
   .scroll-pill {
     gap: 8px;
@@ -2102,6 +2193,10 @@ html.is-night .brand-chip {
 }
 
 @media (max-width: 430px) {
+  #about.panel {
+    padding-top: 168px;
+  }
+
   .site-header {
     flex-wrap: wrap;
     row-gap: 8px;
@@ -2166,10 +2261,21 @@ html.is-stack .timeline li {
   .glide-plane,
   .hotspot.is-hinting::after,
   .hover-hint,
-  .float-tag {
+  .float-tag,
+  .tag-bob,
+  .orbit-shape {
     animation: none;
     transform: none;
+    translate: none;
+    transition: none;
+    opacity: 1;
+    scale: 1;
   }
+
+  .orbit-shape:nth-child(1) { left: 8%; top: 12%; }
+  .orbit-shape:nth-child(2) { left: 68%; top: 20%; }
+  .orbit-shape:nth-child(3) { left: 6%; top: 64%; }
+  .orbit-shape:nth-child(4) { left: 70%; top: 70%; }
 
   .select-box:not([hidden]) {
     display: block !important;
