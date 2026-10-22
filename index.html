@@ -14,7 +14,7 @@
   <meta property="og:image" content="https://suvarnamyneni-project.github.io/assets/art/hero-1280.jpg">
   <meta property="og:image:width" content="1280">
   <meta property="og:image:height" content="720">
-  <meta property="og:image:alt" content="A painted desk on a floating grassy island above the clouds, with a laptop, a house model and a grocery basket.">
+  <meta property="og:image:alt" content="A painted desk on a grassy island under a pink sky, with a laptop, coffee, notebooks, a phone and a plant.">
   <meta property="og:locale" content="en_IN">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Suvarna Myneni, AI-Native UX Designer">
@@ -49,7 +49,7 @@
     .nav-menu { display: flex; align-items: center; gap: 2px; }
     .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 .875rem/1 Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
     .nav-contact, .nav-toggle, .nav-cv, .nav-cv[hidden] { display: none; }
-    html .hero-stage { position: relative; height: 100vh; height: 100dvh; overflow: hidden; background: #fbf6ee; color: #2b3236; }
+    html .hero-stage { position: relative; height: 100vh; height: 100dvh; overflow: hidden; background: #f1c0af; color: #2b3236; }
     html .scene, html .scene-bob, html .scene-tilt, html .scene-shift, html .scene picture, html .hero-scrim { position: absolute; inset: 0; width: 100%; height: 100%; }
     html .scene img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; aspect-ratio: 16 / 9; object-fit: cover; object-position: center center; }
     html .hero-copy { position: absolute; z-index: 3; display: block; grid-template-columns: none; left: 50%; right: auto; transform: translateX(-50%); width: min(920px, calc(100% - 48px)); top: calc(env(safe-area-inset-top) + 104px); text-align: center; }
@@ -71,17 +71,16 @@
     .hover-hint { left: 50%; bottom: calc(108px + env(safe-area-inset-bottom)); transform: translateX(-50%); margin: 0; padding: 7px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600; line-height: 1.2; white-space: nowrap; width: max-content; }
     html.is-stack .scene-bob { animation: none !important; }
     .hotspot { position: absolute; }
-    html .hotspot-laptop { left: 42.2%; top: 40.5%; width: 14.5%; height: 7.6%; }
-    html .hotspot-keys { left: 41.4%; top: 48%; width: 16.2%; height: 6.8%; z-index: 5; }
-    html .hotspot-house { left: 61.5%; top: 36.5%; width: 15.5%; height: 26%; }
-    html .hotspot-chat { left: 66%; top: 32.5%; width: 12%; height: 14%; z-index: 4; }
-    html .hotspot-basket { left: 21.5%; top: 46%; width: 12.5%; height: 20.5%; }
-    html .hotspot-phone { left: 14.5%; top: 44%; width: 9%; height: 16.5%; }
-    html .hotspot-card { left: 74%; top: 51%; width: 9%; height: 15.5%; z-index: 3; }
-    html .hotspot-sketch { left: 44%; top: 57.5%; width: 18%; height: 15.5%; }
-    html .hotspot-coffee { left: 32%; top: 57%; width: 11.5%; height: 11.5%; z-index: 4; }
-    html .hotspot-plants { left: 75.5%; top: 56%; width: 14%; height: 16%; }
-    html .hotspot-plane { left: 16.5%; top: 4.5%; width: 12.5%; height: 12%; }
+    html .hotspot-plane { left: 22.5%; top: 14%; width: 9.7%; height: 8%; }
+    html .hotspot-laptop { left: 38%; top: 18%; width: 20%; height: 26%; }
+    html .hotspot-keys { left: 38%; top: 43.4%; width: 20.4%; height: 10.1%; z-index: 5; }
+    html .hotspot-coffee { left: 28.3%; top: 33.3%; width: 7.8%; height: 11.5%; z-index: 4; }
+    html .hotspot-sketch { left: 25.6%; top: 44.8%; width: 15.2%; height: 16.2%; }
+    html .hotspot-notebook { left: 41.5%; top: 52%; width: 15.6%; height: 11%; z-index: 4; }
+    html .hotspot-glass { left: 59.3%; top: 46.5%; width: 8.7%; height: 13.5%; z-index: 4; }
+    html .hotspot-kit { left: 59.8%; top: 24.3%; width: 11.3%; height: 20%; }
+    html .hotspot-phone { left: 67.9%; top: 39.6%; width: 6%; height: 15.3%; z-index: 5; }
+    html .hotspot-plant { left: 71.5%; top: 32%; width: 6.1%; height: 14%; z-index: 4; }
     .hero-spacer { display: none; }
     .unfold, .veil, .hotspots, .seed-field { position: absolute; inset: 0; pointer-events: none; }
     html.is-stack #unfold { display: none; }
@@ -207,7 +206,7 @@
                 sizes="100vw"
                 width="2400"
                 height="1350"
-                alt="A painted desk on a floating grassy island above the clouds, with a laptop, a house model and a grocery basket."
+                alt="A painted desk on a grassy island under a pink sky, with a laptop, coffee, notebooks, a phone and a plant."
                 fetchpriority="high"
                 decoding="async"
               >
@@ -221,17 +220,16 @@
               </span>
             </div>
             <div class="hotspots">
-              <a class="hotspot hotspot-laptop" href="#work" data-label="Laptop" data-story="Where the work lives. Click to open my selected projects."><span class="sr-only">Laptop. Where the work lives. Click to open my selected projects.</span></a>
-              <a class="hotspot hotspot-keys" href="#work" data-label="Keyboard" data-story="I prototype what I design, in Figma, Lovable and code."><span class="sr-only">Keyboard. I prototype what I design, in Figma, Lovable and code.</span></a>
-              <a class="hotspot hotspot-house" href="#deal-desk" data-card="deal-desk" data-label="House" data-story="Tools for real-estate agents at eXp Realty: +40% daily active users."><span class="sr-only">House. Tools for real-estate agents at eXp Realty: +40% daily active users.</span></a>
-              <a class="hotspot hotspot-chat" href="https://motiveux.wixsite.com/my-exp-case-study" target="_blank" rel="noopener noreferrer" data-label="Mira" data-story="Designing an AI assistant that knows when to hand off to a human."><span class="sr-only">Mira. Designing an AI assistant that knows when to hand off to a human. Opens in a new tab.</span></a>
-              <a class="hotspot hotspot-basket" href="https://myneni.wixsite.com/amazon-fresh" target="_blank" rel="noopener noreferrer" data-label="Basket" data-story="Shop by Recipe at Amazon: +25% average order value."><span class="sr-only">Basket. Shop by Recipe at Amazon: +25% average order value. Opens in a new tab.</span></a>
-              <a class="hotspot hotspot-phone" href="https://myneni.wixsite.com/imobile" target="_blank" rel="noopener noreferrer" data-label="Phone" data-story="Redesigning the iMobile banking app at ICICI Bank."><span class="sr-only">Phone. Redesigning the iMobile banking app at ICICI Bank. Opens in a new tab.</span></a>
-              <a class="hotspot hotspot-card" href="#path-icici" data-path="path-icici" data-label="Card" data-story="Banking UX at ICICI: 15 interviews, 3 personas, tested with 8–10 users."><span class="sr-only">Card. Banking UX at ICICI: 15 interviews, 3 personas, tested with 8–10 users.</span></a>
-              <a class="hotspot hotspot-sketch" href="#path" data-label="Sketchbook" data-story="Postgraduate in Design, Manipal University."><span class="sr-only">Sketchbook. Postgraduate in Design, Manipal University.</span></a>
-              <a class="hotspot hotspot-coffee" href="#contact" data-label="Coffee" data-story="Always up for a chat about design. Say hi."><span class="sr-only">Coffee. Always up for a chat about design. Say hi.</span></a>
-              <a class="hotspot hotspot-plants" href="#about" data-label="Plants" data-story="Growing designers: I've mentored 5 junior designers."><span class="sr-only">Plants. Growing designers: I've mentored 5 junior designers.</span></a>
               <a class="hotspot hotspot-plane" href="#path" data-label="Plane" data-story="Follow the path so far."><span class="sr-only">Plane. Follow the path so far.</span></a>
+              <a class="hotspot hotspot-laptop" href="#work" data-label="Laptop" data-story="Where the work lives. Open my selected projects."><span class="sr-only">Laptop. Where the work lives. Open my selected projects.</span></a>
+              <a class="hotspot hotspot-keys" href="#work" data-label="Keyboard" data-story="I prototype what I design, in Figma, Lovable and code."><span class="sr-only">Keyboard. I prototype what I design, in Figma, Lovable and code.</span></a>
+              <a class="hotspot hotspot-coffee" href="#contact" data-label="Coffee" data-story="Always up for a chat about design. Say hi."><span class="sr-only">Coffee. Always up for a chat about design. Say hi.</span></a>
+              <a class="hotspot hotspot-sketch" href="#path" data-label="Sketchbooks" data-story="Postgraduate in Design, Manipal University."><span class="sr-only">Sketchbooks. Postgraduate in Design, Manipal University.</span></a>
+              <a class="hotspot hotspot-notebook" href="#imobile" data-card="imobile" data-label="Notebook" data-story="Research first: 15 interviews and 3 personas for iMobile."><span class="sr-only">Notebook. Research first: 15 interviews and 3 personas for iMobile.</span></a>
+              <a class="hotspot hotspot-glass" href="https://motiveux.wixsite.com/my-exp-case-study" target="_blank" rel="noopener noreferrer" data-label="Magnifier" data-story="Designing an AI assistant, Mira, that knows when to hand off to a human."><span class="sr-only">Magnifier. Designing an AI assistant, Mira, that knows when to hand off to a human. Opens in a new tab.</span></a>
+              <a class="hotspot hotspot-kit" href="#deal-desk" data-card="deal-desk" data-label="Components" data-story="Design systems for eXp's agent tools: +40% daily active users."><span class="sr-only">Components. Design systems for eXp's agent tools: +40% daily active users.</span></a>
+              <a class="hotspot hotspot-phone" href="https://myneni.wixsite.com/imobile" target="_blank" rel="noopener noreferrer" data-label="Phone" data-story="Redesigning the iMobile banking app at ICICI Bank."><span class="sr-only">Phone. Redesigning the iMobile banking app at ICICI Bank. Opens in a new tab.</span></a>
+              <a class="hotspot hotspot-plant" href="#about" data-label="Plant" data-story="Growing designers: I've mentored 5 junior designers."><span class="sr-only">Plant. Growing designers: I've mentored 5 junior designers.</span></a>
             </div>
           </div>
           </div>
@@ -267,7 +265,7 @@
           <h2 id="work-heading">Selected work</h2>
           <p>Four projects, first to latest.</p>
         </div>
-        <article class="project feature-lead reveal" data-cursor-icon="phone" data-stamp="2018–2020">
+        <article class="project feature-lead reveal" id="imobile" data-cursor-icon="phone" data-stamp="2018–2020">
           <div class="thumb art-slot t1" data-art="imobile">
             <picture>
               <source type="image/webp" srcset="assets/art/imobile.webp">

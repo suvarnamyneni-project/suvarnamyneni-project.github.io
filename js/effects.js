@@ -167,17 +167,16 @@
   }
 
   const SPOT_BOXES = {
-    laptop: [42.2, 40.5, 14.5, 7.6],
-    keys: [41.4, 48, 16.2, 6.8],
-    house: [61.5, 36.5, 15.5, 26],
-    chat: [66, 32.5, 12, 14],
-    basket: [21.5, 46, 12.5, 20.5],
-    phone: [14.5, 44, 9, 16.5],
-    card: [74, 51, 9, 15.5],
-    sketch: [44, 57.5, 18, 15.5],
-    coffee: [32, 57, 11.5, 11.5],
-    plants: [75.5, 56, 14, 16],
-    plane: [16.5, 4.5, 12.5, 12],
+    plane: [22.5, 14, 9.7, 8],
+    laptop: [38, 18, 20, 26],
+    keys: [38, 43.4, 20.4, 10.1],
+    coffee: [28.3, 33.3, 7.8, 11.5],
+    sketch: [25.6, 44.8, 15.2, 16.2],
+    notebook: [41.5, 52, 15.6, 11],
+    glass: [59.3, 46.5, 8.7, 13.5],
+    kit: [59.8, 24.3, 11.3, 20],
+    phone: [67.9, 39.6, 6, 15.3],
+    plant: [71.5, 32, 6.1, 14],
   };
 
   function coverBox(img) {
@@ -221,7 +220,7 @@
     });
     const glow = document.querySelector(".screen-glow");
     if (glow) {
-      const placed = mapSpot(box, ...SPOT_BOXES.laptop);
+      const placed = mapSpot(box, 40.5, 21, 15, 18);
       glow.style.left = `${placed.left}%`;
       glow.style.top = `${placed.top}%`;
       glow.style.width = `${placed.width}%`;

@@ -1474,17 +1474,16 @@ html.has-spots .hotspot:focus-visible {
   outline: none;
 }
 
-html body .hotspot-laptop { left: 42.2%; top: 40.5%; width: 14.5%; height: 7.6%; }
-html body .hotspot-keys { left: 41.4%; top: 48%; width: 16.2%; height: 6.8%; z-index: 5; }
-html body .hotspot-house { left: 61.5%; top: 36.5%; width: 15.5%; height: 26%; }
-html body .hotspot-chat { left: 66%; top: 32.5%; width: 12%; height: 14%; z-index: 4; }
-html body .hotspot-basket { left: 21.5%; top: 46%; width: 12.5%; height: 20.5%; }
-html body .hotspot-phone { left: 14.5%; top: 44%; width: 9%; height: 16.5%; }
-html body .hotspot-card { left: 74%; top: 51%; width: 9%; height: 15.5%; z-index: 3; }
-html body .hotspot-sketch { left: 44%; top: 57.5%; width: 18%; height: 15.5%; }
-html body .hotspot-coffee { left: 32%; top: 57%; width: 11.5%; height: 11.5%; z-index: 4; }
-html body .hotspot-plants { left: 75.5%; top: 56%; width: 14%; height: 16%; }
-html body .hotspot-plane { left: 16.5%; top: 4.5%; width: 12.5%; height: 12%; }
+html body .hotspot-plane { left: 22.5%; top: 14%; width: 9.7%; height: 8%; }
+html body .hotspot-laptop { left: 38%; top: 18%; width: 20%; height: 26%; }
+html body .hotspot-keys { left: 38%; top: 43.4%; width: 20.4%; height: 10.1%; z-index: 5; }
+html body .hotspot-coffee { left: 28.3%; top: 33.3%; width: 7.8%; height: 11.5%; z-index: 4; }
+html body .hotspot-sketch { left: 25.6%; top: 44.8%; width: 15.2%; height: 16.2%; }
+html body .hotspot-notebook { left: 41.5%; top: 52%; width: 15.6%; height: 11%; z-index: 4; }
+html body .hotspot-glass { left: 59.3%; top: 46.5%; width: 8.7%; height: 13.5%; z-index: 4; }
+html body .hotspot-kit { left: 59.8%; top: 24.3%; width: 11.3%; height: 20%; }
+html body .hotspot-phone { left: 67.9%; top: 39.6%; width: 6%; height: 15.3%; z-index: 5; }
+html body .hotspot-plant { left: 71.5%; top: 32%; width: 6.1%; height: 14%; z-index: 4; }
 
 html.has-motion .hotspot-laptop.is-hinting::after {
   content: "";
@@ -1667,10 +1666,10 @@ html.has-motion .hover-hint {
 
 .screen-glow {
   position: absolute;
-  left: 42.2%;
-  top: 40.5%;
-  width: 14.5%;
-  height: 7.6%;
+  left: 40.5%;
+  top: 21%;
+  width: 15%;
+  height: 18%;
   border-radius: 8px;
   background: radial-gradient(ellipse at center, rgba(255, 244, 214, 0.95), rgba(255, 196, 120, 0.2) 68%, transparent 76%);
   opacity: 0;
@@ -1684,8 +1683,8 @@ html.has-motion .hover-hint {
 
 .steam {
   position: absolute;
-  left: 36%;
-  top: 54.5%;
+  left: 31.6%;
+  top: 31.7%;
   width: 22px;
   height: 36px;
 }
