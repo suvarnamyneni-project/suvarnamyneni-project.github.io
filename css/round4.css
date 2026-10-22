@@ -301,6 +301,11 @@ html.has-motion.ready .hero-copy h1 .word {
   -webkit-backdrop-filter: blur(16px) saturate(1.5);
   backdrop-filter: blur(16px) saturate(1.5);
   font-weight: 500;
+  gap: 16px;
+  padding: 12px 28px;
+  font-size: 0.95rem;
+  min-width: min(520px, calc(100% - 48px));
+  justify-content: center;
 }
 
 .scroll-pill a {
@@ -392,6 +397,11 @@ html.is-stack #unfold {
 .hero-stage.is-handed .unfold-plane {
   opacity: 0 !important;
   visibility: hidden !important;
+}
+
+/* Once the real page has taken over, the fixed hero must not paint through later sections. */
+.has-zoom .hero-stage.is-handed {
+  visibility: hidden;
 }
 
 /* Work cards. */
@@ -506,8 +516,8 @@ html.is-stack #unfold {
   background: #fff;
 }
 
-#also-more {
-  margin-top: 18px;
+#also-more:not([hidden]) {
+  display: contents;
 }
 
 #kudos-mount .kudos {
@@ -646,9 +656,15 @@ html.has-rail .project-body > h3 + p {
   align-items: center;
   gap: 10px;
   margin-top: 14px;
+  padding: 0;
+  background: transparent;
   color: var(--ink);
   font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.3;
   text-decoration: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .go {
@@ -665,6 +681,12 @@ html.has-rail .project-body > h3 + p {
 .go svg {
   width: 14px;
   height: 14px;
+}
+
+.case-link:hover,
+.case-link:focus-visible {
+  background: transparent;
+  color: var(--accent);
 }
 
 .project:hover .go,
@@ -714,9 +736,21 @@ html.has-rail .project-body > h3 + p {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   margin-top: 28px;
+  align-items: stretch;
+}
+
+@media (max-width: 1100px) {
+  .desk-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+#also .desk-card {
+  --rise: 0px;
 }
 
 .desk-card {
+  height: 100%;
   padding: 16px 16px 20px;
   border-radius: 24px;
   background: linear-gradient(#fff, rgba(255, 250, 245, 0.85));
@@ -897,7 +931,11 @@ html.is-stack .timeline .when {
   color: var(--ink);
 }
 
-/* About. */
+/* About. The section is opaque so the fixed hero, and the work clone inside it, cannot show through. */
+
+#about {
+  background: var(--bg);
+}
 
 .about-grid {
   display: grid;
@@ -926,8 +964,26 @@ html.is-stack .timeline .when {
   order: -1;
 }
 
+@media (min-width: 901px) {
+  #about .about-grid {
+    grid-template-columns: clamp(420px, 32vw, 480px) minmax(0, 1fr);
+    gap: 72px;
+    align-items: center;
+  }
+
+  #about .portrait {
+    width: 100%;
+    padding: 18px 0 22px;
+  }
+
+  #about .portrait-art {
+    width: 100%;
+    max-width: 480px;
+  }
+}
+
 .portrait-art {
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 1 / 1;
   border-radius: 28px;
   overflow: hidden;
   background: #f6d9c3;
@@ -940,10 +996,11 @@ html.is-stack .timeline .when {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 18%;
+  object-position: center center;
 }
 
-.float-tags {
+#about .float-tags {
+  display: block;
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -954,12 +1011,84 @@ html.is-stack .timeline .when {
   pointer-events: auto;
   padding: 9px 14px;
   font: 600 0.84rem/1 var(--sans);
+  transform-origin: center center;
+  will-change: transform;
 }
 
-.float-tag:nth-child(1) { left: 0; top: 18%; transform: translateX(-108%); }
-.float-tag:nth-child(2) { right: 0; top: 30%; transform: translateX(108%); }
-.float-tag:nth-child(3) { left: 0; bottom: 22%; transform: translateX(-108%); }
-.float-tag:nth-child(4) { right: 0; bottom: 16%; transform: translateX(108%); }
+.float-face {
+  display: inline-block;
+  transform-origin: center center;
+}
+
+.float-tag:nth-child(1) { left: -16px; top: 12%; }
+.float-tag:nth-child(2) { right: -12px; top: 24%; }
+.float-tag:nth-child(3) { left: -22px; bottom: 16%; }
+.float-tag:nth-child(4) { right: -8px; bottom: 14%; }
+
+html.has-motion #about .float-tag,
+html.has-motion #about.is-live .float-tag {
+  animation-name: tag-wobble;
+  animation-duration: 7.6s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-delay: 0s;
+}
+
+html.has-motion #about .float-tag:nth-child(1),
+html.has-motion #about.is-live .float-tag:nth-child(1) {
+  --rot-a: -8deg;
+  --rot-b: 7deg;
+  --dx: 5px;
+  --dy: -9px;
+  animation-duration: 7.4s;
+  animation-delay: -0.4s;
+}
+
+html.has-motion #about .float-tag:nth-child(2),
+html.has-motion #about.is-live .float-tag:nth-child(2) {
+  --rot-a: 7deg;
+  --rot-b: -9deg;
+  --dx: -6px;
+  --dy: -11px;
+  animation-duration: 8.6s;
+  animation-delay: -2.2s;
+}
+
+html.has-motion #about .float-tag:nth-child(3),
+html.has-motion #about.is-live .float-tag:nth-child(3) {
+  --rot-a: -6deg;
+  --rot-b: 10deg;
+  --dx: 7px;
+  --dy: -8px;
+  animation-duration: 6.8s;
+  animation-delay: -3.5s;
+}
+
+html.has-motion #about .float-tag:nth-child(4),
+html.has-motion #about.is-live .float-tag:nth-child(4) {
+  --rot-a: 9deg;
+  --rot-b: -6deg;
+  --dx: -5px;
+  --dy: -10px;
+  animation-duration: 9.1s;
+  animation-delay: -1.3s;
+}
+
+@keyframes tag-wobble {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--rot-a)); }
+  50% { transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rot-b)); }
+}
+
+html.has-motion #about.is-live .float-tag:hover,
+html.has-motion #about.is-live .float-tag:focus-visible {
+  animation-name: tag-wobble;
+  animation-play-state: running;
+}
+
+@media (min-width: 901px) {
+  .float-tag { cursor: grab; touch-action: none; }
+  .float-tag.is-dragging { cursor: grabbing; z-index: 5; animation: none; }
+}
 
 .fact-cards {
   display: grid;
@@ -1267,16 +1396,7 @@ html.is-stack .timeline .when {
   }
 
   .desk-grid {
-    grid-auto-flow: column;
-    grid-auto-columns: min(78%, 280px);
-    grid-template-columns: none;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 8px;
-  }
-
-  .desk-card {
-    scroll-snap-align: start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .about-grid,
@@ -1291,7 +1411,7 @@ html.is-stack .timeline .when {
     max-width: 420px;
   }
 
-  .float-tags {
+  #about .float-tags {
     position: static;
     display: flex;
     flex-wrap: wrap;
@@ -1305,7 +1425,20 @@ html.is-stack .timeline .when {
   .float-tag:nth-child(3),
   .float-tag:nth-child(4) {
     position: static;
-    transform: none;
+  }
+
+  .float-tags {
+    margin-bottom: 18px;
+  }
+
+  .scroll-pill {
+    gap: 8px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    min-width: 0;
+    max-width: calc(100vw - 28px - env(safe-area-inset-left) - env(safe-area-inset-right));
+    white-space: normal;
+    text-align: center;
   }
 
   html.is-stack .tl-year {
@@ -1322,6 +1455,10 @@ html.is-stack .timeline .when {
 }
 
 @media (max-width: 759px) {
+  .desk-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .site-header {
     left: 12px;
     right: 12px;
@@ -1432,7 +1569,8 @@ html.is-stack .timeline li {
   .steam i,
   .glide-plane,
   .hotspot.is-hinting::after,
-  .hover-hint {
+  .hover-hint,
+  .float-tag {
     animation: none;
     transform: none;
   }
@@ -1485,6 +1623,26 @@ html body .hotspot-glass { left: 59.3%; top: 46.5%; width: 8.7%; height: 13.5%; 
 html body .hotspot-kit { left: 59.8%; top: 24.3%; width: 11.3%; height: 20%; }
 html body .hotspot-phone { left: 67.9%; top: 39.6%; width: 6%; height: 15.3%; z-index: 5; }
 html body .hotspot-plant { left: 71.5%; top: 32%; width: 6.1%; height: 14%; z-index: 4; }
+
+html.is-zooming .hotspot,
+html.is-zooming .hotspot:hover,
+html.is-zooming .hotspot:focus,
+html.is-zooming .hotspot:focus-visible,
+.hero-stage.is-unfolding .hotspot,
+.hero-stage.is-unfolding .hotspot:hover,
+.hero-stage.is-unfolding .hotspot:focus,
+.hero-stage.is-unfolding .hotspot:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+html.is-zooming .hotspot.is-hinting::after,
+.hero-stage.is-unfolding .hotspot.is-hinting::after,
+html.is-zooming #select-box,
+.hero-stage.is-unfolding #select-box {
+  display: none !important;
+  animation: none !important;
+}
 
 html.has-motion .hotspot-screen.is-hinting::after {
   content: "";

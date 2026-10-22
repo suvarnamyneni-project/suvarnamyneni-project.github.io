@@ -256,6 +256,12 @@
       button.setAttribute("aria-expanded", open ? "false" : "true");
       panel.hidden = open;
       button.textContent = open ? "View more" : "View less";
+      if (!open) {
+        panel.querySelectorAll(".project").forEach((card) => {
+          card.classList.add("is-visible");
+          card.style.setProperty("--rise", "0px");
+        });
+      }
     });
   }
 

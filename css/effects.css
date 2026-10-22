@@ -191,6 +191,8 @@ html.has-motion.is-zooming .scene-bob {
   border: 0;
   background: transparent;
   color: inherit;
+  font: inherit;
+  cursor: pointer;
 }
 
 .hotspot svg {
@@ -1223,7 +1225,7 @@ html.has-motion #about.is-live .float-tag:nth-child(4) { animation-delay: -3.1s;
 
 html.has-motion #about.is-live .float-tag:hover,
 html.has-motion #about.is-live .float-tag:focus-visible {
-  animation: none;
+  animation-play-state: running;
 }
 
 html.has-motion #about.is-live .portrait-art {

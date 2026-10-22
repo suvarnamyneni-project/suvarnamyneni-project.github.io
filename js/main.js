@@ -409,16 +409,19 @@ function initZoom() {
   measure();
   applyZoom(0);
 
+  const syncZoom = (self) => {
+    const zoomPortion = metrics.screens / (metrics.screens + 1);
+    applyZoom(Math.min(1, self.progress / zoomPortion));
+  };
+
   window.ScrollTrigger.create({
     trigger: spacer,
     start: "top top",
     end: "bottom top",
     scrub: true,
     invalidateOnRefresh: true,
-    onUpdate: (self) => {
-      const zoomPortion = metrics.screens / (metrics.screens + 1);
-      applyZoom(Math.min(1, self.progress / zoomPortion));
-    },
+    onUpdate: syncZoom,
+    onRefresh: syncZoom,
   });
 
   window.ScrollTrigger.create({
@@ -469,14 +472,21 @@ function initZoom() {
   }
 
   if (location.hash) {
-    const target = document.querySelector(location.hash);
-    if (target) {
+    const settleHash = () => {
+      const target = document.querySelector(location.hash);
+      if (!target && location.hash !== "#top") return;
+      if (location.hash === "#top") window.scrollTo(0, 0);
+      else if (window.deskLenis) window.deskLenis.scrollTo(target, { immediate: true, force: true });
+      else target.scrollIntoView();
+      if (window.ScrollTrigger) window.ScrollTrigger.update();
+    };
+    requestAnimationFrame(() => {
+      settleHash();
       requestAnimationFrame(() => {
-        if (location.hash === "#top") window.scrollTo(0, 0);
-        else if (window.deskLenis) window.deskLenis.scrollTo(target, { immediate: true });
-        else target.scrollIntoView();
+        if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+        settleHash();
       });
-    }
+    });
   }
 }
 
