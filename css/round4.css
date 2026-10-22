@@ -750,18 +750,36 @@ html.has-rail .project-body > h3 + p {
 }
 
 .desk-card {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   padding: 16px 16px 20px;
   border-radius: 24px;
   background: linear-gradient(#fff, rgba(255, 250, 245, 0.85));
   border: 1px solid rgba(163, 71, 40, 0.12);
   box-shadow: 0 26px 50px -38px rgba(120, 70, 50, 0.4);
+  opacity: 1;
+  transform: none;
+}
+
+#also .desk-card .case-link {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
 .desk-card .art-slot {
   aspect-ratio: 1;
   margin-bottom: 14px;
   border-radius: 18px;
+}
+
+#also .blurb-main {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  color: var(--muted);
 }
 
 .kicker {
@@ -776,30 +794,20 @@ html.has-rail .project-body > h3 + p {
 }
 
 .blurb {
-  display: grid;
+  display: block;
   margin-top: 8px;
 }
 
-.blurb > span {
-  grid-area: 1 / 1;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+.blurb-main {
+  display: block;
+  color: var(--muted);
 }
 
 .blurb-hook {
-  opacity: 0;
-  transform: translateY(8px);
+  display: block;
+  margin-top: 6px;
   color: var(--accent);
   font-weight: 600;
-}
-
-.desk-card:hover .blurb-main,
-.desk-card:focus-within .blurb-main {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
-.desk-card:hover .blurb-hook,
-.desk-card:focus-within .blurb-hook {
   opacity: 1;
   transform: none;
 }
