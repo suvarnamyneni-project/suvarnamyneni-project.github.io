@@ -1444,7 +1444,7 @@ html.is-stack .timeline .when {
   height: auto;
   max-width: none;
   pointer-events: auto;
-  touch-action: none;
+  touch-action: manipulation;
   cursor: grab;
   user-select: none;
   padding: 0;
