@@ -1,8 +1,7 @@
 /**
  * Display glass on assets/art/hero, as percentages of the painting.
  * Corners run clockwise from the top left and follow the painted perspective.
- * DESK_TOP / DESK_BOTTOM bound the painted objects (laptop through notebook).
- * At rest the headline sits in the sky and that band stays inside the viewport.
+ * At rest the painting fills the hero from the top and the headline sits in its sky.
  */
 const SCREEN_CORNERS = [
   { x: 42.5, y: 19.44 },
@@ -11,8 +10,6 @@ const SCREEN_CORNERS = [
   { x: 42.24, y: 35.05 },
 ];
 const LAPTOP_SCREEN = { x: 42.5, y: 20.51, w: 14.61, h: 14.54 };
-const DESK_TOP = 18;
-const DESK_BOTTOM = 64;
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";
@@ -350,20 +347,18 @@ function initZoom() {
     const mobile = isMobile();
     const eased = smoothstep(0, 1, amount);
     const target = mobile ? Math.min(metrics.scaleToFill, 1.45) : metrics.scaleToFill;
-    /* Fit the desk between the bio and the bottom of the hero, then zoom into the laptop. */
+    /* The painting covers the hero from the top. Scale only enough that the
+       headline sits in the painted sky, and stop before the desk objects
+       fall off the left and right edges. */
     const copyBottom = copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top;
-    const gap = 28;
-    const bottomMargin = 12;
-    const band = (DESK_BOTTOM - DESK_TOP) / 100;
-    const room = metrics.height - copyBottom - gap - bottomMargin;
-    const restScale = Math.max(1, room / (metrics.imageHeight * band));
+    const skyLine = SCREEN_CORNERS[0].y / 100;
+    const skyScale = (copyBottom + 12) / (metrics.imageHeight * skyLine);
+    const objectSpan = (77.6 - 22.5) / 100;
+    const fitScale = metrics.width / (metrics.imageWidth * objectSpan);
+    const restScale = Math.max(1, Math.min(skyScale, fitScale));
     const scale = restScale + (target - restScale) * eased;
     const restX = (metrics.width - metrics.imageWidth * restScale) / 2;
-    let restY = copyBottom + gap - metrics.imageHeight * restScale * (DESK_TOP / 100);
-    const deskBottomY = restY + metrics.imageHeight * restScale * (DESK_BOTTOM / 100);
-    const limit = metrics.height - bottomMargin;
-    if (deskBottomY > limit) restY -= deskBottomY - limit;
-    if (restY < 0) restY = 0;
+    const restY = 0;
     const zoomX = metrics.width / 2 - metrics.screenX * target;
     const zoomY = metrics.height / 2 - metrics.screenY * target;
     let x = restX + (zoomX - restX) * eased;

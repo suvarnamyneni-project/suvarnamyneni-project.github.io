@@ -213,9 +213,30 @@ h3,
 }
 
 .hero-scrim {
-  background:
-    linear-gradient(180deg, rgba(253, 240, 226, 0.78) 0%, rgba(253, 240, 226, 0.42) 16%, rgba(253, 240, 226, 0) 32%),
-    linear-gradient(0deg, rgba(253, 240, 226, 0.35) 0%, transparent 16%);
+  display: none;
+}
+
+/* The painting is the only hero background. No second sky behind or over it. */
+.sky-wash,
+.sky-drift {
+  display: none !important;
+}
+
+.scene-tilt {
+  z-index: 3;
+}
+
+.scene picture {
+  z-index: 0;
+  pointer-events: none;
+}
+
+.scene img {
+  pointer-events: none;
+}
+
+.hotspots {
+  z-index: 6;
 }
 
 .hero-copy {
@@ -226,6 +247,7 @@ h3,
   top: calc(env(safe-area-inset-top) + 104px);
   display: block;
   text-align: center;
+  pointer-events: none;
 }
 
 .hero-copy h1 {
@@ -385,11 +407,11 @@ html.is-stack #unfold {
   }
 }
 
-/* Reduced motion skips the zoom script, so the desk still has to sit below the type. */
+/* Without the zoom script the painting still fills the hero from the top. */
 @media (min-width: 901px) {
   html:not(.has-zoom) .scene {
-    top: 22%;
-    bottom: -28%;
+    top: 0;
+    bottom: 0;
   }
 }
 
@@ -1669,6 +1691,7 @@ html.has-motion .hotspot-screen.is-hinting::after {
 }
 
 .select-box {
+  z-index: 60;
   border: 1.5px solid #e0703a;
   border-radius: 2px;
 }
