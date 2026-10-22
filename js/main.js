@@ -1,8 +1,12 @@
 /**
  * Display glass on assets/art/hero, as percentages of the painting.
  * Corners run clockwise from the top left and follow the painted perspective.
- * At rest the painting fills the hero from the top and the headline sits in its sky.
+ * At rest the painting fills the hero from the top. Scale stops before the
+ * keyboard, notebook and magnifier drop under the scroll pill.
  */
+const DESK_LEFT = 23.0;
+const DESK_RIGHT = 79.2;
+const DESK_BOTTOM = 61.6;
 const SCREEN_CORNERS = [
   { x: 42.5, y: 19.44 },
   { x: 57.42, y: 20.51 },
@@ -99,7 +103,7 @@ function initTilt() {
 }
 
 function initNavState() {
-  const links = [...document.querySelectorAll(".site-nav a")];
+  const links = [...document.querySelectorAll(".nav-menu a, .nav-contact")];
   const sections = links
     .map((link) => {
       const href = link.getAttribute("href") || "";
@@ -347,15 +351,18 @@ function initZoom() {
     const mobile = isMobile();
     const eased = smoothstep(0, 1, amount);
     const target = mobile ? Math.min(metrics.scaleToFill, 1.45) : metrics.scaleToFill;
-    /* The painting covers the hero from the top. Scale only enough that the
-       headline sits in the painted sky, and stop before the desk objects
-       fall off the left and right edges. */
-    const copyBottom = copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top;
+    /* The painting covers the hero from the top. Keep the headline in the
+       painted sky when there is room, keep the outer objects inside the
+       frame, and keep the keyboard, notebook and magnifier above the pill. */
+    const heroTop = hero.getBoundingClientRect().top;
+    const copyBottom = copy.getBoundingClientRect().bottom - heroTop;
     const skyLine = SCREEN_CORNERS[0].y / 100;
     const skyScale = (copyBottom + 12) / (metrics.imageHeight * skyLine);
-    const objectSpan = (77.6 - 22.5) / 100;
+    const objectSpan = (DESK_RIGHT - DESK_LEFT) / 100;
     const fitScale = metrics.width / (metrics.imageWidth * objectSpan);
-    const restScale = Math.max(1, Math.min(skyScale, fitScale));
+    const pillTop = pill.getBoundingClientRect().top - heroTop;
+    const deskScale = (pillTop - 8) / (metrics.imageHeight * (DESK_BOTTOM / 100));
+    const restScale = Math.max(1, Math.min(skyScale, fitScale, deskScale));
     const scale = restScale + (target - restScale) * eased;
     const restX = (metrics.width - metrics.imageWidth * restScale) / 2;
     const restY = 0;

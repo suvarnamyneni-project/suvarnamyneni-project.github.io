@@ -48,6 +48,9 @@
     .site-nav { position: relative; gap: 2px; padding: 5px; }
     .nav-menu { display: flex; align-items: center; gap: 2px; }
     .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 .875rem/1 Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
+    .mode-switch { display: flex; align-items: center; gap: 2px; margin-left: 4px; padding: 2px; border-radius: 999px; background: rgba(253,240,226,.72); }
+    .mode-switch a { padding: 5px 10px; font-size: .78rem; line-height: 1.2; border-radius: 999px; }
+    .mode-switch a[aria-current="page"] { background: #fffdfb; color: #2b3236; }
     .nav-contact, .nav-toggle, .nav-cv, .nav-cv[hidden] { display: none; }
     html .hero-stage { position: relative; height: 100vh; height: 100dvh; overflow: hidden; background: #f1c0af; color: #2b3236; }
     html .scene, html .scene-bob, html .scene-tilt, html .scene-shift, html .scene picture, html .hero-scrim { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -58,7 +61,7 @@
     html .hero-sub, html .hero-sub strong { font-family: Switzer, "Segoe UI", sans-serif; font-synthesis: none; }
     html .hero-sub { position: static; left: auto; right: auto; bottom: auto; margin: .7rem auto 0; max-width: 44rem; padding: 0; background: none; font-size: clamp(1.02rem, 1.15vw, 1.125rem); font-weight: 400; line-height: 1.45; color: #41484c; text-shadow: none; }
     html .hero-sub strong { color: #2b3236; font-weight: 600; }
-    .scroll-pill { position: absolute; z-index: 4; left: 50%; bottom: calc(22px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; justify-content: center; gap: 16px; margin: 0; padding: 12px 28px; border-radius: 999px; background: rgba(255,251,247,.86); color: #2b3236; font-size: .95rem; white-space: nowrap; max-width: calc(100% - 48px); min-width: min(520px, calc(100% - 48px)); }
+    .scroll-pill { position: absolute; z-index: 4; left: 50%; bottom: calc(8px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0; padding: 6px 22px; border-radius: 999px; background: rgba(255,251,247,.86); color: #2b3236; font-size: .86rem; white-space: nowrap; max-width: calc(100% - 48px); min-width: min(520px, calc(100% - 48px)); }
     .scroll-pill a { color: #a34728; font-weight: 600; }
     .scroll-mouse, .scroll-mouse svg { width: 14px; height: 20px; display: block; flex: none; }
     .scroll-rule { width: 1px; align-self: stretch; background: rgba(43,50,54,.22); }
@@ -68,20 +71,23 @@
     .glide-plane { width: 46px; height: 46px; left: -6%; top: 24%; }
     .glide-plane svg { width: 100%; height: 100%; display: block; }
     .spot-card { opacity: 0; }
-    .hover-hint { left: 50%; bottom: calc(108px + env(safe-area-inset-bottom)); transform: translateX(-50%); margin: 0; padding: 7px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600; line-height: 1.2; white-space: nowrap; width: max-content; }
+    .hover-hint { left: 50%; bottom: calc(64px + env(safe-area-inset-bottom)); transform: translateX(-50%); margin: 0; padding: 7px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600; line-height: 1.2; white-space: nowrap; width: max-content; }
+    @media (min-width: 901px) {
+      .hover-hint { left: 24px; right: auto; top: calc(env(safe-area-inset-top) + 112px); bottom: auto; transform: none; }
+    }
     html.is-stack .scene-bob { animation: none !important; }
     .hotspot { position: absolute; }
-    html .hotspot-plane { left: 22.5%; top: 14%; width: 9.7%; height: 8%; }
+    html .hotspot-plane { left: 23%; top: 14%; width: 9.2%; height: 7.6%; }
     html .hotspot-screen { left: 42.24%; top: 19.44%; width: 15.18%; height: 17.23%; z-index: 5; }
-    html .hotspot-laptop { left: 38%; top: 36.67%; width: 20%; height: 6.73%; }
-    html .hotspot-keys { left: 38%; top: 43.4%; width: 20.4%; height: 10.1%; z-index: 5; }
-    html .hotspot-coffee { left: 28.3%; top: 33.3%; width: 7.8%; height: 11.5%; z-index: 4; }
-    html .hotspot-sketch { left: 25.6%; top: 44.8%; width: 15.2%; height: 16.2%; }
-    html .hotspot-notebook { left: 41.5%; top: 52%; width: 15.6%; height: 11%; z-index: 4; }
-    html .hotspot-glass { left: 59.3%; top: 46.5%; width: 8.7%; height: 13.5%; z-index: 4; }
-    html .hotspot-kit { left: 59.8%; top: 24.3%; width: 11.3%; height: 20%; }
-    html .hotspot-phone { left: 67.9%; top: 39.6%; width: 6%; height: 15.3%; z-index: 5; }
-    html .hotspot-plant { left: 71.5%; top: 32%; width: 6.1%; height: 14%; z-index: 4; }
+    html .hotspot-laptop { left: 37.6%; top: 36%; width: 22%; height: 5.4%; }
+    html .hotspot-keys { left: 38.4%; top: 41.2%; width: 19.6%; height: 6.6%; z-index: 5; }
+    html .hotspot-coffee { left: 30%; top: 33.4%; width: 6.8%; height: 10.4%; z-index: 4; }
+    html .hotspot-sketch { left: 26%; top: 46.2%; width: 13.6%; height: 13.2%; }
+    html .hotspot-notebook { left: 41.6%; top: 48.4%; width: 16.4%; height: 12.8%; z-index: 4; }
+    html .hotspot-glass { left: 58.2%; top: 44%; width: 9.4%; height: 17%; z-index: 4; }
+    html .hotspot-kit { left: 59.2%; top: 22.4%; width: 14.2%; height: 19%; }
+    html .hotspot-phone { left: 68%; top: 38.8%; width: 6%; height: 16%; z-index: 5; }
+    html .hotspot-plant { left: 71.6%; top: 30%; width: 7.6%; height: 16.4%; z-index: 4; }
     .hero-spacer { display: none; }
     .unfold, .veil, .hotspots, .seed-field { position: absolute; inset: 0; pointer-events: none; }
     html.is-stack #unfold { display: none; }
@@ -108,8 +114,20 @@
       html .site-header { left: 12px; right: 12px; top: 12px; }
       .brand-role, .nav-menu { display: none; }
       .brand-avatar { width: 32px; height: 32px; }
+      html .brand-chip { flex-shrink: 0; }
       .nav-contact, .nav-toggle { display: inline-flex; align-items: center; min-height: 44px; }
+      .mode-switch { margin-left: 0; }
+      .mode-switch a { padding: 6px 8px; font-size: .72rem; }
       html .hero-copy { top: calc(env(safe-area-inset-top) + 88px); width: min(100% - 32px, 560px); }
+    }
+    @media (max-width: 520px) {
+      .nav-contact { display: none !important; }
+    }
+    @media (max-width: 430px) {
+      html .site-header { flex-wrap: wrap; row-gap: 8px; }
+      html .brand-chip { margin-right: auto; }
+      .site-nav { margin-left: auto; }
+      html .hero-copy { top: calc(env(safe-area-inset-top) + 132px); }
     }
   </style>
   <link rel="stylesheet" href="css/styles.css" media="print" onload="this.media='all'">
@@ -175,6 +193,10 @@
         <a href="#path" data-caption="Path">Path</a>
         <a href="#about" data-caption="About">About</a>
         <a href="#contact" data-caption="Contact">Contact</a>
+      </div>
+      <div class="mode-switch" role="group" aria-label="Portfolio">
+        <a href="#top" aria-current="page">Interactive</a>
+        <a href="https://motiveux.wixsite.com/suvarnaproject" rel="noopener" title="Classic portfolio on Wix">Classic</a>
       </div>
       <a class="nav-contact" href="#contact">Contact</a>
       <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">
