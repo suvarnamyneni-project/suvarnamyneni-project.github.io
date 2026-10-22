@@ -1075,86 +1075,59 @@ html.is-stack .timeline .when {
 
 .float-tag {
   position: absolute;
+  z-index: 2;
   pointer-events: auto;
   padding: 9px 14px;
   font: 600 0.84rem/1 var(--sans);
+  white-space: nowrap;
   transform-origin: center center;
-  will-change: transform;
+  translate: calc(var(--tag-x, 0) * 16px) calc(var(--tag-y, 0) * 12px);
+  transition: translate 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.7s cubic-bezier(0.3, 1.6, 0.5, 1), opacity 0.5s;
 }
 
 .float-face {
   display: inline-block;
-  transform-origin: center center;
 }
 
-.float-tag:nth-child(1) { left: -16px; top: 12%; }
-.float-tag:nth-child(2) { right: -12px; top: 24%; }
-.float-tag:nth-child(3) { left: -22px; bottom: 16%; }
-.float-tag:nth-child(4) { right: -8px; bottom: 14%; }
+.float-tag:nth-child(1) { left: auto; right: -86px; top: 4%; transition-delay: 0.15s; }
+.float-tag:nth-child(2) { left: auto; right: calc(100% + 22px); top: 20%; transition-delay: 0.3s; }
+.float-tag:nth-child(3) { left: auto; right: calc(100% + 22px); bottom: 16%; transition-delay: 0.45s; }
+.float-tag:nth-child(4) { left: auto; right: -50px; bottom: 16%; transition-delay: 0.6s; }
 
-html.has-motion #about .float-tag,
-html.has-motion #about.is-live .float-tag {
-  animation-name: tag-wobble;
-  animation-duration: 7.6s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-delay: 0s;
+#about .float-tag:hover,
+#about .float-tag:focus-visible,
+#about .float-tag.is-held {
+  background: rgba(255, 251, 247, 0.72);
+  color: var(--ink);
 }
 
-html.has-motion #about .float-tag:nth-child(1),
-html.has-motion #about.is-live .float-tag:nth-child(1) {
-  --rot-a: -8deg;
-  --rot-b: 7deg;
-  --dx: 5px;
-  --dy: -9px;
-  animation-duration: 7.4s;
-  animation-delay: -0.4s;
+html.has-motion #about .float-tag {
+  opacity: 0;
+  scale: 0.6;
 }
 
-html.has-motion #about .float-tag:nth-child(2),
-html.has-motion #about.is-live .float-tag:nth-child(2) {
-  --rot-a: 7deg;
-  --rot-b: -9deg;
-  --dx: -6px;
-  --dy: -11px;
-  animation-duration: 8.6s;
-  animation-delay: -2.2s;
+html.has-motion #about.tags-in .float-tag {
+  opacity: 1;
+  scale: 1;
+  animation: tag-drift 5s ease-in-out infinite;
 }
 
-html.has-motion #about .float-tag:nth-child(3),
-html.has-motion #about.is-live .float-tag:nth-child(3) {
-  --rot-a: -6deg;
-  --rot-b: 10deg;
-  --dx: 7px;
-  --dy: -8px;
-  animation-duration: 6.8s;
-  animation-delay: -3.5s;
+html.has-motion #about.tags-in .float-tag:nth-child(2) { animation-delay: -1.6s; }
+html.has-motion #about.tags-in .float-tag:nth-child(3) { animation-delay: -3.2s; }
+html.has-motion #about.tags-in .float-tag:nth-child(4) { animation-delay: -4.4s; }
+
+@keyframes tag-drift {
+  50% { transform: translateY(-6px) rotate(-1.5deg); }
 }
 
-html.has-motion #about .float-tag:nth-child(4),
-html.has-motion #about.is-live .float-tag:nth-child(4) {
-  --rot-a: 9deg;
-  --rot-b: -6deg;
-  --dx: -5px;
-  --dy: -10px;
-  animation-duration: 9.1s;
-  animation-delay: -1.3s;
+html.has-motion #about.tags-in .float-tag:hover,
+html.has-motion #about.tags-in .float-tag:focus-visible,
+html.has-motion #about.tags-in .float-tag.is-held {
+  scale: 1.06;
 }
 
-@keyframes tag-wobble {
-  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--rot-a)); }
-  50% { transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rot-b)); }
-}
-
-html.has-motion #about.is-live .float-tag:hover,
-html.has-motion #about.is-live .float-tag:focus-visible {
-  animation-name: tag-wobble;
-  animation-play-state: running;
-}
-
-@media (min-width: 901px) {
-  .float-tag { cursor: grab; touch-action: none; }
-  .float-tag.is-dragging { cursor: grabbing; z-index: 5; animation: none; }
+@media (pointer: coarse) {
+  #about .float-tag { translate: none; }
 }
 
 .fact-cards {
@@ -1969,25 +1942,33 @@ html.is-night .brand-chip {
     max-width: 420px;
   }
 
+  #about .portrait {
+    display: block;
+    width: min(100%, 420px);
+    margin-inline: auto;
+  }
+
   #about .float-tags {
-    position: static;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
+    position: absolute;
+    inset: 0;
+    display: block;
+    margin: 0;
   }
 
-  .float-tag,
-  .float-tag:nth-child(1),
-  .float-tag:nth-child(2),
-  .float-tag:nth-child(3),
-  .float-tag:nth-child(4) {
-    position: static;
+  #about .float-tag,
+  #about .float-tag:nth-child(1),
+  #about .float-tag:nth-child(2),
+  #about .float-tag:nth-child(3),
+  #about .float-tag:nth-child(4) {
+    position: absolute;
+    font-size: 12px;
+    padding: 7px 11px;
   }
 
-  .float-tags {
-    margin-bottom: 18px;
-  }
+  #about .float-tag:nth-child(1) { left: auto; right: -2px; top: 7%; bottom: auto; }
+  #about .float-tag:nth-child(2) { left: -4px; right: auto; top: 20%; bottom: auto; }
+  #about .float-tag:nth-child(3) { left: -4px; right: auto; top: auto; bottom: 12%; }
+  #about .float-tag:nth-child(4) { left: auto; right: 0; top: auto; bottom: 18%; }
 
   .scroll-pill {
     gap: 8px;
@@ -2169,6 +2150,10 @@ html.is-stack .timeline li {
   .float-tag {
     animation: none;
     transform: none;
+    translate: none;
+    transition: none;
+    opacity: 1;
+    scale: 1;
   }
 
   .select-box:not([hidden]) {
