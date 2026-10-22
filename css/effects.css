@@ -215,17 +215,17 @@ html.has-motion.is-zooming .scene-bob {
   border-radius: 16px;
 }
 
-.hotspot-plane { left: 22.5%; top: 14%; width: 9.7%; height: 8%; }
+.hotspot-plane { left: 23%; top: 14%; width: 9.2%; height: 7.6%; }
 .hotspot-screen { left: 42.24%; top: 19.44%; width: 15.18%; height: 17.23%; }
-.hotspot-laptop { left: 38%; top: 36.67%; width: 20%; height: 6.73%; }
-.hotspot-keys { left: 38%; top: 43.4%; width: 20.4%; height: 10.1%; }
-.hotspot-coffee { left: 28.3%; top: 33.3%; width: 7.8%; height: 11.5%; }
-.hotspot-sketch { left: 25.6%; top: 44.8%; width: 15.2%; height: 16.2%; }
-.hotspot-notebook { left: 41.5%; top: 52%; width: 15.6%; height: 11%; }
-.hotspot-glass { left: 59.3%; top: 46.5%; width: 8.7%; height: 13.5%; }
-.hotspot-kit { left: 59.8%; top: 24.3%; width: 11.3%; height: 20%; }
-.hotspot-phone { left: 67.9%; top: 39.6%; width: 6%; height: 15.3%; }
-.hotspot-plant { left: 71.5%; top: 32%; width: 6.1%; height: 14%; }
+.hotspot-laptop { left: 37.6%; top: 36%; width: 22%; height: 5.4%; }
+.hotspot-keys { left: 38.4%; top: 41.2%; width: 19.6%; height: 6.6%; }
+.hotspot-coffee { left: 30%; top: 33.4%; width: 6.8%; height: 10.4%; }
+.hotspot-sketch { left: 26%; top: 46.2%; width: 13.6%; height: 13.2%; }
+.hotspot-notebook { left: 41.6%; top: 48.4%; width: 16.4%; height: 12.8%; }
+.hotspot-glass { left: 58.2%; top: 44%; width: 9.4%; height: 17%; }
+.hotspot-kit { left: 59.2%; top: 22.4%; width: 14.2%; height: 19%; }
+.hotspot-phone { left: 68%; top: 38.8%; width: 6%; height: 16%; }
+.hotspot-plant { left: 71.6%; top: 30%; width: 7.6%; height: 16.4%; }
 
 .plane-icon {
   transform: rotate(-8deg);
@@ -408,10 +408,10 @@ html.has-fine-cursor * {
   border-radius: 1px;
 }
 
-.select-box i:nth-child(2) { left: -4px; top: -4px; }
-.select-box i:nth-child(3) { right: -4px; top: -4px; }
-.select-box i:nth-child(4) { right: -4px; bottom: -4px; }
-.select-box i:nth-child(5) { left: -4px; bottom: -4px; }
+.select-box i:nth-child(2) { left: -5px; top: -5px; }
+.select-box i:nth-child(3) { right: -5px; top: -5px; }
+.select-box i:nth-child(4) { right: -5px; bottom: -5px; }
+.select-box i:nth-child(5) { left: -5px; bottom: -5px; }
 
 .toast-stack {
   position: fixed;

@@ -193,6 +193,42 @@ h3,
   display: none;
 }
 
+.mode-switch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 4px;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(253, 240, 226, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(43, 50, 54, 0.08);
+}
+
+.mode-switch a {
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  color: var(--muted);
+}
+
+.mode-switch a[aria-current="page"],
+.mode-switch a[aria-current="page"]:hover {
+  background: #fffdfb;
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgba(80, 40, 20, 0.12);
+}
+
+.mode-switch a:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.mode-switch a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .nav-cv[hidden] {
   display: none !important;
 }
@@ -316,6 +352,7 @@ html.has-motion.ready .hero-copy h1 .word {
 }
 
 .scroll-pill {
+  bottom: calc(8px + env(safe-area-inset-bottom));
   background: rgba(255, 251, 247, 0.86);
   color: var(--ink);
   border: 1px solid rgba(255, 255, 255, 0.7);
@@ -323,9 +360,9 @@ html.has-motion.ready .hero-copy h1 .word {
   -webkit-backdrop-filter: blur(16px) saturate(1.5);
   backdrop-filter: blur(16px) saturate(1.5);
   font-weight: 500;
-  gap: 16px;
-  padding: 12px 28px;
-  font-size: 0.95rem;
+  gap: 12px;
+  padding: 6px 22px;
+  font-size: 0.86rem;
   min-width: min(520px, calc(100% - 48px));
   justify-content: center;
 }
@@ -1509,11 +1546,24 @@ html.has-motion #about.is-live .float-tag:focus-visible {
     height: 32px;
   }
 
+  .brand-chip {
+    flex-shrink: 0;
+  }
+
   .nav-contact,
   .nav-toggle {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
+  }
+
+  .mode-switch {
+    margin-left: 0;
+  }
+
+  .mode-switch a {
+    padding: 6px 8px;
+    font-size: 0.72rem;
   }
 
   .site-nav.is-open .nav-menu {
@@ -1551,6 +1601,31 @@ html.has-motion #about.is-live .float-tag:focus-visible {
   .email-bar {
     border-radius: 22px;
     justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .nav-contact {
+    display: none !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .site-header {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .brand-chip {
+    margin-right: auto;
+  }
+
+  .site-nav {
+    margin-left: auto;
+  }
+
+  .hero-copy {
+    top: calc(env(safe-area-inset-top) + 132px);
   }
 }
 
@@ -1642,17 +1717,17 @@ html.has-spots .hotspot:focus-visible {
   outline: none;
 }
 
-html body .hotspot-plane { left: 22.5%; top: 14%; width: 9.7%; height: 8%; }
+html body .hotspot-plane { left: 23%; top: 14%; width: 9.2%; height: 7.6%; }
 html body .hotspot-screen { left: 42.24%; top: 19.44%; width: 15.18%; height: 17.23%; z-index: 5; }
-html body .hotspot-laptop { left: 38%; top: 36.67%; width: 20%; height: 6.73%; }
-html body .hotspot-keys { left: 38%; top: 43.4%; width: 20.4%; height: 10.1%; z-index: 5; }
-html body .hotspot-coffee { left: 28.3%; top: 33.3%; width: 7.8%; height: 11.5%; z-index: 4; }
-html body .hotspot-sketch { left: 25.6%; top: 44.8%; width: 15.2%; height: 16.2%; }
-html body .hotspot-notebook { left: 41.5%; top: 52%; width: 15.6%; height: 11%; z-index: 4; }
-html body .hotspot-glass { left: 59.3%; top: 46.5%; width: 8.7%; height: 13.5%; z-index: 4; }
-html body .hotspot-kit { left: 59.8%; top: 24.3%; width: 11.3%; height: 20%; }
-html body .hotspot-phone { left: 67.9%; top: 39.6%; width: 6%; height: 15.3%; z-index: 5; }
-html body .hotspot-plant { left: 71.5%; top: 32%; width: 6.1%; height: 14%; z-index: 4; }
+html body .hotspot-laptop { left: 37.6%; top: 36%; width: 22%; height: 5.4%; }
+html body .hotspot-keys { left: 38.4%; top: 41.2%; width: 19.6%; height: 6.6%; z-index: 5; }
+html body .hotspot-coffee { left: 30%; top: 33.4%; width: 6.8%; height: 10.4%; z-index: 4; }
+html body .hotspot-sketch { left: 26%; top: 46.2%; width: 13.6%; height: 13.2%; }
+html body .hotspot-notebook { left: 41.6%; top: 48.4%; width: 16.4%; height: 12.8%; z-index: 4; }
+html body .hotspot-glass { left: 58.2%; top: 44%; width: 9.4%; height: 17%; z-index: 4; }
+html body .hotspot-kit { left: 59.2%; top: 22.4%; width: 14.2%; height: 19%; }
+html body .hotspot-phone { left: 68%; top: 38.8%; width: 6%; height: 16%; z-index: 5; }
+html body .hotspot-plant { left: 71.6%; top: 30%; width: 7.6%; height: 16.4%; z-index: 4; }
 
 html.is-zooming .hotspot,
 html.is-zooming .hotspot:hover,
@@ -1678,7 +1753,7 @@ html.has-motion .hotspot-screen.is-hinting::after {
   content: "";
   position: absolute;
   inset: -7px;
-  border: 1.5px solid #e0703a;
+  border: 2px solid #E8590C;
   border-radius: 4px;
   animation: spot-pulse 1.5s ease-out 2;
   pointer-events: none;
@@ -1692,8 +1767,9 @@ html.has-motion .hotspot-screen.is-hinting::after {
 
 .select-box {
   z-index: 60;
-  border: 1.5px solid #e0703a;
+  border: 2px solid #E8590C;
   border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(255, 253, 251, 0.95);
 }
 
 .select-size {
@@ -1701,10 +1777,11 @@ html.has-motion .hotspot-screen.is-hinting::after {
 }
 
 .select-box i {
-  width: 7px;
-  height: 7px;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
   background: #fffdfb;
-  border: 1.5px solid #e0703a;
+  border: 2px solid #E8590C;
   border-radius: 1px;
 }
 
@@ -1778,7 +1855,7 @@ html.has-motion .hotspot-screen.is-hinting::after {
   position: absolute;
   z-index: 6;
   left: 50%;
-  bottom: calc(108px + env(safe-area-inset-bottom));
+  bottom: calc(64px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
   margin: 0;
   padding: 7px 12px;
@@ -1790,6 +1867,16 @@ html.has-motion .hotspot-screen.is-hinting::after {
   font-size: 0.8rem;
   font-weight: 600;
   pointer-events: none;
+}
+
+@media (min-width: 901px) {
+  .hover-hint {
+    left: 24px;
+    right: auto;
+    top: calc(env(safe-area-inset-top) + 112px);
+    bottom: auto;
+    transform: none;
+  }
 }
 
 html.has-motion .hover-hint {
