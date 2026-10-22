@@ -1596,12 +1596,13 @@ html.has-motion #about.tags-in .float-tag.is-held {
   font-size: 0.92rem;
 }
 
-.skill-chips {
+.about-copy .skill-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  width: min(100%, 860px);
-  margin: 28px 0 0;
+  width: 100%;
+  max-width: 38rem;
+  margin: 22px 0 0;
   padding: 0;
   list-style: none;
 }
