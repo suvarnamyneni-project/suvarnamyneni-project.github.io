@@ -1,6 +1,8 @@
 /**
  * Round 2: pinned work rail and path timeline.
- * Phone, tablet, coarse pointers, and reduced motion stay vertical.
+ * The work rail stays vertical on phone, tablet, and coarse pointers.
+ * The path stays a horizontal track on every size. Reduced motion uses a
+ * native scroll-snap row instead of pinning.
  */
 (function () {
   const STACK_QUERY = "(max-width: 900px), (pointer: coarse)";
@@ -111,16 +113,20 @@
 
   function layoutPath() {
     if (!pathBoard) return;
-    const { track, episodes, stick, route } = pathBoard;
-    if (isStack() || !episodes[0] || episodes[0].offsetWidth < 40) {
-      track.style.transform = "none";
+    const { track, episodes, stick, route, pin } = pathBoard;
+    if (!episodes[0] || episodes[0].offsetWidth < 40) {
       pathBoard.maxShift = 0;
       pathBoard.travel = 1;
       return;
     }
-    const width = episodes[0].offsetWidth;
-    pathBoard.maxShift = Math.max(1, (episodes.length - 1) * width);
+    const step = episodes.length > 1
+      ? episodes[1].offsetLeft - episodes[0].offsetLeft
+      : episodes[0].offsetWidth;
+    pathBoard.maxShift = Math.max(1, (episodes.length - 1) * step);
     pathBoard.travel = Math.round(pathBoard.maxShift * 0.8);
+    if (pin) pin.style.setProperty("--path-travel", `${pathBoard.travel}px`);
+    if (reduceMotion) track.style.transform = "none";
+    const width = episodes[0].offsetWidth;
     const height = stick.clientHeight || window.innerHeight;
     const boardWidth = Math.max(track.scrollWidth, pathBoard.maxShift + width);
     route.svg.setAttribute("viewBox", `0 0 ${boardWidth} ${height}`);
@@ -155,10 +161,12 @@
   }
 
   function applyPathBoard(progress) {
-    if (!pathBoard || isStack()) return;
+    if (!pathBoard) return;
     const p = clamp01(progress);
     const count = pathBoard.episodes.length;
-    pathBoard.track.style.transform = `translate3d(${(-p * pathBoard.maxShift).toFixed(2)}px, 0, 0)`;
+    if (!reduceMotion) {
+      pathBoard.track.style.transform = `translate3d(${(-p * pathBoard.maxShift).toFixed(2)}px, 0, 0)`;
+    }
     const index = Math.round(p * Math.max(1, count - 1));
     setPathActive(Math.max(0, Math.min(count - 1, index)), p);
     const fractions = pathBoard.stationFrac || [];
@@ -176,28 +184,57 @@
     }
   }
 
+  function currentScroll() {
+    return window.deskLenis ? window.deskLenis.scroll : window.scrollY;
+  }
+
+  function pathEngaged() {
+    if (!pathBoard || reduceMotion) return false;
+    if (pathTrigger) {
+      const y = currentScroll();
+      return y >= pathTrigger.start - 2 && y <= pathTrigger.end + 2;
+    }
+    const rect = pathBoard.pin.getBoundingClientRect();
+    return rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+  }
+
+  function applyStickyPath() {
+    if (!pathBoard || reduceMotion || !isStack()) return;
+    const travel = pathBoard.travel || 1;
+    const passed = -pathBoard.pin.getBoundingClientRect().top;
+    applyPathBoard(passed / travel);
+  }
+
+  function syncSnapPath() {
+    if (!pathBoard || !reduceMotion) return;
+    const scroller = pathBoard.track;
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    const progress = max > 0 ? scroller.scrollLeft / max : 0;
+    applyPathBoard(progress);
+  }
+
   function syncStackPath() {
-    if (!pathBoard || !isStack()) return;
-    let active = 0;
-    pathBoard.episodes.forEach((episode, index) => {
-      if (episode.getBoundingClientRect().top < window.innerHeight * 0.42) active = index;
-    });
-    const count = pathBoard.episodes.length;
-    setPathActive(active, count === 1 ? 0 : active / (count - 1));
+    applyStickyPath();
   }
 
   function scrollToPathIndex(index) {
     if (!pathBoard) return;
     const count = pathBoard.episodes.length;
     const next = Math.max(0, Math.min(count - 1, index));
-    if (!isStack() && pathTrigger) {
-      const progress = count === 1 ? 0 : next / (count - 1);
-      const y = pathTrigger.start + (pathTrigger.end - pathTrigger.start) * progress;
-      scrollTo(y, { duration: reduceMotion ? 0 : 0.95, easing: smootherstep });
+    const progress = count === 1 ? 0 : next / (count - 1);
+    if (reduceMotion) {
+      const episode = pathBoard.episodes[next];
+      if (!episode) return;
+      pathBoard.track.scrollTo({ left: Math.max(0, episode.offsetLeft - 18), behavior: "auto" });
       return;
     }
-    const episode = pathBoard.episodes[next];
-    if (episode) scrollTo(episode, { offset: -120, duration: reduceMotion ? 0 : 0.75, easing: smootherstep });
+    if (pathTrigger) {
+      const y = pathTrigger.start + (pathTrigger.end - pathTrigger.start) * progress;
+      scrollTo(y, { duration: 0.95, easing: smootherstep });
+      return;
+    }
+    const pinTop = pathBoard.pin.getBoundingClientRect().top + window.scrollY;
+    scrollTo(pinTop + pathBoard.travel * progress, { duration: 0.7, easing: smootherstep });
   }
 
   function mountPathBoard() {
@@ -244,19 +281,64 @@
     buttons.forEach((button, index) => {
       button.addEventListener("click", () => scrollToPathIndex(index));
     });
-    const scrub = section.querySelector(".path-scrub");
-    if (scrub) {
-      scrub.addEventListener("keydown", (event) => {
-        if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-        event.preventDefault();
-        const current = buttons.findIndex((button) => button.getAttribute("aria-current") === "true");
-        const next = event.key === "ArrowRight"
-          ? Math.min(buttons.length - 1, current + 1)
-          : Math.max(0, current - 1);
-        scrollToPathIndex(next);
-        buttons[next].focus();
-      });
-    }
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+      if (event.altKey || event.metaKey || event.ctrlKey) return;
+      const active = document.activeElement;
+      if (active && active.closest("input, textarea, select, [contenteditable='true']")) return;
+      const inPath = active && section.contains(active);
+      const snapVisible = reduceMotion && section.getBoundingClientRect().top < window.innerHeight * 0.8 && section.getBoundingClientRect().bottom > window.innerHeight * 0.2;
+      if (!inPath && !pathEngaged() && !snapVisible) return;
+      if (!inPath && active && active !== document.body && (active.tagName === "A" || active.tagName === "BUTTON")) return;
+      event.preventDefault();
+      const current = buttons.findIndex((button) => button.getAttribute("aria-current") === "true");
+      const base = current < 0 ? 0 : current;
+      const next = event.key === "ArrowRight"
+        ? Math.min(buttons.length - 1, current < 0 ? 0 : base + 1)
+        : Math.max(0, base - 1);
+      scrollToPathIndex(next);
+      if (inPath) buttons[next].focus();
+    });
+    window.addEventListener("wheel", (event) => {
+      if (event.ctrlKey || event.altKey || event.metaKey) return;
+      if (!pathEngaged()) return;
+      const horizontal = event.shiftKey || Math.abs(event.deltaX) > Math.abs(event.deltaY);
+      if (!horizontal) return;
+      if (!event.shiftKey && Math.abs(event.deltaX) < 0.5) return;
+      event.preventDefault();
+      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+      const next = currentScroll() + delta;
+      if (window.deskLenis) window.deskLenis.scrollTo(next, { immediate: true });
+      else window.scrollTo(0, next);
+    }, { passive: false, capture: true });
+    let drag = null;
+    stick.addEventListener("touchstart", (event) => {
+      if (reduceMotion || !event.touches[0]) return;
+      drag = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+        scroll: currentScroll(),
+        lock: "",
+      };
+    }, { passive: true });
+    stick.addEventListener("touchmove", (event) => {
+      if (!drag || reduceMotion || !event.touches[0]) return;
+      const dx = event.touches[0].clientX - drag.x;
+      const dy = event.touches[0].clientY - drag.y;
+      if (!drag.lock) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        drag.lock = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      }
+      if (drag.lock !== "x" || !pathEngaged()) return;
+      event.preventDefault();
+      const scale = pathBoard.maxShift ? pathBoard.travel / pathBoard.maxShift : 1;
+      const next = drag.scroll - dx * scale;
+      if (window.deskLenis) window.deskLenis.scrollTo(next, { immediate: true });
+      else window.scrollTo(0, next);
+    }, { passive: false });
+    stick.addEventListener("touchend", () => { drag = null; });
+    stick.addEventListener("touchcancel", () => { drag = null; });
+    track.addEventListener("scroll", syncSnapPath, { passive: true });
     setPathActive(0, 0);
     window.addEventListener("scroll", syncStackPath, { passive: true });
   }
@@ -815,6 +897,7 @@
     const stack = isStack();
     root.classList.toggle("is-stack", stack);
     root.classList.toggle("has-rail", !stack);
+    root.classList.toggle("is-path-snap", reduceMotion);
     if (railTrigger) {
       railTrigger.kill(true);
       railTrigger = null;
@@ -865,7 +948,7 @@
       applyStackPath();
     }
 
-    if (!stack && window.ScrollTrigger && pathBoard) {
+    if (!reduceMotion && !stack && window.ScrollTrigger && pathBoard) {
       layoutPath();
       pathTrigger = window.ScrollTrigger.create({
         trigger: pathBoard.pin,
@@ -879,9 +962,13 @@
         onUpdate: (self) => applyPathBoard(self.progress),
       });
       applyPathBoard(0);
+    } else if (pathBoard && !reduceMotion) {
+      layoutPath();
+      applyStickyPath();
     } else if (pathBoard) {
+      layoutPath();
       pathBoard.track.style.transform = "none";
-      syncStackPath();
+      syncSnapPath();
     }
 
     window.ScrollTrigger && window.ScrollTrigger.refresh();
