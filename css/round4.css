@@ -399,6 +399,11 @@ html.is-stack #unfold {
   visibility: hidden !important;
 }
 
+/* Once the real page has taken over, the fixed hero must not paint through later sections. */
+.has-zoom .hero-stage.is-handed {
+  visibility: hidden;
+}
+
 /* Work cards. */
 
 .art-slot {
@@ -740,6 +745,10 @@ html.has-rail .project-body > h3 + p {
   }
 }
 
+#also .desk-card {
+  --rise: 0px;
+}
+
 .desk-card {
   height: 100%;
   padding: 16px 16px 20px;
@@ -922,7 +931,11 @@ html.is-stack .timeline .when {
   color: var(--ink);
 }
 
-/* About. */
+/* About. The section is opaque so the fixed hero, and the work clone inside it, cannot show through. */
+
+#about {
+  background: var(--bg);
+}
 
 .about-grid {
   display: grid;
@@ -952,8 +965,20 @@ html.is-stack .timeline .when {
 }
 
 @media (min-width: 901px) {
+  #about .about-grid {
+    grid-template-columns: clamp(420px, 32vw, 480px) minmax(0, 1fr);
+    gap: 72px;
+    align-items: center;
+  }
+
   #about .portrait {
-    padding: 12px 112px 20px;
+    width: 100%;
+    padding: 18px 0 22px;
+  }
+
+  #about .portrait-art {
+    width: 100%;
+    max-width: 480px;
   }
 }
 
@@ -995,10 +1020,10 @@ html.is-stack .timeline .when {
   transform-origin: center center;
 }
 
-.float-tag:nth-child(1) { left: 0; top: 14%; }
-.float-tag:nth-child(2) { right: 0; top: 26%; }
-.float-tag:nth-child(3) { left: 0; bottom: 20%; }
-.float-tag:nth-child(4) { right: 0; bottom: 16%; }
+.float-tag:nth-child(1) { left: -16px; top: 12%; }
+.float-tag:nth-child(2) { right: -12px; top: 24%; }
+.float-tag:nth-child(3) { left: -22px; bottom: 16%; }
+.float-tag:nth-child(4) { right: -8px; bottom: 14%; }
 
 html.has-motion #about .float-tag,
 html.has-motion #about.is-live .float-tag {
@@ -1598,8 +1623,6 @@ html body .hotspot-glass { left: 59.3%; top: 46.5%; width: 8.7%; height: 13.5%; 
 html body .hotspot-kit { left: 59.8%; top: 24.3%; width: 11.3%; height: 20%; }
 html body .hotspot-phone { left: 67.9%; top: 39.6%; width: 6%; height: 15.3%; z-index: 5; }
 html body .hotspot-plant { left: 71.5%; top: 32%; width: 6.1%; height: 14%; z-index: 4; }
-html body .hotspot-note { left: 32.7%; top: 45.2%; width: 4%; height: 4.2%; z-index: 6; }
-html.is-stack .hotspot-note { display: none !important; }
 
 html.is-zooming .hotspot,
 html.is-zooming .hotspot:hover,
