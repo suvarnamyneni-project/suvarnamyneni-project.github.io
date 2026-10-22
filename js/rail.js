@@ -807,6 +807,32 @@
   });
   window.addEventListener("scroll", onScroll, { passive: true });
 
+  function scrollToCard(id) {
+    const card = document.getElementById(id);
+    if (!card) return;
+    const stack = document.documentElement.classList.contains("is-stack");
+    if (!stack && railTrigger && rail && cards.includes(card)) {
+      const progress = clamp01((card.offsetLeft - 28) / Math.max(1, rail.distance));
+      const y = railTrigger.start + (railTrigger.end - railTrigger.start) * progress;
+      scrollTo(y, { duration: reduceMotion ? 0 : 1.15, easing: smootherstep });
+      return;
+    }
+    scrollTo(card, { offset: -88, duration: reduceMotion ? 0 : 0.9 });
+  }
+
+  function openPathStop(id) {
+    const stop = document.getElementById(id);
+    const section = document.getElementById("path");
+    const scroller = document.querySelector(".path-scroller");
+    if (section) scrollTo(section, { offset: -8, duration: reduceMotion ? 0 : 0.85 });
+    if (!stop || !scroller) return;
+    window.setTimeout(() => {
+      scroller.scrollTo({ left: stop.offsetLeft, behavior: reduceMotion ? "auto" : "smooth" });
+    }, reduceMotion ? 0 : 420);
+  }
+
   window.mountRound2 = mountRound2;
   window.bindRound2 = bindRound2;
+  window.scrollToCard = scrollToCard;
+  window.openPathStop = openPathStop;
 })();

@@ -151,6 +151,11 @@ html.has-motion .scene-bob {
   will-change: transform;
 }
 
+html.is-stack .scene-bob {
+  animation: none;
+  will-change: auto;
+}
+
 html.has-motion.is-zooming .scene-bob {
   animation-play-state: paused;
 }

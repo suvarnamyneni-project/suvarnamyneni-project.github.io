@@ -167,34 +167,168 @@
   }
 
   function initHotspots() {
-    const plane = document.querySelector(".hotspot-plane");
-    document.querySelectorAll(".hotspot").forEach((button) => {
-      button.addEventListener("click", async () => {
-        const kind = button.getAttribute("data-hotspot");
-        if (kind === "coffee") {
-          showToast("Coffee on the desk.");
-          return;
-        }
-        if (kind === "card") {
-          showToast("A card on the desk.");
-          return;
-        }
-        if (kind === "plane") {
-          if (motion && plane) {
-            plane.classList.remove("is-away");
-            void plane.offsetWidth;
-            plane.classList.add("is-away");
-            window.setTimeout(() => plane.classList.remove("is-away"), 950);
-          }
-          const ok = await copyEmail();
-          showToast(ok ? "Copied" : "Could not copy the email address.");
-          return;
-        }
-        if (kind === "work") {
-          const work = document.getElementById("work");
-          glideTo(work, "#work");
-        }
+    const spots = [...document.querySelectorAll(".hotspot")];
+    const box = document.getElementById("select-box");
+    const card = document.getElementById("spot-card");
+    const hint = document.getElementById("hover-hint");
+    const hero = document.querySelector(".hero-stage");
+    if (!spots.length || !box || !card || !hero) return;
+
+    root.classList.add("has-spots");
+    const labelEl = card.querySelector(".spot-label");
+    const storyEl = card.querySelector(".spot-story");
+    const laptop = document.querySelector(".hotspot-laptop");
+    let target = null;
+    let running = false;
+    let pointerKind = "mouse";
+    const pos = { x: 0, y: 0, w: 80, h: 48, vx: 0, vy: 0, vw: 0, vh: 0, ready: false };
+
+    if (hint && window.matchMedia("(hover: none)").matches) hint.textContent = "Tap an object";
+    if (laptop && motion) laptop.classList.add("is-hinting");
+    window.setTimeout(() => {
+      if (laptop) laptop.classList.remove("is-hinting");
+    }, 3400);
+
+    function springTo(current, velocity, dest) {
+      if (!motion) return [dest, 0];
+      const velocityNext = (velocity + (dest - current) * 0.22) * 0.66;
+      return [current + velocityNext, velocityNext];
+    }
+
+    function placeCard(rect) {
+      const width = card.offsetWidth || 250;
+      const height = card.offsetHeight || 78;
+      let x = rect.right + 14;
+      let y = rect.top - 6;
+      if (x + width > window.innerWidth - 12) x = rect.left - 14 - width;
+      if (x < 8) x = Math.min(window.innerWidth - width - 8, rect.left);
+      if (y + height > window.innerHeight - 12) y = window.innerHeight - height - 12;
+      if (y < 8) y = 8;
+      card.style.left = `${x}px`;
+      card.style.top = `${y}px`;
+    }
+
+    function frame() {
+      const zooming = root.classList.contains("is-zooming") || hero.classList.contains("is-unfolding");
+      if (!target || zooming) {
+        box.hidden = true;
+        card.classList.remove("is-on");
+        hero.classList.remove("is-laptop");
+        running = false;
+        return;
+      }
+      const rect = target.getBoundingClientRect();
+      if (rect.width < 2) {
+        running = false;
+        return;
+      }
+      if (!pos.ready) {
+        pos.x = rect.left;
+        pos.y = rect.top;
+        pos.w = rect.width;
+        pos.h = rect.height;
+        pos.vx = pos.vy = pos.vw = pos.vh = 0;
+        pos.ready = true;
+      } else {
+        [pos.x, pos.vx] = springTo(pos.x, pos.vx, rect.left);
+        [pos.y, pos.vy] = springTo(pos.y, pos.vy, rect.top);
+        [pos.w, pos.vw] = springTo(pos.w, pos.vw, rect.width);
+        [pos.h, pos.vh] = springTo(pos.h, pos.vh, rect.height);
+      }
+      box.hidden = false;
+      box.style.left = `${pos.x}px`;
+      box.style.top = `${pos.y}px`;
+      box.style.width = `${pos.w}px`;
+      box.style.height = `${pos.h}px`;
+      placeCard({ left: pos.x, top: pos.y, right: pos.x + pos.w, width: pos.w, height: pos.h });
+      requestAnimationFrame(frame);
+    }
+
+    function showSpot(spot) {
+      if (hint) hint.classList.add("is-done");
+      if (laptop) laptop.classList.remove("is-hinting");
+      const changed = target !== spot;
+      target = spot;
+      labelEl.textContent = spot.dataset.label || "";
+      storyEl.textContent = spot.dataset.story || "";
+      card.classList.add("is-on");
+      hero.classList.toggle("is-laptop", spot.classList.contains("hotspot-laptop"));
+      if (changed && !running) {
+        running = true;
+        requestAnimationFrame(frame);
+      }
+    }
+
+    function clearSpot(spot) {
+      if (spot && target !== spot) return;
+      target = null;
+      hero.classList.remove("is-laptop");
+      card.classList.remove("is-on");
+    }
+
+    function activate(spot, event) {
+      const cardId = spot.dataset.card;
+      const pathId = spot.dataset.path;
+      const href = spot.getAttribute("href") || "";
+      if (cardId && window.scrollToCard) {
+        event.preventDefault();
+        window.scrollToCard(cardId);
+        return;
+      }
+      if (pathId && window.openPathStop) {
+        event.preventDefault();
+        window.openPathStop(pathId);
+        return;
+      }
+      if (href.startsWith("#")) {
+        const dest = document.querySelector(href);
+        if (!dest) return;
+        event.preventDefault();
+        glideTo(dest, href);
+      }
+    }
+
+    spots.forEach((spot) => {
+      spot.addEventListener("pointerdown", (event) => {
+        pointerKind = event.pointerType || "mouse";
       });
+      spot.addEventListener("pointerenter", (event) => {
+        if (event.pointerType === "touch") return;
+        showSpot(spot);
+      });
+      spot.addEventListener("pointerleave", (event) => {
+        if (event.pointerType === "touch") return;
+        if (document.activeElement === spot) return;
+        clearSpot(spot);
+      });
+      spot.addEventListener("focus", () => showSpot(spot));
+      spot.addEventListener("blur", () => clearSpot(spot));
+      spot.addEventListener("click", (event) => {
+        if (pointerKind === "touch") {
+          if (spot.dataset.armed !== "true") {
+            event.preventDefault();
+            spots.forEach((item) => {
+              delete item.dataset.armed;
+            });
+            spot.dataset.armed = "true";
+            showSpot(spot);
+            return;
+          }
+        }
+        activate(spot, event);
+      });
+    });
+
+    document.addEventListener("keydown", () => {
+      pointerKind = "key";
+    });
+    document.addEventListener("pointerdown", (event) => {
+      if (event.target.closest(".hotspot")) return;
+      spots.forEach((spot) => {
+        delete spot.dataset.armed;
+      });
+      if (document.activeElement && document.activeElement.classList && document.activeElement.classList.contains("hotspot")) return;
+      clearSpot();
     });
   }
 
@@ -267,20 +401,15 @@
     if (!motion || !finePointer) return;
     const cursor = document.getElementById("cursor");
     const bubble = cursor ? cursor.querySelector(".cursor-bubble") : null;
-    const box = document.getElementById("select-box");
-    const sizeLabel = box ? box.querySelector(".select-size") : null;
     if (!cursor || !bubble) return;
 
     root.classList.add("has-fine-cursor");
     let clientX = window.innerWidth * 0.46;
     let clientY = window.innerHeight * 0.42;
     let caption = "";
-    let hint = "";
-    let hintTimer = 0;
-    let activeHotspot = null;
 
     function renderBubble() {
-      const text = caption || hint;
+      const text = caption;
       bubble.textContent = text;
       cursor.classList.toggle("has-caption", Boolean(text));
       cursor.classList.toggle("flip", clientX > window.innerWidth - 260);
@@ -294,21 +423,6 @@
 
     let placed = false;
 
-    function showHint(text, life) {
-      if (caption) return;
-      hint = text;
-      cursor.hidden = false;
-      if (!placed) place(window.innerWidth * 0.42, window.innerHeight * 0.58);
-      renderBubble();
-      window.clearTimeout(hintTimer);
-      hintTimer = window.setTimeout(() => {
-        if (hint === text) {
-          hint = "";
-          renderBubble();
-        }
-      }, life);
-    }
-
     document.addEventListener("pointermove", (event) => {
       if (event.pointerType && event.pointerType !== "mouse") return;
       cursor.hidden = false;
@@ -318,10 +432,7 @@
       cursor.classList.toggle("is-hot", Boolean(hot));
       const cap = event.target.closest("[data-caption]");
       caption = cap ? cap.getAttribute("data-caption") || "" : "";
-      if (caption) hint = "";
       renderBubble();
-      const spot = event.target.closest(".hotspot");
-      activeHotspot = spot || null;
     });
 
     document.addEventListener("pointerdown", (event) => {
@@ -333,59 +444,13 @@
       if (!event.relatedTarget) cursor.hidden = true;
     });
 
-    function trackBox() {
-      if (!box) return;
-      const focus = document.activeElement;
-      const target = activeHotspot || (focus && focus.classList && focus.classList.contains("hotspot") ? focus : null);
-      const zooming = root.classList.contains("is-zooming");
-      if (!target || zooming || target.closest(".hero-stage.is-unfolding")) {
-        box.hidden = true;
-        return;
-      }
-      const rect = target.getBoundingClientRect();
-      if (rect.width < 2 || rect.height < 2) {
-        box.hidden = true;
-        return;
-      }
-      box.hidden = false;
-      box.style.left = `${rect.left}px`;
-      box.style.top = `${rect.top}px`;
-      box.style.width = `${rect.width}px`;
-      box.style.height = `${rect.height}px`;
-      if (sizeLabel) sizeLabel.textContent = `${Math.round(rect.width)} × ${Math.round(rect.height)}`;
-    }
-
-    document.addEventListener("focusin", trackBox);
-    document.addEventListener("focusout", () => {
-      requestAnimationFrame(trackBox);
-    });
-
-    function frame() {
-      trackBox();
-      requestAnimationFrame(frame);
-    }
-    frame();
-
-    try {
-      if (!localStorage.getItem(HINT_KEY)) {
-        localStorage.setItem(HINT_KEY, "1");
-        window.setTimeout(() => {
-          if (window.scrollY < window.innerHeight * 0.4) showHint("The desk objects respond.", 2600);
-        }, 2800);
-        window.setTimeout(() => {
-          if (window.scrollY < window.innerHeight * 0.4) showHint("A fast swipe scatters the seeds.", 2600);
-        }, 8000);
-      }
-    } catch (error) {
-      /* storage unavailable: skip the once-only hints */
-    }
   }
 
   function initParallax() {
     if (!motion || !finePointer) return;
     const sky = document.querySelector(".sky-wash");
-    const shift = document.querySelector(".scene-shift");
-    if (!sky || !shift) return;
+    const tilt = document.querySelector(".scene-tilt");
+    if (!sky || !tilt) return;
     let tx = 0;
     let ty = 0;
     let cx = 0;
@@ -396,11 +461,13 @@
       cy = event.clientY / window.innerHeight - 0.5;
     });
     function frame() {
-      tx += (cx - tx) * 0.06;
-      ty += (cy - ty) * 0.06;
-      const damp = root.classList.contains("is-zooming") ? 0.15 : 1;
-      sky.style.transform = `translate3d(${(-tx * 26 * damp).toFixed(2)}px, ${(-ty * 16 * damp).toFixed(2)}px, 0)`;
-      shift.style.transform = `translate3d(${(tx * 12 * damp).toFixed(2)}px, ${(ty * 8 * damp).toFixed(2)}px, 0)`;
+      tx += (cx - tx) * 0.08;
+      ty += (cy - ty) * 0.08;
+      const zooming = root.classList.contains("is-zooming");
+      sky.style.transform = `translate3d(${(-tx * 22).toFixed(2)}px, ${(-ty * 12).toFixed(2)}px, 0)`;
+      tilt.style.transform = zooming
+        ? ""
+        : `rotateX(${(-ty * 1.15).toFixed(3)}deg) rotateY(${(tx * 1.5).toFixed(3)}deg)`;
       requestAnimationFrame(frame);
     }
     frame();

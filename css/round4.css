@@ -1424,10 +1424,330 @@ html.is-stack .timeline li {
   html.has-motion .desk-card .art-slot,
   .project:hover .thumb,
   .project:hover .go,
-  .path-art img {
+  .path-art img,
+  .cloud,
+  .petal,
+  .steam i,
+  .glide-plane,
+  .hotspot.is-hinting::after,
+  .hover-hint {
     animation: none;
     transform: none;
   }
+
+  .select-box:not([hidden]) {
+    display: block !important;
+  }
+
+  .spot-card,
+  .screen-glow {
+    transition: none;
+  }
+}
+
+/* Hero desk: selection, cards, sky, and idle motion. */
+
+.sky-wash {
+  background:
+    radial-gradient(ellipse 46% 40% at 8% 0%, rgba(255, 204, 150, 0.92), transparent 68%),
+    radial-gradient(ellipse 40% 34% at 84% 2%, rgba(255, 168, 184, 0.4), transparent 70%),
+    linear-gradient(180deg, rgba(255, 214, 196, 0.34), transparent 48%);
+}
+
+.scene-bob {
+  perspective: 1400px;
+}
+
+.scene-tilt {
+  transform-origin: 50% 64%;
+}
+
+.hotspot {
+  pointer-events: auto;
+  border-radius: 4px;
+}
+
+html.has-spots .hotspot:hover,
+html.has-spots .hotspot:focus-visible {
+  outline: none;
+}
+
+html body .hotspot-laptop { left: 43.2%; top: 47.2%; width: 14.6%; height: 4.4%; }
+html body .hotspot-keys { left: 44%; top: 50.6%; width: 13%; height: 3.6%; z-index: 3; }
+html body .hotspot-house { left: 59%; top: 46%; width: 14%; height: 16%; }
+html body .hotspot-chat { left: 55%; top: 39%; width: 11%; height: 10%; }
+html body .hotspot-basket { left: 25%; top: 53%; width: 13%; height: 14%; }
+html body .hotspot-phone { left: 18.5%; top: 58%; width: 7.4%; height: 12%; }
+html body .hotspot-card { left: 71%; top: 57%; width: 9%; height: 9%; }
+html body .hotspot-sketch { left: 49%; top: 63%; width: 13%; height: 11%; }
+html body .hotspot-coffee { left: 36%; top: 60%; width: 8%; height: 10%; }
+html body .hotspot-plants { left: 80%; top: 64%; width: 12%; height: 12%; }
+html body .hotspot-plane { left: 15%; top: 11%; width: 9%; height: 10%; }
+
+html.has-motion .hotspot-laptop.is-hinting::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 1.5px solid #e0703a;
+  border-radius: 4px;
+  animation: spot-pulse 1.5s ease-out 2;
+  pointer-events: none;
+}
+
+@keyframes spot-pulse {
+  0% { opacity: 0.15; transform: scale(0.96); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.06); }
+}
+
+.select-box {
+  border: 1.5px solid #e0703a;
+  border-radius: 2px;
+}
+
+.select-size {
+  display: none;
+}
+
+.select-box i {
+  width: 7px;
+  height: 7px;
+  background: #fffdfb;
+  border: 1.5px solid #e0703a;
+  border-radius: 1px;
+}
+
+.spot-card {
+  position: fixed;
+  z-index: 45;
+  width: min(268px, calc(100vw - 24px));
+  margin: 0;
+  padding: 12px 14px 13px;
+  border-radius: 16px;
+  background: #fffdfb;
+  color: var(--ink);
+  box-shadow: 0 18px 40px rgba(80, 42, 24, 0.16);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(8px) scale(0.96);
+  transition: opacity 0.22s ease, transform 0.48s cubic-bezier(0.2, 1.35, 0.36, 1);
+}
+
+.spot-card.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+.spot-label {
+  margin: 0;
+  color: #5e564f;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.spot-story {
+  margin: 4px 0 0;
+  font-size: 0.94rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.scroll-mouse {
+  display: inline-flex;
+  width: 14px;
+  height: 20px;
+  flex: none;
+}
+
+.scroll-mouse svg {
+  width: 14px;
+  height: 20px;
+  display: block;
+}
+
+.scroll-rule {
+  width: 1px;
+  align-self: stretch;
+  margin: 3px 0;
+  background: rgba(43, 50, 54, 0.22);
+  flex: none;
+}
+
+.has-zoom .scroll-pill-label::before {
+  content: none;
+}
+
+.hero-copy,
+.scroll-pill,
+.hover-hint {
+  z-index: 6;
+}
+
+.hover-hint {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: calc(76px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 251, 247, 0.92);
+  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 24px rgba(80, 40, 20, 0.12);
+  font-size: 0.8rem;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+html.has-motion .hover-hint {
+  animation: hint-life 5.6s ease forwards;
+}
+
+.hover-hint.is-done {
+  opacity: 0;
+  animation: none;
+}
+
+@keyframes hint-life {
+  0%,
+  68% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.desk-fx,
+.sky-drift {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.desk-fx { z-index: 4; }
+.sky-drift { z-index: 2; }
+
+.cloud {
+  position: absolute;
+  height: 54px;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(255, 252, 248, 0.72), rgba(255, 236, 226, 0.08) 72%, transparent 74%);
+}
+
+.cloud.c1 { width: 180px; left: 8%; top: 16%; animation: cloud-drift 46s linear infinite; }
+.cloud.c2 { width: 240px; left: 48%; top: 8%; animation: cloud-drift 58s linear infinite reverse; }
+.cloud.c3 { width: 140px; left: 72%; top: 22%; animation: cloud-drift 52s linear infinite; }
+
+@keyframes cloud-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(80px, 10px, 0); }
+}
+
+.petal {
+  position: absolute;
+  width: 8px;
+  height: 11px;
+  border-radius: 60% 40% 60% 40%;
+  background: #f0a090;
+  opacity: 0.75;
+}
+
+.petal.p1 { left: 18%; top: 20%; animation: petal-fall 13s linear infinite; }
+.petal.p2 { left: 40%; top: 8%; animation: petal-fall 17s linear infinite 3s; background: #f6c1a4; }
+.petal.p3 { left: 62%; top: 14%; animation: petal-fall 15s linear infinite 1s; }
+.petal.p4 { left: 78%; top: 28%; animation: petal-fall 19s linear infinite 5s; background: #e9989a; }
+.petal.p5 { left: 30%; top: 30%; animation: petal-fall 16s linear infinite 2s; }
+
+@keyframes petal-fall {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 0; }
+  12% { opacity: 0.8; }
+  100% { transform: translate3d(36px, 42vh, 0) rotate(80deg); opacity: 0; }
+}
+
+.screen-glow {
+  position: absolute;
+  left: 44.4%;
+  top: 48.2%;
+  width: 11.6%;
+  height: 4.6%;
+  border-radius: 8px;
+  background: radial-gradient(ellipse at center, rgba(255, 244, 214, 0.95), rgba(255, 196, 120, 0.2) 68%, transparent 76%);
+  opacity: 0;
+  mix-blend-mode: soft-light;
+  transition: opacity 0.35s ease;
+}
+
+.hero-stage.is-laptop .screen-glow {
+  opacity: 1;
+}
+
+.steam {
+  position: absolute;
+  left: 38.2%;
+  top: 57%;
+  width: 22px;
+  height: 36px;
+}
+
+.steam i {
+  position: absolute;
+  left: 7px;
+  bottom: 0;
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid rgba(255, 252, 248, 0.9);
+  border-radius: 50%;
+  opacity: 0;
+  animation: steam-up 2.8s ease-in infinite;
+}
+
+.steam i:nth-child(2) { animation-delay: 0.9s; left: 11px; }
+.steam i:nth-child(3) { animation-delay: 1.7s; left: 4px; }
+
+@keyframes steam-up {
+  0% { transform: translateY(0) scale(0.7); opacity: 0; }
+  25% { opacity: 0.85; }
+  100% { transform: translateY(-26px) scale(1.2); opacity: 0; }
+}
+
+.glide-plane {
+  position: absolute;
+  left: -6%;
+  top: 24%;
+  width: 46px;
+  height: 46px;
+  opacity: 0;
+  animation: glide-across 18s linear infinite;
+}
+
+.glide-plane svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@keyframes glide-across {
+  0%,
+  58% { transform: translate3d(0, 0, 0) rotate(-16deg); opacity: 0; }
+  62% { opacity: 1; }
+  82% { transform: translate3d(108vw, -6vh, 0) rotate(-6deg); opacity: 1; }
+  88%,
+  100% { transform: translate3d(120vw, -8vh, 0); opacity: 0; }
+}
+
+html.is-stack .petal,
+html.is-stack .glide-plane,
+html.is-stack .cloud.c2,
+html.is-stack .cloud.c3,
+html.is-zooming .sky-drift,
+html.is-zooming .glide-plane,
+html.is-zooming .steam,
+html.is-zooming .hover-hint {
+  display: none;
+}
+
+.brand-avatar {
+  object-fit: cover;
+  object-position: center 46%;
 }
 
 /* Path: horizontal snap stops. The work rail stays pinned; this track does not. */
