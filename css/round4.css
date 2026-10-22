@@ -116,8 +116,8 @@ h3,
 
 .site-header.is-solid .brand-chip,
 .site-header.is-solid .site-nav {
-  background: rgba(255, 251, 247, 0.55);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 28px rgba(150, 90, 70, 0.1);
+  background: rgba(255, 251, 247, 0.38);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 28px rgba(150, 90, 70, 0.12);
 }
 
 .site-header > * {
@@ -128,9 +128,9 @@ h3,
 .site-header .site-nav {
   border-radius: 999px;
   text-decoration: none;
-  background: rgba(255, 251, 247, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 28px rgba(150, 90, 70, 0.1);
+  background: rgba(255, 251, 247, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 28px rgba(150, 90, 70, 0.12);
   -webkit-backdrop-filter: blur(16px) saturate(1.5);
   backdrop-filter: blur(16px) saturate(1.5);
   color: var(--ink);
@@ -192,27 +192,34 @@ body:not(.is-home) .brand-role {
   position: relative;
   display: flex;
   align-items: center;
+  width: max-content;
+  max-width: 100%;
   gap: 2px;
   padding: 5px;
 }
 
-.site-header .nav-menu {
+.site-header .nav-menu,
+.site-header.is-solid .nav-menu {
   display: flex;
   align-items: center;
+  width: max-content;
   gap: 2px;
   padding: 0;
   margin: 0;
   border: 0;
+  border-radius: 0;
   background: transparent;
   box-shadow: none;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 
-.site-header .nav-menu > a {
+.site-header .nav-menu > a,
+.site-header .nav-menu a {
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: 0;
+  height: auto;
 }
 
 .site-header .site-nav a,
@@ -222,18 +229,12 @@ body:not(.is-home) .brand-role {
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  line-height: 1;
+  line-height: normal;
   padding: 7px 14px;
   border-radius: 999px;
   background: transparent;
   border: 0;
-  font-family: inherit;
-}
-
-.site-header .nav-menu a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
+  font-family: Switzer, "Segoe UI", sans-serif;
 }
 
 .site-header .site-nav a:hover,
@@ -502,11 +503,13 @@ html.is-stack #unfold {
     right: auto;
     bottom: auto;
     margin: 0.4rem auto 0;
-    max-width: 34rem;
-    padding: 8px 11px;
+    max-width: none;
+    width: 100%;
+    padding: 7px 12px;
     border-radius: 14px;
-    font-size: 0.92rem;
-    line-height: 1.32;
+    font-size: 12px;
+    line-height: 1.35;
+    text-wrap: balance;
     background: rgba(253, 240, 226, 0.94);
     color: #2b3236;
     border: 1px solid rgba(255, 255, 255, 0.75);
@@ -2427,12 +2430,20 @@ html.is-night .brand-chip {
 
   .scroll-pill {
     gap: 8px;
-    padding: 8px 12px;
-    font-size: 0.8rem;
+    padding: 7px 14px;
+    font-size: 12.5px;
+    line-height: 1.2;
+    width: max-content;
     min-width: 0;
-    max-width: calc(100vw - 28px - env(safe-area-inset-left) - env(safe-area-inset-right));
-    white-space: normal;
+    max-width: calc(100vw - 20px - env(safe-area-inset-left) - env(safe-area-inset-right));
+    white-space: nowrap;
     text-align: center;
+    flex-wrap: nowrap;
+  }
+
+  .scroll-pill-label,
+  .scroll-pill a {
+    white-space: nowrap;
   }
 
   html.is-stack .tl-year {
@@ -2510,9 +2521,9 @@ html.is-night .brand-chip {
     z-index: 5;
     right: 0;
     top: calc(100% + 8px);
-    width: 180px;
-    min-width: 180px;
-    padding: 6px;
+    width: max-content;
+    min-width: 0;
+    padding: 8px 12px;
     border-radius: 22px;
     background: rgb(255, 250, 245);
     -webkit-backdrop-filter: blur(14px) saturate(1.5);
@@ -2525,18 +2536,23 @@ html.is-night .brand-chip {
     min-height: 44px;
     display: flex;
     align-items: center;
-    padding: 7px 12px;
+    padding: 7px 0;
   }
 
   .site-header .site-nav.is-open .mode-switch-menu {
     display: flex;
-    margin-top: 4px;
+    width: max-content;
+    max-width: 100%;
+    margin: 6px 0 2px;
+    box-sizing: border-box;
   }
 
   .site-header .site-nav.is-open .mode-switch-menu a {
-    flex: 1;
+    flex: 0 0 auto;
     justify-content: center;
     min-height: 36px;
+    padding: 6px 12px;
+    white-space: nowrap;
   }
 
   .mode-switch-foot {
@@ -3000,8 +3016,8 @@ html.is-zooming .hover-hint {
   object-position: center center;
 }
 
-/* Path: a horizontal track on every screen. Desktop and touch pin it and
-   slide sideways with the page scroll. Reduced motion uses a snap row. */
+/* Path: desktop pins and snaps one stage at a time. Touch and narrow
+   screens swipe a native snap row that stays inside the section. */
 
 #path.panel {
   padding: 0;
@@ -3295,110 +3311,65 @@ html.has-motion .path-ep:nth-of-type(even) .path-art img {
   border-radius: 8px;
 }
 
-html.has-motion .path-stick {
+html.has-motion:not(.is-path-snap) .path-stick {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
   touch-action: pan-y;
 }
 
-html.has-motion.is-stack .path-pin {
-  height: calc(100dvh + var(--path-travel, 280vw));
-}
-
-html.has-motion.is-stack .path-stick {
-  position: sticky;
-  top: 0;
-}
-
-html.has-motion .path-track {
+html.has-motion:not(.is-path-snap) .path-track {
   display: flex;
   align-items: stretch;
   height: 100%;
   width: max-content;
-  padding-left: 6vw;
+  padding-left: 0;
   will-change: transform;
 }
 
-html.has-motion .path-ep {
-  flex: 0 0 68vw;
+html.has-motion:not(.is-path-snap) .path-ep {
+  flex: 0 0 82vw;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: 3vw;
+  column-gap: 4vw;
   box-sizing: border-box;
   height: 100%;
-  padding: 228px 0 120px;
+  padding: 200px 11vw 130px 2vw;
+  overflow: hidden;
 }
 
-html.has-motion .path-copy {
-  max-width: none;
+html.has-motion:not(.is-path-snap) .path-art {
+  width: min(400px, 32vw);
+  margin: 0;
+  justify-self: start;
+}
+
+html.has-motion:not(.is-path-snap) .path-copy {
+  max-width: 36rem;
+  min-width: 0;
 }
 
 @media (max-width: 900px) {
-  html.has-motion #path .path-head h2,
   html.is-path-snap #path .path-head h2 {
     font-size: 34px;
     letter-spacing: -0.035em;
     line-height: 1;
   }
 
-  html.has-motion .path-head {
-    top: 96px;
-    left: 18px;
-    right: 18px;
-  }
-
-  html.has-motion .path-track {
-    padding-left: 18px;
-  }
-
-  html.has-motion .path-ep,
-  html.is-path-snap .path-ep {
-    flex: 0 0 74vw;
-    margin-right: 4vw;
-    grid-template-columns: 1fr;
-    align-content: center;
-    justify-items: center;
-    gap: 12px;
-    padding: 148px 0 96px;
-  }
-
-  html.has-motion .path-art,
-  html.is-path-snap .path-art {
-    width: min(52vw, 250px);
-    height: auto;
-  }
-
-  html.has-motion .path-yr,
-  html.is-path-snap .path-yr {
-    top: 20vh;
-    bottom: auto;
-    font-size: 96px;
-    -webkit-text-stroke: 1.2px rgba(224, 119, 79, 0.45);
-  }
-
-  html.has-motion .path-copy,
-  html.is-path-snap .path-copy {
-    max-width: min(320px, 82vw);
-  }
-
-  html.has-motion .path-copy h3,
   html.is-path-snap .path-copy h3 {
     font-size: 26px;
     letter-spacing: -0.03em;
     line-height: 1.05;
   }
 
-  html.has-motion .path-scrub,
-  html.is-path-snap .path-scrub {
-    width: calc(100% - 36px);
-    bottom: 16px;
-    height: 44px;
-    padding: 0 14px;
+  html.is-path-snap .path-yr {
+    top: 8%;
+    bottom: auto;
+    font-size: 72px;
+    -webkit-text-stroke: 1.2px rgba(224, 119, 79, 0.45);
   }
 
-  html.has-motion .path-scrub button span,
   html.is-path-snap .path-scrub button span {
     display: none;
   }
@@ -3409,9 +3380,14 @@ html.is-path-snap .path-pin {
 }
 
 html.is-path-snap .path-stick {
-  height: auto;
-  overflow: visible;
-  padding: 108px 0 28px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding: 92px 0 14px;
+  box-sizing: border-box;
 }
 
 html.is-path-snap .path-head {
@@ -3419,47 +3395,81 @@ html.is-path-snap .path-head {
   top: auto;
   left: auto;
   right: auto;
-  margin: 0 0 12px;
+  flex: none;
+  margin: 0 0 8px;
   padding: 0 20px;
 }
 
 html.is-path-snap .path-track {
   display: flex;
   align-items: stretch;
+  flex: 1 1 auto;
   width: 100%;
   max-width: 100%;
+  min-height: 0;
   height: auto;
   overflow-x: auto;
+  overflow-y: hidden;
   scroll-snap-type: x mandatory;
+  scroll-padding-inline: 7.5vw;
   overscroll-behavior-x: contain;
-  padding-left: 18px;
+  padding-inline: 7.5vw;
+  scrollbar-width: none;
   transform: none !important;
+}
+
+html.is-path-snap .path-track::-webkit-scrollbar {
+  display: none;
 }
 
 html.is-path-snap .path-ep {
   display: grid;
-  align-items: center;
-  gap: 3vw;
-  height: auto;
-  scroll-snap-align: start;
+  grid-template-columns: 1fr;
+  align-content: center;
+  justify-items: start;
+  gap: 10px;
+  flex: 0 0 85vw;
+  height: 100%;
+  margin: 0;
+  padding: 8px 12vw 12px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  scroll-snap-align: center;
   scroll-snap-stop: always;
+}
+
+html.is-path-snap .path-art {
+  justify-self: start;
+  width: min(72vw, 280px);
+  margin: 0;
+}
+
+html.is-path-snap .path-yr {
+  left: 16vw;
+}
+
+html.is-path-snap .path-copy {
+  max-width: 100%;
+  width: 100%;
+  text-align: left;
+  padding-left: 10vw;
+  padding-right: 4vw;
+}
+
+html.is-path-snap .path-tags {
+  justify-content: flex-start;
 }
 
 html.is-path-snap .path-scrub {
   position: relative;
   left: auto;
   bottom: auto;
+  flex: none;
   transform: none;
-  margin: 18px auto 0;
-}
-
-@media (min-width: 901px) {
-  html.is-path-snap .path-ep {
-    flex: 0 0 68vw;
-    margin-right: 0;
-    grid-template-columns: 1fr 1fr;
-    padding: 24px 0;
-  }
+  width: calc(100% - 36px);
+  height: 44px;
+  margin: 8px auto 0;
+  padding: 0 14px;
 }
 
 @media (prefers-reduced-motion: reduce) {

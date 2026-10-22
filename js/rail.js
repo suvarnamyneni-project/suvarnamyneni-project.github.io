@@ -1,8 +1,9 @@
 /**
  * Round 2: pinned work rail and path timeline.
  * The work rail stays vertical on phone, tablet, and coarse pointers.
- * The path stays a horizontal track on every size. Reduced motion uses a
- * native scroll-snap row instead of pinning.
+ * The path stays horizontal. Desktop pins with the vertical scroll and eases
+ * to a stage only after the wheel stops, always in the direction of travel.
+ * Touch, narrow screens, and reduced motion use a native scroll-snap row.
  */
 (function () {
   const STACK_QUERY = "(max-width: 900px), (pointer: coarse)";
@@ -38,6 +39,10 @@
 
   function isStack() {
     return reduceMotion || window.matchMedia(STACK_QUERY).matches;
+  }
+
+  function pathIsSnap() {
+    return isStack();
   }
 
   function yearFor(card) {
@@ -122,25 +127,56 @@
     const step = episodes.length > 1
       ? episodes[1].offsetLeft - episodes[0].offsetLeft
       : episodes[0].offsetWidth;
-    pathBoard.maxShift = Math.max(1, (episodes.length - 1) * step);
-    pathBoard.travel = Math.round(pathBoard.maxShift * 0.8);
+    const steps = Math.max(1, episodes.length - 1);
+    pathBoard.maxShift = Math.max(1, steps * step);
+    pathBoard.travel = Math.round(steps * (window.innerHeight || 1));
+    const stageShift = (index) => {
+      const episode = episodes[index];
+      return (stick.clientWidth / 2) - (episode.offsetLeft + episode.offsetWidth / 2);
+    };
+    pathBoard.shift0 = stageShift(0);
+    pathBoard.shift1 = stageShift(episodes.length - 1);
     if (pin) pin.style.setProperty("--path-travel", `${pathBoard.travel}px`);
-    if (reduceMotion) track.style.transform = "none";
+    if (pathIsSnap()) track.style.transform = "none";
     const width = episodes[0].offsetWidth;
     const height = stick.clientHeight || window.innerHeight;
+    const snap = pathIsSnap();
+    const boardHeight = snap ? Math.max(1, track.clientHeight) : height;
     const boardWidth = Math.max(track.scrollWidth, pathBoard.maxShift + width);
-    route.svg.setAttribute("viewBox", `0 0 ${boardWidth} ${height}`);
+    const trackBox = track.getBoundingClientRect();
+    const laneFor = (episode) => {
+      const art = episode.querySelector(".path-art");
+      const title = episode.querySelector("h3");
+      const artBox = art ? art.getBoundingClientRect() : null;
+      if (!artBox || artBox.height < 20) {
+        return { high: boardHeight * 0.46, low: boardHeight * 0.58 };
+      }
+      const artTop = artBox.top - trackBox.top;
+      const titleTop = title ? title.getBoundingClientRect().top - trackBox.top : artBox.bottom - trackBox.top + 36;
+      // Keep the 36px plane, including a rotated corner, above the role title.
+      const maxCenter = titleTop - 30;
+      const low = Math.min(artTop + artBox.height * 0.78, maxCenter);
+      const high = Math.min(artTop + artBox.height * 0.52, maxCenter - 12);
+      const floor = artTop + 18;
+      return { high: Math.max(floor, high), low: Math.max(floor, low) };
+    };
+    route.svg.setAttribute("viewBox", `0 0 ${boardWidth} ${boardHeight}`);
     route.svg.style.width = `${boardWidth}px`;
-    route.svg.style.height = `${height}px`;
-    route.rect.setAttribute("height", String(height));
+    route.svg.style.height = `${boardHeight}px`;
+    route.rect.setAttribute("height", String(boardHeight));
     const points = [];
     episodes.forEach((episode, index) => {
       const x = episode.offsetLeft;
       const episodeWidth = episode.offsetWidth;
-      if (index === 0) points.push({ x: Math.max(0, x - 36), y: height * 0.68 });
-      points.push({ x: x + episodeWidth * 0.15, y: height * 0.79 });
-      points.push({ x: x + episodeWidth * 0.5, y: height * 0.4 });
-      points.push({ x: x + episodeWidth * 0.88, y: height * 0.74 });
+      const lane = snap ? laneFor(episode) : null;
+      const yStart = lane ? lane.high : boardHeight * 0.68;
+      const yLow = lane ? lane.low : boardHeight * 0.79;
+      const yHigh = lane ? lane.high : boardHeight * 0.4;
+      const yEnd = lane ? lane.low : boardHeight * 0.74;
+      if (index === 0) points.push({ x: Math.max(0, x - 36), y: yStart });
+      points.push({ x: x + episodeWidth * 0.15, y: yLow });
+      points.push({ x: x + episodeWidth * 0.5, y: yHigh });
+      points.push({ x: x + episodeWidth * 0.88, y: yEnd });
     });
     paintWeave(route, points);
     const total = route.length || 1;
@@ -164,8 +200,9 @@
     if (!pathBoard) return;
     const p = clamp01(progress);
     const count = pathBoard.episodes.length;
-    if (!reduceMotion) {
-      pathBoard.track.style.transform = `translate3d(${(-p * pathBoard.maxShift).toFixed(2)}px, 0, 0)`;
+    if (!pathIsSnap()) {
+      const shift = pathBoard.shift0 + p * (pathBoard.shift1 - pathBoard.shift0);
+      pathBoard.track.style.transform = `translate3d(${shift.toFixed(2)}px, 0, 0)`;
     }
     const index = Math.round(p * Math.max(1, count - 1));
     setPathActive(Math.max(0, Math.min(count - 1, index)), p);
@@ -199,18 +236,27 @@
   }
 
   function applyStickyPath() {
-    if (!pathBoard || reduceMotion || !isStack()) return;
-    const travel = pathBoard.travel || 1;
-    const passed = -pathBoard.pin.getBoundingClientRect().top;
-    applyPathBoard(passed / travel);
+    return;
   }
 
   function syncSnapPath() {
-    if (!pathBoard || !reduceMotion) return;
+    if (!pathBoard || !pathIsSnap()) return;
     const scroller = pathBoard.track;
     const max = scroller.scrollWidth - scroller.clientWidth;
     const progress = max > 0 ? scroller.scrollLeft / max : 0;
+    const viewMid = scroller.scrollLeft + scroller.clientWidth / 2;
+    let nearest = 0;
+    let nearestDist = Infinity;
+    pathBoard.episodes.forEach((episode, index) => {
+      const mid = episode.offsetLeft + episode.offsetWidth / 2;
+      const dist = Math.abs(mid - viewMid);
+      if (dist < nearestDist) {
+        nearestDist = dist;
+        nearest = index;
+      }
+    });
     applyPathBoard(progress);
+    setPathActive(nearest, pathBoard.episodes.length === 1 ? 0 : nearest / (pathBoard.episodes.length - 1));
   }
 
   function syncStackPath() {
@@ -222,13 +268,18 @@
     const count = pathBoard.episodes.length;
     const next = Math.max(0, Math.min(count - 1, index));
     const progress = count === 1 ? 0 : next / (count - 1);
-    if (reduceMotion) {
+    if (pathIsSnap()) {
       const episode = pathBoard.episodes[next];
       if (!episode) return;
-      pathBoard.track.scrollTo({ left: Math.max(0, episode.offsetLeft - 18), behavior: "auto" });
+      const left = episode.offsetLeft - (pathBoard.track.clientWidth - episode.offsetWidth) / 2;
+      pathBoard.track.scrollTo({
+        left: Math.max(0, left),
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
       return;
     }
     if (pathTrigger) {
+      pathAim = next;
       const y = pathTrigger.start + (pathTrigger.end - pathTrigger.start) * progress;
       scrollTo(y, { duration: 0.95, easing: smootherstep });
       return;
@@ -278,6 +329,14 @@
       travel: 1,
       stationFrac: [],
     };
+    episodes.forEach((episode) => {
+      const img = episode.querySelector("img");
+      if (!img || img.complete) return;
+      img.addEventListener("load", () => {
+        layoutPath();
+        if (pathIsSnap()) syncSnapPath();
+      }, { once: true });
+    });
     buttons.forEach((button, index) => {
       button.addEventListener("click", () => scrollToPathIndex(index));
     });
@@ -287,7 +346,8 @@
       const active = document.activeElement;
       if (active && active.closest("input, textarea, select, [contenteditable='true']")) return;
       const inPath = active && section.contains(active);
-      const snapVisible = reduceMotion && section.getBoundingClientRect().top < window.innerHeight * 0.8 && section.getBoundingClientRect().bottom > window.innerHeight * 0.2;
+      const box = section.getBoundingClientRect();
+      const snapVisible = pathIsSnap() && box.top < window.innerHeight * 0.85 && box.bottom > 80;
       if (!inPath && !pathEngaged() && !snapVisible) return;
       if (!inPath && active && active !== document.body && (active.tagName === "A" || active.tagName === "BUTTON")) return;
       event.preventDefault();
@@ -313,7 +373,7 @@
     }, { passive: false, capture: true });
     let drag = null;
     stick.addEventListener("touchstart", (event) => {
-      if (reduceMotion || !event.touches[0]) return;
+      if (pathIsSnap() || !event.touches[0]) return;
       drag = {
         x: event.touches[0].clientX,
         y: event.touches[0].clientY,
@@ -322,7 +382,7 @@
       };
     }, { passive: true });
     stick.addEventListener("touchmove", (event) => {
-      if (!drag || reduceMotion || !event.touches[0]) return;
+      if (!drag || pathIsSnap() || !event.touches[0]) return;
       const dx = event.touches[0].clientX - drag.x;
       const dy = event.touches[0].clientY - drag.y;
       if (!drag.lock) {
@@ -892,12 +952,118 @@
     snapTimer = window.setTimeout(snapCards, 170);
   }
 
+  let pathSettleTimer = 0;
+  let pathGestureActive = false;
+  let pathGestureDelta = 0;
+  let pathGestureOrigin = 0;
+  let pathAim = null;
+
+  function pathSteps() {
+    return Math.max(1, (pathBoard && pathBoard.episodes.length - 1) || 1);
+  }
+
+  function pathIndexAt(y) {
+    if (!pathTrigger) return 0;
+    const start = pathTrigger.start;
+    const end = pathTrigger.end;
+    const span = end - start;
+    const steps = pathSteps();
+    if (!(span > 1)) return 0;
+    if (y < start - 2) return -1;
+    if (y > end + 2) return steps + 1;
+    return Math.round(clamp01((y - start) / span) * steps);
+  }
+
+  function pathWheelDelta(event) {
+    if (event.shiftKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+      return Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    }
+    return event.deltaY;
+  }
+
+  function originForGesture(yNow) {
+    const seen = pathIndexAt(yNow);
+    const lenis = window.deskLenis;
+    if (pathAim == null || !lenis || !lenis.isScrolling) return seen;
+    const steps = pathSteps();
+    if (pathAim === seen) return pathAim;
+    if (pathAim >= 0 && pathAim <= steps && Math.abs(pathAim - seen) <= 1) return pathAim;
+    if (pathAim === steps + 1 && seen >= steps) return pathAim;
+    if (pathAim < 0 && seen <= 0) return pathAim;
+    return seen;
+  }
+
+  // The wheel updates Lenis immediately. This runs only after the ticks pause,
+  // and it eases toward the stage in the direction of travel. A short gesture
+  // that never crosses halfway still advances one stage. A position outside
+  // the pin is left alone so the page can enter About or scroll back up.
+  function settlePathSnap() {
+    pathGestureActive = false;
+    if (!pathTrigger || !pathBoard || pathIsSnap()) return;
+    const start = pathTrigger.start;
+    const end = pathTrigger.end;
+    const span = end - start;
+    if (!(span > 1)) return;
+    const lenis = window.deskLenis;
+    const yTarget = lenis ? lenis.targetScroll : currentScroll();
+    const dir = pathGestureDelta > 0 ? 1 : pathGestureDelta < 0 ? -1 : 0;
+    const origin = pathGestureOrigin;
+    const deliberate = Math.abs(pathGestureDelta) >= 40;
+    pathGestureDelta = 0;
+    const steps = pathSteps();
+    const beganInside = origin >= 0 && origin <= steps;
+
+    if (yTarget < start - 2 || yTarget > end + 2) {
+      pathAim = yTarget > end ? steps + 1 : -1;
+      return;
+    }
+
+    let nearest = Math.round(clamp01((yTarget - start) / span) * steps);
+    if (deliberate && beganInside) {
+      if (dir > 0 && nearest <= origin) nearest = origin + 1;
+      else if (dir < 0 && nearest >= origin) nearest = origin - 1;
+    }
+    if (nearest > steps || nearest < 0) {
+      pathAim = nearest > steps ? steps + 1 : -1;
+      return;
+    }
+
+    pathAim = nearest;
+    const target = start + (span * nearest) / steps;
+    if (Math.abs(target - yTarget) < 2 && Math.abs(target - currentScroll()) < 2) return;
+    scrollTo(target, {
+      duration: 0.42,
+      easing: smootherstep,
+      programmatic: false,
+      force: true,
+    });
+  }
+
+  function notePathWheel(event) {
+    if (pathIsSnap() || !pathTrigger || !pathBoard) return;
+    if (event.ctrlKey || event.altKey || event.metaKey) return;
+    const delta = pathWheelDelta(event);
+    if (!delta || Math.abs(delta) < 0.5) return;
+    const lenis = window.deskLenis;
+    if (!pathGestureActive) {
+      const yNow = lenis ? lenis.animatedScroll : currentScroll();
+      pathGestureOrigin = originForGesture(yNow);
+      pathGestureDelta = 0;
+      pathGestureActive = true;
+    }
+    pathGestureDelta += delta;
+    window.clearTimeout(pathSettleTimer);
+    pathSettleTimer = window.setTimeout(settlePathSnap, 320);
+  }
+
+  let pathSettleBound = false;
+
   function bindRound2() {
     const root = document.documentElement;
     const stack = isStack();
     root.classList.toggle("is-stack", stack);
     root.classList.toggle("has-rail", !stack);
-    root.classList.toggle("is-path-snap", reduceMotion);
+    root.classList.toggle("is-path-snap", stack);
     if (railTrigger) {
       railTrigger.kill(true);
       railTrigger = null;
@@ -948,23 +1114,25 @@
       applyStackPath();
     }
 
-    if (!reduceMotion && !stack && window.ScrollTrigger && pathBoard) {
+    if (!stack && window.ScrollTrigger && pathBoard) {
       layoutPath();
+      const steps = Math.max(1, pathBoard.episodes.length - 1);
       pathTrigger = window.ScrollTrigger.create({
         trigger: pathBoard.pin,
         pin: pathBoard.stick,
         start: "top top",
-        end: () => `+=${Math.max(pathBoard.travel || 1, 1)}`,
-        scrub: true,
+        end: () => `+=${Math.max(1, steps * window.innerHeight)}`,
+        scrub: 0,
         invalidateOnRefresh: true,
         anticipatePin: 1,
         onRefresh: () => layoutPath(),
         onUpdate: (self) => applyPathBoard(self.progress),
       });
       applyPathBoard(0);
-    } else if (pathBoard && !reduceMotion) {
-      layoutPath();
-      applyStickyPath();
+      if (!pathSettleBound) {
+        pathSettleBound = true;
+        window.addEventListener("wheel", notePathWheel, { passive: true });
+      }
     } else if (pathBoard) {
       layoutPath();
       pathBoard.track.style.transform = "none";
