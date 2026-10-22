@@ -1462,12 +1462,14 @@ html.has-motion .kudos-orbit {
 
 .sky-dusk {
   opacity: var(--dusk);
-  background: linear-gradient(180deg, #e7d5de 0%, #c9b7c4 48%, #8f7694 100%);
+  mix-blend-mode: soft-light;
+  background: linear-gradient(180deg, rgba(255, 170, 120, 0.95) 0%, rgba(214, 96, 140, 0.9) 52%, rgba(120, 64, 120, 0.8) 100%);
 }
 
 .sky-night {
   opacity: var(--night);
-  background: linear-gradient(180deg, #16315a 0%, #0b1f3a 58%, #071428 100%);
+  mix-blend-mode: normal;
+  background: linear-gradient(180deg, rgba(18, 16, 70, 0.45), rgba(40, 24, 60, 0.18));
 }
 
 .star-field {
@@ -1535,10 +1537,12 @@ html.has-motion .night-band.is-night .fireflies i:nth-child(6) { animation-delay
 
 .night-band #contact.panel {
   background: transparent;
-  z-index: 1;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  min-height: 0;
+  display: block;
+  padding: 0;
 }
 
 .contact-layout {
