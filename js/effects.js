@@ -831,6 +831,7 @@
       };
       tag.addEventListener("pointerdown", (event) => {
         if (event.button != null && event.button !== 0) return;
+        if (event.pointerType === "touch") return;
         if (frame) cancelAnimationFrame(frame);
         const [tx, ty] = rest();
         x = tx;

@@ -88,8 +88,6 @@
   let railTrigger = null;
   let pathTrigger = null;
   let cardObserver = null;
-  let snapTimer = 0;
-  let snapLock = false;
 
   function mountRound2() {
     mountRail();
@@ -924,32 +922,8 @@
     });
   }
 
-  function snapCards() {
-    if (!document.documentElement.classList.contains("is-stack") || !motion || snapLock) return;
-    const line = 92;
-    let best = null;
-    let bestDist = Infinity;
-    cards.forEach((card) => {
-      const dist = Math.abs(card.getBoundingClientRect().top - line);
-      if (dist < bestDist) {
-        bestDist = dist;
-        best = card;
-      }
-    });
-    if (!best || bestDist < 36 || bestDist > window.innerHeight * 0.46) return;
-    snapLock = true;
-    const y = window.scrollY + best.getBoundingClientRect().top - line;
-    scrollTo(y, { duration: 0.55, easing: smootherstep });
-    window.setTimeout(() => {
-      snapLock = false;
-    }, 700);
-  }
-
   function onScroll() {
     if (document.documentElement.classList.contains("is-stack")) applyStackPath();
-    if (!motion || !document.documentElement.classList.contains("is-stack")) return;
-    window.clearTimeout(snapTimer);
-    snapTimer = window.setTimeout(snapCards, 170);
   }
 
   let pathSettleTimer = 0;
