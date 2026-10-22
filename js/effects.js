@@ -136,6 +136,37 @@
     window.deskMenu = { close, open };
   }
 
+  function initModeDock() {
+    const dock = document.querySelector(".mode-switch-dock");
+    if (!dock) return;
+    const obstacles = [document.querySelector(".scroll-pill"), document.querySelector(".contact-scene .email-bar")].filter(Boolean);
+    const credit = document.querySelector(".contact-credit");
+    if (credit) {
+      obstacles.push({
+        getBoundingClientRect() {
+          const range = document.createRange();
+          range.selectNodeContents(credit);
+          return range.getBoundingClientRect();
+        },
+      });
+    }
+    const place = () => {
+      dock.style.bottom = "calc(18px + env(safe-area-inset-bottom))";
+      const dockRect = dock.getBoundingClientRect();
+      let lift = 0;
+      obstacles.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const overlapX = Math.min(dockRect.right, rect.right) - Math.max(dockRect.left, rect.left);
+        const overlapY = Math.min(dockRect.bottom, rect.bottom) - Math.max(dockRect.top, rect.top);
+        if (overlapX > 4 && overlapY > 4) lift = Math.max(lift, dockRect.bottom - rect.top + 12);
+      });
+      if (lift) dock.style.bottom = `calc(${18 + lift}px + env(safe-area-inset-bottom))`;
+    };
+    place();
+    window.addEventListener("scroll", place, { passive: true });
+    window.addEventListener("resize", place);
+  }
+
   function initGlides() {
     document.addEventListener("click", (event) => {
       const link = event.target.closest("a[href^='#']");
@@ -874,6 +905,7 @@
   window.deskToast = showToast;
 
   initMenu();
+  initModeDock();
   initFieldTags();
   initGlides();
   initCopy();
