@@ -250,19 +250,36 @@
   function initAlsoMore() {
     const button = document.querySelector(".view-more");
     const panel = document.getElementById("also-more");
-    if (!button || !panel) return;
+    const grid = document.querySelector("#also .desk-grid");
+    if (!button || !panel || !grid) return;
+
+    function fitCards() {
+      const cards = [...grid.querySelectorAll(".desk-card")];
+      cards.forEach((card) => {
+        card.style.minHeight = "";
+        card.classList.add("is-visible");
+        card.style.setProperty("--rise", "0px");
+      });
+      const visible = cards.filter((card) => card.getBoundingClientRect().height > 0);
+      if (visible.length < 2) return;
+      const max = Math.max(...visible.map((card) => card.getBoundingClientRect().height));
+      visible.forEach((card) => {
+        card.style.minHeight = `${Math.ceil(max)}px`;
+      });
+    }
+
     button.addEventListener("click", () => {
       const open = button.getAttribute("aria-expanded") === "true";
       button.setAttribute("aria-expanded", open ? "false" : "true");
       panel.hidden = open;
       button.textContent = open ? "View more" : "View less";
-      if (!open) {
-        panel.querySelectorAll(".project").forEach((card) => {
-          card.classList.add("is-visible");
-          card.style.setProperty("--rise", "0px");
-        });
-      }
+      requestAnimationFrame(fitCards);
     });
+
+    window.addEventListener("resize", () => {
+      if (!panel.hidden) fitCards();
+    });
+    fitCards();
   }
 
   function initKudos() {
