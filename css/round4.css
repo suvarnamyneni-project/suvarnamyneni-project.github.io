@@ -1230,29 +1230,45 @@ html.has-motion #about.is-live .float-tag:focus-visible {
   background: #f6d9bc;
 }
 
-.sky-golden img {
-  object-position: 50% 50%;
+.sky-layer img,
+.sky-layer picture {
+  width: 100%;
+  height: 100%;
 }
 
 .sky-dusk {
   opacity: var(--dusk);
-  mix-blend-mode: soft-light;
-  background: linear-gradient(180deg, rgba(255, 170, 120, 0.95) 0%, rgba(214, 96, 140, 0.9) 52%, rgba(120, 64, 120, 0.8) 100%);
+  mix-blend-mode: normal;
+  background: none;
 }
 
 .sky-night {
   opacity: var(--night);
   mix-blend-mode: normal;
-  background: linear-gradient(180deg, rgba(18, 16, 70, 0.45), rgba(40, 24, 60, 0.18));
+  background: none;
 }
 
 .sky-night::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, #2a2a88, #5a48a0 50%, #7a5890);
-  mix-blend-mode: color;
-  pointer-events: none;
+  content: none;
+}
+
+.cloud-drift {
+  z-index: 1;
+  height: 48%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.9) 58%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.9) 58%);
+}
+
+.cloud-drift .sky-layer img {
+  object-fit: cover;
+  object-position: center 78%;
+  width: 112%;
+  height: 112%;
+  left: -6%;
+  top: auto;
+  bottom: -6%;
+  right: auto;
+  inset: auto;
 }
 
 .night-band #contact.contact-scene {
@@ -1676,12 +1692,26 @@ html.has-motion #about.is-live .float-tag:focus-visible {
   background: #fff;
 }
 
-.contact-scene .bar-mail {
+.contact-scene .bar-mail,
+.contact-scene .bar-mail:hover,
+.night-band.is-dusk .contact-scene .bar-mail,
+.night-band.is-dusk .contact-scene .bar-mail:hover,
+.night-band.is-night .contact-scene .bar-mail,
+.night-band.is-night .contact-scene .bar-mail:hover {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  margin: 0;
   background: #fff !important;
+  color: #2b3236;
   box-shadow: 0 6px 14px -10px rgba(120, 60, 30, 0.5);
+}
+
+.contact-scene .bar-address,
+.night-band.is-night .contact-scene .bar-address,
+.night-band.is-dusk .contact-scene .bar-address {
+  color: #2b3236;
+  white-space: nowrap;
 }
 
 .contact-scene .bar-mail svg {
@@ -1766,9 +1796,15 @@ html.has-motion #about.is-live .float-tag:focus-visible {
   background: rgba(255, 255, 255, 0.25);
 }
 
-.night-band.is-night .bar-mail,
-.night-band.is-night .bar-mail:hover {
-  color: #2b3236;
+.night-band.is-night .email-bar a.bar-mail svg,
+.contact-scene .bar-mail svg {
+  color: #c4512a;
+}
+
+.bar-in {
+  display: none;
+  width: 22px;
+  height: 22px;
 }
 
 .night-band.is-night .mail-ring {
@@ -1785,6 +1821,43 @@ html.is-night .brand-chip {
   .contact-scene .contact-copy {
     left: 20px;
     right: 20px;
+  }
+
+  .contact-scene .email-bar {
+    flex-wrap: nowrap;
+    max-width: calc(100% - 16px);
+    padding: 4px;
+  }
+
+  .contact-scene .bar-address {
+    font-size: 11.5px;
+    letter-spacing: -0.03em;
+  }
+
+  .contact-scene .bar-mail {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .contact-scene .email-bar a,
+  .contact-scene .email-bar .copy-email {
+    padding: 10px 9px;
+  }
+
+  .contact-scene .bar-sep {
+    display: none;
+  }
+
+  .contact-scene .bar-linkedin-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .contact-scene .bar-in {
+    display: block;
   }
 
   .contact-scene .steps li {
@@ -1811,9 +1884,13 @@ html.is-night .brand-chip {
   }
 }
 
-@media (max-width: 699px) {
-  .sky-golden img {
-    object-position: 82% 50%;
+@media (max-width: 430px) {
+  .contact-scene .contact-copy {
+    top: calc(env(safe-area-inset-top) + 168px);
+  }
+
+  .contact-scene .contact-copy h2 {
+    font-size: clamp(34px, 9.4vw, 44px);
   }
 }
 
@@ -2039,7 +2116,7 @@ html.is-night .brand-chip {
   }
 
   .hero-copy {
-    top: calc(env(safe-area-inset-top) + 132px);
+    top: calc(env(safe-area-inset-top) + 176px);
   }
 }
 

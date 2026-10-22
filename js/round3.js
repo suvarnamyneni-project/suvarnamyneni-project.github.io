@@ -345,7 +345,43 @@
     const section = document.getElementById("contact");
     const canvas = document.getElementById("plane-canvas");
     const starCanvas = document.getElementById("star-field");
-    const skyImg = band ? band.querySelector(".sky-golden img") : null;
+    const drift = band.querySelector(".cloud-drift");
+    const sprites = { fork: new Image(), pouch: new Image(), plane: new Image(), mail: new Image() };
+    let spritesStarted = false;
+
+    function loadSprites() {
+      if (spritesStarted) return;
+      spritesStarted = true;
+      const files = {
+        fork: "assets/art/sling-fork.png",
+        pouch: "assets/art/sling-pouch.png",
+        plane: "assets/art/paper-plane.png",
+        mail: "assets/art/mailbox.png",
+      };
+      Object.keys(files).forEach((key) => {
+        sprites[key].onload = () => {
+          if (sized) draw(performance.now());
+        };
+        sprites[key].src = files[key];
+      });
+    }
+
+    function spriteReady(img) {
+      return Boolean(img && img.complete && img.naturalWidth);
+    }
+
+    function placeDrift() {
+      if (!drift) return;
+      if (!motion) {
+        drift.style.transform = "none";
+        return;
+      }
+      const nx = pointer.x < 0 ? 0.5 : pointer.x / Math.max(1, W);
+      const ny = pointer.y < 0 ? 0.5 : pointer.y / Math.max(1, H);
+      const x = (nx - 0.5) * 18;
+      const y = (ny - 0.5) * 8;
+      drift.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+    }
     const grab = document.getElementById("plane-grab");
     const ring = document.getElementById("mail-ring");
     const tag = document.getElementById("mail-tag");
@@ -451,9 +487,9 @@
       ring.style.height = `${ringSize}px`;
       tag.style.left = `${mb.cx}px`;
       tag.style.top = `${mb.y1 - ringSize * 0.35}px`;
-      const slingH = Math.min(230, Math.max(150, H * 0.26));
+      const fork = forkMetrics();
       hint.style.left = `${anchor.x}px`;
-      hint.style.top = `${anchor.y - slingH * 0.06 - 62}px`;
+      hint.style.top = `${fork.y - 28}px`;
     }
 
     function resizeStars() {
@@ -497,16 +533,19 @@
       canvas.height = Math.max(1, Math.round(H * dpr));
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const narrow = W < 700;
-      const posX = narrow ? 0.82 : 0.5;
-      if (skyImg) skyImg.style.objectPosition = `${posX * 100}% 50%`;
-      const scale = Math.max(W / SKY_W, H / SKY_H);
-      const ox = (W - SKY_W * scale) * posX;
-      const oy = (H - SKY_H * scale) * 0.5;
+      const mailW = Math.min(230, Math.max(128, W * (narrow ? 0.34 : 0.16)));
+      const mailH = mailW * (720 / 514);
+      const mailLeft = narrow ? W * 0.58 : W * 0.74;
+      const mailTop = (narrow ? H * 0.86 : H * 0.82) - mailH;
       mb = {
-        x1: ox + BOX.x * scale,
-        y1: oy + BOX.y * scale,
-        x2: ox + (BOX.x + BOX.w) * scale,
-        y2: oy + (BOX.y + BOX.h) * scale,
+        x1: mailLeft + mailW * 0.22,
+        y1: mailTop + mailH * 0.18,
+        x2: mailLeft + mailW * 0.78,
+        y2: mailTop + mailH * 0.5,
+        spriteX: mailLeft,
+        spriteY: mailTop,
+        spriteW: mailW,
+        spriteH: mailH,
       };
       mb.cx = (mb.x1 + mb.x2) / 2;
       mb.cy = (mb.y1 + mb.y2) / 2;
@@ -785,14 +824,32 @@
       });
     }
 
-    function slingFrame() {
-      const height = Math.min(230, Math.max(150, H * 0.26));
-      const spread = height * 0.42;
+    const FORK_LEFT = { x: 0.086, y: 0.012 };
+    const FORK_RIGHT = { x: 0.871, y: 0.014 };
+    const FORK_POCKET = { x: 0.5, y: 0.2 };
+
+    function forkMetrics() {
+      const width = planeWidth();
+      const fork = sprites.fork;
+      const ratio = spriteReady(fork) ? fork.naturalHeight / fork.naturalWidth : 1022 / 607;
+      let drawW = width * 2.35;
+      let drawH = drawW * ratio;
+      const pocket = restPocket();
+      const maxBottom = H - 6;
+      if (pocket.y + drawH * (1 - FORK_POCKET.y) > maxBottom) {
+        drawH = (maxBottom - pocket.y) / (1 - FORK_POCKET.y);
+        drawW = drawH / ratio;
+      }
+      const x = pocket.x - FORK_POCKET.x * drawW;
+      const y = pocket.y - FORK_POCKET.y * drawH;
       return {
-        height,
-        base: { x: anchor.x, y: anchor.y + height * 0.38 },
-        left: { x: anchor.x - spread * 0.52, y: anchor.y - height * 0.02 },
-        right: { x: anchor.x + spread * 0.52, y: anchor.y - height * 0.01 },
+        drawW,
+        drawH,
+        x,
+        y,
+        pivot: { x: x + drawW * 0.5, y: y + drawH * 0.4 },
+        left: { x: x + FORK_LEFT.x * drawW, y: y + FORK_LEFT.y * drawH },
+        right: { x: x + FORK_RIGHT.x * drawW, y: y + FORK_RIGHT.y * drawH },
       };
     }
 
@@ -804,113 +861,153 @@
       return { x: pivot.x + dx * c - dy * s, y: pivot.y + dx * s + dy * c };
     }
 
+    function restPocket() {
+      const width = planeWidth();
+      const angle = -0.35;
+      return {
+        x: anchor.x - Math.cos(angle) * width * 0.18,
+        y: anchor.y - Math.sin(angle) * width * 0.18,
+      };
+    }
+
     function pouchPoint() {
       const width = planeWidth();
       if (plane.mode === "rest" || drag || plane.mode === "return") {
         return {
-          x: plane.x - Math.cos(plane.angle) * width * 0.56,
-          y: plane.y - Math.sin(plane.angle) * width * 0.56,
+          x: plane.x - Math.cos(plane.angle) * width * 0.18,
+          y: plane.y - Math.sin(plane.angle) * width * 0.18,
         };
       }
       return pouch;
     }
 
-    function drawBand(from, to, width) {
+    function pouchSides(hold) {
+      const pulling = drag || (plane.mode !== "rest" && plane.mode !== "return");
+      const ang = pulling ? Math.atan2(hold.y - anchor.y, hold.x - anchor.x) : plane.angle;
+      const half = planeWidth() * 0.42;
+      const px = Math.cos(ang + Math.PI / 2);
+      const py = Math.sin(ang + Math.PI / 2);
+      return {
+        ang,
+        a: { x: hold.x + px * half, y: hold.y + py * half },
+        b: { x: hold.x - px * half, y: hold.y - py * half },
+      };
+    }
+
+    function drawBand(from, to, width, stretch) {
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const sag = (1 - stretch) * 14;
+      const cx = (from.x + to.x) / 2 + (-dy / len) * sag;
+      const cy = (from.y + to.y) / 2 + (dx / len) * sag;
       ctx.lineCap = "round";
-      ctx.strokeStyle = "#c4533a";
-      ctx.lineWidth = width;
       ctx.beginPath();
       ctx.moveTo(from.x, from.y);
-      ctx.lineTo(to.x, to.y);
+      ctx.quadraticCurveTo(cx, cy, to.x, to.y);
+      ctx.strokeStyle = "#8d3424";
+      ctx.lineWidth = width + 2.2;
       ctx.stroke();
-      ctx.strokeStyle = "rgba(255, 196, 170, 0.85)";
-      ctx.lineWidth = Math.max(1, width * 0.32);
-      ctx.beginPath();
-      ctx.moveTo(from.x, from.y - width * 0.18);
-      ctx.lineTo(to.x, to.y - width * 0.18);
+      ctx.strokeStyle = "#d46545";
+      ctx.lineWidth = width;
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(255, 214, 190, 0.85)";
+      ctx.lineWidth = Math.max(1.1, width * 0.28);
       ctx.stroke();
     }
 
-    function drawFork() {
-      const frame = slingFrame();
+    function forkPose() {
+      const frame = forkMetrics();
+      frame.left = spinAbout(frame.left, frame.pivot, rock);
+      frame.right = spinAbout(frame.right, frame.pivot, rock);
+      return frame;
+    }
+
+    function drawFork(frame) {
+      const fork = sprites.fork;
       ctx.save();
-      ctx.translate(frame.base.x, frame.base.y);
+      ctx.translate(frame.pivot.x, frame.pivot.y);
       ctx.rotate(rock);
-      ctx.translate(-frame.base.x, -frame.base.y);
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.strokeStyle = "#7a4328";
-      ctx.lineWidth = 11;
-      ctx.beginPath();
-      ctx.moveTo(frame.left.x, frame.left.y);
-      ctx.quadraticCurveTo(anchor.x - 8, frame.base.y - frame.height * 0.15, frame.base.x, frame.base.y);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(frame.right.x, frame.right.y);
-      ctx.quadraticCurveTo(anchor.x + 10, frame.base.y - frame.height * 0.12, frame.base.x, frame.base.y);
-      ctx.stroke();
-      ctx.strokeStyle = "#c4844a";
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(frame.left.x, frame.left.y);
-      ctx.quadraticCurveTo(anchor.x - 6, frame.base.y - frame.height * 0.18, frame.base.x - 2, frame.base.y - 8);
-      ctx.stroke();
+      ctx.translate(-frame.pivot.x, -frame.pivot.y);
+      if (spriteReady(fork)) {
+        ctx.drawImage(fork, frame.x, frame.y, frame.drawW, frame.drawH);
+      } else {
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#c4844a";
+        ctx.lineWidth = 14;
+        ctx.beginPath();
+        ctx.moveTo(frame.left.x, frame.left.y);
+        ctx.quadraticCurveTo(anchor.x, frame.pivot.y, frame.pivot.x, frame.pivot.y + 80);
+        ctx.moveTo(frame.right.x, frame.right.y);
+        ctx.quadraticCurveTo(anchor.x, frame.pivot.y, frame.pivot.x, frame.pivot.y + 80);
+        ctx.stroke();
+      }
       ctx.restore();
     }
 
-    function drawSling(front) {
-      const frame = slingFrame();
+    function nearer(tip, sideA, sideB) {
+      const da = Math.hypot(tip.x - sideA.x, tip.y - sideA.y);
+      const db = Math.hypot(tip.x - sideB.x, tip.y - sideB.y);
+      return da <= db ? sideA : sideB;
+    }
+
+    function drawSling(stage) {
+      const frame = forkPose();
       const hold = pouchPoint();
       const stretch = Math.min(1, Math.hypot(hold.x - anchor.x, hold.y - anchor.y) / pullMax);
-      const width = 6.5 - stretch * 3;
-      const left = spinAbout(frame.left, frame.base, rock);
-      const right = spinAbout(frame.right, frame.base, rock);
-      if (!front) {
-        drawFork();
-        drawBand(right, hold, width);
+      const width = 7.2 - stretch * 3.4;
+      const sides = pouchSides(hold);
+      const leftEnd = nearer(frame.left, sides.a, sides.b);
+      const rightEnd = leftEnd === sides.a ? sides.b : sides.a;
+      if (stage === "back") {
+        drawFork(frame);
+        drawBand(frame.right, rightEnd, width, stretch);
         return;
       }
-      ctx.save();
-      ctx.translate(hold.x, hold.y);
-      if (stretch > 0.05) ctx.rotate(Math.atan2(hold.y - anchor.y, hold.x - anchor.x));
-      ctx.fillStyle = "#8a5a3c";
-      ctx.strokeStyle = "#2b3236";
-      ctx.lineWidth = 1.1;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, 7, 10 - stretch * 2, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
-      drawBand(left, hold, width);
+      if (stage === "pouch") {
+        ctx.save();
+        ctx.translate(hold.x, hold.y);
+        ctx.rotate(sides.ang);
+        const pouchImg = sprites.pouch;
+        if (spriteReady(pouchImg)) {
+          const pouchW = planeWidth() * 0.92;
+          const pouchH = pouchW * (pouchImg.naturalHeight / pouchImg.naturalWidth);
+          ctx.drawImage(pouchImg, -pouchW / 2, -pouchH * 0.42, pouchW, pouchH);
+        } else {
+          ctx.fillStyle = "#8a5a3c";
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 16, 10, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+        return;
+      }
+      drawBand(frame.left, leftEnd, width, stretch);
     }
 
     function drawPlane(x, y, angle, scale) {
       const width = planeWidth();
+      const planeImg = sprites.plane;
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(angle);
       ctx.scale(scale, scale);
       ctx.shadowColor = "rgba(110, 55, 30, 0.28)";
-      ctx.shadowBlur = 12;
+      ctx.shadowBlur = 14;
       ctx.shadowOffsetY = 8;
-      ctx.beginPath();
-      ctx.moveTo(width * 0.48, 0);
-      ctx.lineTo(-width * 0.42, -width * 0.16);
-      ctx.lineTo(-width * 0.2, 0);
-      ctx.lineTo(-width * 0.42, width * 0.14);
-      ctx.closePath();
-      ctx.fillStyle = "#fffaf3";
-      ctx.fill();
-      ctx.shadowColor = "transparent";
-      ctx.strokeStyle = "#2b3236";
-      ctx.lineWidth = 1.4;
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(-width * 0.2, 0);
-      ctx.lineTo(width * 0.46, 0);
-      ctx.strokeStyle = "#e0774f";
-      ctx.lineWidth = 1.3;
-      ctx.stroke();
+      if (spriteReady(planeImg)) {
+        const height = width * (planeImg.naturalHeight / planeImg.naturalWidth);
+        ctx.drawImage(planeImg, -width * 0.42, -height / 2, width, height);
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(width * 0.48, 0);
+        ctx.lineTo(-width * 0.42, -width * 0.16);
+        ctx.lineTo(-width * 0.2, 0);
+        ctx.lineTo(-width * 0.42, width * 0.14);
+        ctx.closePath();
+        ctx.fillStyle = "#fffaf3";
+        ctx.fill();
+      }
       ctx.restore();
     }
 
@@ -926,50 +1023,22 @@
     }
 
     function drawMailbox() {
-      const x = mb.x1;
-      const y = mb.y1;
-      const w = mb.x2 - mb.x1;
-      const h = mb.y2 - mb.y1;
-      const post = Math.max(8, w * 0.16);
-      ctx.save();
-      ctx.fillStyle = "rgba(40, 24, 16, 0.2)";
-      ctx.beginPath();
-      ctx.ellipse(mb.cx, y + h + h * 0.78, w * 0.46, h * 0.12, 0, 0, Math.PI * 2);
-      ctx.fill();
-      const glow = ctx.createRadialGradient(mb.cx, mb.cy, 4, mb.cx, mb.cy, w * 1.7);
-      glow.addColorStop(0, `rgba(255, 214, 140, ${0.55 * skyAlpha})`);
-      glow.addColorStop(1, "rgba(255, 214, 140, 0)");
+      const mail = sprites.mail;
+      const glowX = mb.spriteX + mb.spriteW * 0.27;
+      const glowY = mb.spriteY + mb.spriteH * 0.34;
+      const glow = ctx.createRadialGradient(glowX, glowY, 4, glowX, glowY, 90);
+      glow.addColorStop(0, `rgba(255, 196, 110, ${0.45 + skyAlpha * 0.35})`);
+      glow.addColorStop(1, "rgba(255, 196, 110, 0)");
       ctx.fillStyle = glow;
       ctx.beginPath();
-      ctx.arc(mb.cx, mb.cy, w * 1.7, 0, Math.PI * 2);
+      ctx.arc(glowX, glowY, 90, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = "#7a4328";
-      ctx.fillRect(mb.cx - post / 2, y + h * 0.62, post, h * 1.05);
+      if (spriteReady(mail) && mb.spriteW) {
+        ctx.drawImage(mail, mb.spriteX, mb.spriteY, mb.spriteW, mb.spriteH);
+        return;
+      }
       ctx.fillStyle = "#f7f1e8";
-      ctx.strokeStyle = "#2b3236";
-      ctx.lineWidth = 1.6;
-      roundedBox(x, y, w, h * 0.78, 8);
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = "#e0774f";
-      ctx.beginPath();
-      ctx.moveTo(x - 4, y + 8);
-      ctx.lineTo(mb.cx, y - h * 0.28);
-      ctx.lineTo(x + w + 4, y + 8);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      ctx.fillStyle = "#2b3236";
-      ctx.fillRect(x + w * 0.18, y + h * 0.32, w * 0.64, Math.max(3, h * 0.08));
-      ctx.strokeStyle = "#7a4328";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x + w - 2, y + 4);
-      ctx.lineTo(x + w - 2, y - h * 0.2);
-      ctx.stroke();
-      ctx.fillStyle = "#e0774f";
-      ctx.fillRect(x + w - 2, y - h * 0.2, w * 0.28, h * 0.16);
-      ctx.restore();
+      ctx.fillRect(mb.x1, mb.y1, mb.x2 - mb.x1, mb.y2 - mb.y1);
     }
 
     function drawPreview() {
@@ -1126,14 +1195,16 @@
       drawFlies(now);
       if (drag) drawPreview();
       else if (!firstDrag && plane.mode === "rest") drawGuide(1 / 60);
-      drawSling(false);
+      drawSling("back");
       drawBits();
+      drawSling("pouch");
       if (plane.mode !== "gone") {
         const bob = plane.mode === "rest" && !drag && motion ? Math.sin(now / 380) * 2.5 : 0;
         drawPlane(plane.x, plane.y + bob, plane.angle, plane.mode === "in" ? plane.scale : 1);
       }
-      drawSling(true);
+      drawSling("front");
       hint.style.opacity = !firstDrag && plane.mode === "rest" ? "1" : "0";
+      placeDrift();
     }
 
     function drawStars(now, animate) {
@@ -1207,6 +1278,7 @@
     function ensureSize() {
       if (sized) return;
       sized = true;
+      loadSprites();
       measure();
     }
 

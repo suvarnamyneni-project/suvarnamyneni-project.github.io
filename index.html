@@ -127,11 +127,15 @@
       html .site-header { flex-wrap: wrap; row-gap: 8px; }
       html .brand-chip { margin-right: auto; }
       .site-nav { margin-left: auto; }
-      html .hero-copy { top: calc(env(safe-area-inset-top) + 132px); }
+      html .hero-copy { top: calc(env(safe-area-inset-top) + 176px); }
     }
     .night-band { position: relative; height: 100svh; min-height: 660px; overflow: hidden; background: #f6d9bc; }
     .night-band .sky-layer, .night-band .star-field, .night-band .plane-canvas, #contact.contact-scene { position: absolute; inset: 0; }
-    .night-band .sky-golden picture, .night-band .sky-golden img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .night-band .sky-layer picture, .night-band .sky-layer img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .cloud-drift { position: absolute; z-index: 1; left: -4%; right: -4%; bottom: 0; height: 46%; overflow: hidden; pointer-events: none; }
+    @media (max-width: 430px) {
+      .contact-scene .contact-copy { top: calc(env(safe-area-inset-top) + 168px); }
+    }
   </style>
   <link rel="stylesheet" href="css/styles.css" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="css/effects.css" media="print" onload="this.media='all'">
@@ -741,14 +745,29 @@
     </section>
 
     <div class="night-band" id="night-band">
-      <div class="sky-layer sky-golden" data-art="contact-sky" aria-hidden="true">
+      <div class="sky-layer sky-golden" aria-hidden="true">
         <picture>
-          <source type="image/webp" srcset="assets/art/contact-sky-1600.webp 1600w, assets/art/contact-sky.webp 2400w" sizes="100vw">
-          <img src="assets/art/contact-sky-1600.jpg" alt="" width="1600" height="900" decoding="async">
+          <source type="image/webp" srcset="assets/art/sky-golden.webp">
+          <img src="assets/art/sky-golden.jpg" alt="" width="1600" height="900" decoding="async" loading="lazy">
         </picture>
       </div>
-      <div class="sky-layer sky-dusk" aria-hidden="true"></div>
-      <div class="sky-layer sky-night" aria-hidden="true"></div>
+      <div class="sky-layer sky-dusk" aria-hidden="true">
+        <picture>
+          <source type="image/webp" srcset="assets/art/sky-dusk.webp">
+          <img src="assets/art/sky-dusk.jpg" alt="" width="1600" height="900" decoding="async" loading="lazy">
+        </picture>
+      </div>
+      <div class="sky-layer sky-night" aria-hidden="true">
+        <picture>
+          <source type="image/webp" srcset="assets/art/sky-night.webp">
+          <img src="assets/art/sky-night.jpg" alt="" width="1600" height="900" decoding="async" loading="lazy">
+        </picture>
+      </div>
+      <div class="cloud-drift" aria-hidden="true">
+        <div class="sky-layer sky-golden"><img src="assets/art/sky-golden.webp" alt="" width="1600" height="900" decoding="async" loading="lazy"></div>
+        <div class="sky-layer sky-dusk"><img src="assets/art/sky-dusk.webp" alt="" width="1600" height="900" decoding="async" loading="lazy"></div>
+        <div class="sky-layer sky-night"><img src="assets/art/sky-night.webp" alt="" width="1600" height="900" decoding="async" loading="lazy"></div>
+      </div>
       <canvas class="star-field" id="star-field" aria-hidden="true"></canvas>
       <section class="panel contact-scene" id="contact" aria-labelledby="contact-heading">
         <canvas class="plane-canvas" id="plane-canvas" aria-hidden="true"></canvas>
@@ -788,13 +807,13 @@
           </div>
         </div>
         <div class="email-bar">
-          <a class="email bar-mail" href="mailto:suvarnamyneni@gmail.com" data-caption="Email Suvarna">
+          <a class="bar-mail" href="mailto:suvarnamyneni@gmail.com" data-caption="Email Suvarna">
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3.5 6.5h17v11h-17z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 7.2 12 13l8-5.8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
             <span class="bar-address">suvarnamyneni@gmail.com</span>
           </a>
           <button type="button" class="copy-email" data-caption="Copy the address">Copy</button>
           <span class="bar-sep" aria-hidden="true"></span>
-          <a class="bar-linkedin" href="https://www.linkedin.com/in/suvarnamyneni/" target="_blank" rel="noopener noreferrer" data-caption="LinkedIn">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+          <a class="bar-linkedin" href="https://www.linkedin.com/in/suvarnamyneni/" target="_blank" rel="noopener noreferrer" data-caption="LinkedIn" aria-label="LinkedIn"><svg class="bar-in" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.2 10.2V16M7.2 7.8h.1M10.6 16v-3.2c0-1 .6-1.8 1.6-1.8s1.5.8 1.5 1.8V16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="bar-linkedin-label">LinkedIn</span><span class="sr-only"> (opens in a new tab)</span></a>
         </div>
         <p class="contact-credit">Suvarna Myneni. AI-Native UX Designer in Hyderabad. Open to remote or Hyderabad roles. Psst, type hire.</p>
         <p id="plane-status" class="sr-only" aria-live="polite"></p>

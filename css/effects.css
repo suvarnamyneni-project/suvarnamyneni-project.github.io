@@ -1460,16 +1460,9 @@ html.has-motion .kudos-orbit {
   background: linear-gradient(180deg, #f8edd8 0%, #f6e7cf 42%, #f3ddc8 100%);
 }
 
-.sky-dusk {
-  opacity: var(--dusk);
-  mix-blend-mode: soft-light;
-  background: linear-gradient(180deg, rgba(255, 170, 120, 0.95) 0%, rgba(214, 96, 140, 0.9) 52%, rgba(120, 64, 120, 0.8) 100%);
-}
-
+.sky-dusk,
 .sky-night {
-  opacity: var(--night);
-  mix-blend-mode: normal;
-  background: linear-gradient(180deg, rgba(18, 16, 70, 0.45), rgba(40, 24, 60, 0.18));
+  background: none;
 }
 
 .star-field {
