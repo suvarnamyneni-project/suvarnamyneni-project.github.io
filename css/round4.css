@@ -1420,6 +1420,7 @@ html.is-stack .timeline .when {
 #about .float-tag:nth-child(2) { left: -10%; right: auto; top: 36%; }
 #about .float-tag:nth-child(3) { left: -6%; right: auto; top: auto; bottom: 7%; }
 #about .float-tag:nth-child(4) { left: auto; right: -6%; top: 60%; }
+#about .float-tag:nth-child(5) { left: auto; right: -2%; top: auto; bottom: 5%; }
 
 #about .float-tag:hover,
 #about .float-tag:focus-visible,
@@ -1447,6 +1448,7 @@ html.has-motion #about.tags-in .tag-bob {
 html.has-motion #about.tags-in .float-tag:nth-child(2) .tag-bob { animation-delay: -1.6s; }
 html.has-motion #about.tags-in .float-tag:nth-child(3) .tag-bob { animation-delay: -3.2s; }
 html.has-motion #about.tags-in .float-tag:nth-child(4) .tag-bob { animation-delay: -4.4s; }
+html.has-motion #about.tags-in .float-tag:nth-child(5) .tag-bob { animation-delay: -0.8s; }
 
 @keyframes tag-drift {
   0%, 100% { transform: translate3d(-14px, 10px, 0) rotate(3.5deg); }
@@ -2296,7 +2298,8 @@ html.is-night .brand-chip {
   #about .float-tag:nth-child(1),
   #about .float-tag:nth-child(2),
   #about .float-tag:nth-child(3),
-  #about .float-tag:nth-child(4) {
+  #about .float-tag:nth-child(4),
+  #about .float-tag:nth-child(5) {
     position: absolute;
     width: max-content;
     height: auto;
@@ -2324,7 +2327,8 @@ html.is-night .brand-chip {
   #about .float-tag:nth-child(1) { left: auto; right: 2%; top: 8%; bottom: auto; }
   #about .float-tag:nth-child(2) { left: 0; right: auto; top: 34%; bottom: auto; }
   #about .float-tag:nth-child(3) { left: 0; right: auto; top: auto; bottom: 8%; }
-  #about .float-tag:nth-child(4) { left: auto; right: 2%; top: 62%; bottom: auto; }
+  #about .float-tag:nth-child(4) { left: auto; right: 2%; top: 52%; bottom: auto; }
+  #about .float-tag:nth-child(5) { left: auto; right: 0; top: auto; bottom: 1%; }
 
   .kudo-bubble { width: 56px; height: 44px; }
   .kudo-count { top: -34px; font-size: 12px; }
