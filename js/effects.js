@@ -166,7 +166,94 @@
     });
   }
 
+  const SPOT_BOXES = {
+    laptop: [42.2, 40.5, 14.5, 7.6],
+    keys: [41.4, 48, 16.2, 6.8],
+    house: [61.5, 36.5, 15.5, 26],
+    chat: [66, 32.5, 12, 14],
+    basket: [21.5, 46, 12.5, 20.5],
+    phone: [14.5, 44, 9, 16.5],
+    card: [74, 51, 9, 15.5],
+    sketch: [44, 57.5, 18, 15.5],
+    coffee: [32, 57, 11.5, 11.5],
+    plants: [75.5, 56, 14, 16],
+    plane: [16.5, 4.5, 12.5, 12],
+  };
+
+  function coverBox(img) {
+    const elW = img.offsetWidth || 1;
+    const elH = img.offsetHeight || 1;
+    const nw = img.naturalWidth || 2400;
+    const nh = img.naturalHeight || 1350;
+    const scale = Math.max(elW / nw, elH / nh);
+    return {
+      elW,
+      elH,
+      ox: (elW - nw * scale) / 2,
+      oy: (elH - nh * scale) / 2,
+      drawW: nw * scale,
+      drawH: nh * scale,
+    };
+  }
+
+  function mapSpot(box, x, y, w, h) {
+    return {
+      left: ((box.ox + box.drawW * x / 100) / box.elW) * 100,
+      top: ((box.oy + box.drawH * y / 100) / box.elH) * 100,
+      width: (box.drawW * w / 100 / box.elW) * 100,
+      height: (box.drawH * h / 100 / box.elH) * 100,
+    };
+  }
+
+  function placeHeroSpots() {
+    const img = document.querySelector(".scene img");
+    if (!img) return;
+    const box = coverBox(img);
+    document.querySelectorAll(".hotspot").forEach((spot) => {
+      const named = [...spot.classList].find((item) => item.indexOf("hotspot-") === 0);
+      const name = named ? named.slice("hotspot-".length) : "";
+      if (!name) return;
+      const placed = mapSpot(box, ...SPOT_BOXES[name]);
+      spot.style.left = `${placed.left}%`;
+      spot.style.top = `${placed.top}%`;
+      spot.style.width = `${placed.width}%`;
+      spot.style.height = `${placed.height}%`;
+    });
+    const glow = document.querySelector(".screen-glow");
+    if (glow) {
+      const placed = mapSpot(box, ...SPOT_BOXES.laptop);
+      glow.style.left = `${placed.left}%`;
+      glow.style.top = `${placed.top}%`;
+      glow.style.width = `${placed.width}%`;
+      glow.style.height = `${placed.height}%`;
+    }
+    const steam = document.querySelector(".steam");
+    if (steam) {
+      const [x, y, w] = SPOT_BOXES.coffee;
+      const placed = mapSpot(box, x + w * 0.42, y - 1.6, 0, 0);
+      steam.style.left = `${placed.left}%`;
+      steam.style.top = `${placed.top}%`;
+    }
+    requestAnimationFrame(() => {
+      document.querySelectorAll(".hotspot").forEach((spot) => {
+        const rect = spot.getBoundingClientRect();
+        const seenW = Math.max(0, Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0));
+        const seenH = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
+        const cropped = rect.width < 2 || seenW * seenH < rect.width * rect.height * 0.5;
+        spot.hidden = cropped;
+        if (cropped) spot.tabIndex = -1;
+        else spot.removeAttribute("tabindex");
+      });
+    });
+  }
+
+  window.placeHeroSpots = placeHeroSpots;
+
   function initHotspots() {
+    placeHeroSpots();
+    window.addEventListener("resize", placeHeroSpots);
+    const heroImg = document.querySelector(".scene img");
+    if (heroImg && !heroImg.complete) heroImg.addEventListener("load", placeHeroSpots);
     const spots = [...document.querySelectorAll(".hotspot")];
     const box = document.getElementById("select-box");
     const card = document.getElementById("spot-card");

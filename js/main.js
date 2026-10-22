@@ -384,6 +384,7 @@ function initZoom() {
 
     zoomLight = mobile ? amount > 0.5 : amount > 0.74;
     syncHeader();
+    if (amount < 0.04 && window.placeHeroSpots) window.placeHeroSpots();
   }
 
   function readAspect() {
