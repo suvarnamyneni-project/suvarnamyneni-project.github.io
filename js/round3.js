@@ -283,9 +283,11 @@
   }
 
   function initKudos() {
-    const mount = document.getElementById("kudos-mount");
+    const portrait = document.querySelector("#about .portrait");
     const about = document.getElementById("about");
-    if (!mount) return;
+    if (!portrait || !about) return;
+    const reduce = !motion;
+    const colors = ["#e07a45", "#c46f7c", "#5f8f88", "#8a6f86"];
     let started = false;
 
     function quotesFrom(data) {
@@ -296,33 +298,345 @@
       }));
     }
 
+    function bubbleSvg(color) {
+      return `<svg viewBox="0 0 80 64" aria-hidden="true"><path d="M18 16h40a8 8 0 0 1 8 8v16a8 8 0 0 1-8 8H36l-10 10V48H18a8 8 0 0 1-8-8V24a8 8 0 0 1 8-8z" fill="#e8c2a6"/><path d="M18 10h40a8 8 0 0 1 8 8v16a8 8 0 0 1-8 8H36l-10 10V42H18a8 8 0 0 1-8-8V18a8 8 0 0 1 8-8z" fill="#fffaf3" stroke="#2b3236" stroke-width="1.7" stroke-linejoin="round"/><path d="M22 14h32a5 5 0 0 1 4 3H18a5 5 0 0 1 4-3z" fill="#fff" opacity=".78"/><circle cx="32" cy="28" r="3.2" fill="${color}"/><circle cx="44" cy="28" r="3.2" fill="${color}"/><circle cx="56" cy="28" r="3.2" fill="${color}"/></svg>`;
+    }
+
     function render(quotes) {
-      if (!quotes.length) return;
-      const wrap = document.createElement("div");
-      wrap.className = "kudos";
-      const heading = document.createElement("h2");
-      heading.id = "kudos-heading";
-      heading.textContent = "Kudos";
-      const list = document.createElement("ul");
-      list.className = "kudos-list";
-      quotes.forEach((item) => {
-        const card = document.createElement("li");
-        card.className = "kudo-card glass";
-        const quote = document.createElement("blockquote");
-        quote.className = "kudo-quote";
-        quote.textContent = item.quote;
-        card.appendChild(quote);
-        if (item.by) {
-          const by = document.createElement("p");
-          by.className = "kudo-by";
-          by.textContent = item.by;
-          card.appendChild(by);
-        }
-        list.appendChild(card);
+      if (!quotes.length || portrait.querySelector(".kudo-field")) return;
+      const field = document.createElement("div");
+      field.className = "kudo-field";
+      const canvas = document.createElement("canvas");
+      canvas.className = "kudo-trail";
+      canvas.setAttribute("aria-hidden", "true");
+      const count = document.createElement("p");
+      count.className = "kudo-count";
+      const label = document.createElement("span");
+      label.className = "kudo-count-label";
+      label.textContent = "Catch a kudos";
+      const pips = document.createElement("span");
+      pips.className = "kudo-pips";
+      quotes.forEach(() => pips.appendChild(document.createElement("i")));
+      count.append(label, pips);
+      const note = document.createElement("div");
+      note.className = "kudo-note";
+      note.setAttribute("role", "dialog");
+      note.setAttribute("aria-modal", "true");
+      note.setAttribute("aria-label", "Kudos");
+      note.hidden = true;
+      const closeBtn = document.createElement("button");
+      closeBtn.type = "button";
+      closeBtn.className = "kudo-close";
+      closeBtn.setAttribute("aria-label", "Close");
+      closeBtn.textContent = "×";
+      const quoteEl = document.createElement("blockquote");
+      const foot = document.createElement("footer");
+      const mark = document.createElement("span");
+      mark.className = "kudo-mark";
+      mark.setAttribute("aria-hidden", "true");
+      const roleEl = document.createElement("p");
+      roleEl.className = "kudo-role";
+      const source = document.createElement("a");
+      source.className = "kudo-source";
+      source.href = "https://www.linkedin.com/in/suvarnamyneni/";
+      source.target = "_blank";
+      source.rel = "noopener";
+      source.textContent = "LinkedIn";
+      foot.append(mark, roleEl, source);
+      note.append(closeBtn, quoteEl, foot);
+      const done = document.createElement("div");
+      done.className = "kudo-done";
+      done.hidden = true;
+      const doneTitle = document.createElement("p");
+      doneTitle.textContent = `All ${quotes.length} caught.`;
+      const again = document.createElement("button");
+      again.type = "button";
+      again.textContent = "Throw them back";
+      done.append(doneTitle, again);
+      field.append(canvas, count, note, done);
+      const seen = new Set();
+      let reading = -1;
+      let visible = true;
+      const context = canvas.getContext("2d");
+      const flyers = quotes.map((item, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "kudo-bubble";
+        button.innerHTML = bubbleSvg(colors[index % colors.length]);
+        button.setAttribute("aria-label", `Catch the kudos, ${item.by}`);
+        field.appendChild(button);
+        return {
+          button,
+          quote: item.quote,
+          by: item.by,
+          color: colors[index % colors.length],
+          angle: index * 1.45 + 0.4,
+          speed: 0.2 + (index % 3) * 0.03,
+          rx: 0.46 - (index % 2) * 0.04,
+          ry: 0.36 + (index % 2) * 0.06,
+          bob: index * 1.4,
+          slow: 1,
+          state: "fly",
+          trail: [],
+          x: 0,
+          y: 0,
+          from: [0, 0],
+          startedAt: 0,
+        };
       });
-      wrap.append(heading, list);
-      mount.appendChild(wrap);
-      mount.hidden = false;
+      portrait.appendChild(field);
+
+      function paintCount() {
+        label.textContent = seen.size ? `${seen.size} of ${quotes.length} kudos` : "Catch a kudos";
+        [...pips.children].forEach((pip, index) => pip.classList.toggle("is-on", seen.has(index)));
+      }
+
+      function place(item, x, y, rot, scale) {
+        item.x = x;
+        item.y = y;
+        item.button.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${rot.toFixed(1)}deg) scale(${scale})`;
+      }
+
+      function stillPoint(index, width, height) {
+        const spots = [
+          [0.16, 0.2],
+          [0.74, 0.16],
+          [0.12, 0.7],
+          [0.76, 0.68],
+        ];
+        const spot = spots[index % spots.length];
+        return [width * spot[0], height * spot[1]];
+      }
+
+      function openNote(index) {
+        const item = flyers[index];
+        reading = index;
+        quoteEl.textContent = item.quote;
+        roleEl.textContent = item.by;
+        mark.style.background = item.color;
+        note.hidden = false;
+        requestAnimationFrame(() => note.classList.add("is-open"));
+        seen.add(index);
+        paintCount();
+        closeBtn.focus();
+      }
+
+      function finishCatch(index) {
+        const item = flyers[index];
+        item.state = "read";
+        item.button.classList.add("is-away");
+        item.button.disabled = true;
+        openNote(index);
+      }
+
+      function catchBubble(index) {
+        const item = flyers[index];
+        if (item.state !== "fly") return;
+        if (reading >= 0) closeNote(false);
+        item.state = "catch";
+        item.startedAt = performance.now();
+        item.from = [item.x, item.y];
+        item.button.disabled = true;
+        if (reduce) finishCatch(index);
+      }
+
+      function closeNote(returnFocus) {
+        if (reading < 0) return;
+        const index = reading;
+        reading = -1;
+        note.classList.remove("is-open");
+        note.hidden = true;
+        const item = flyers[index];
+        if (item.state === "read" || item.state === "catch") {
+          item.state = reduce ? "parked" : "home";
+          item.startedAt = performance.now();
+          if (reduce) park(item, index);
+        }
+        if (returnFocus) item.button.focus();
+        if (seen.size === quotes.length) {
+          done.hidden = false;
+          requestAnimationFrame(() => done.classList.add("is-open"));
+        }
+      }
+
+      function park(item, index) {
+        const order = [...seen];
+        const slot = Math.max(0, order.indexOf(index));
+        const width = portrait.clientWidth;
+        const half = item.button.offsetWidth / 2 || 34;
+        item.state = "parked";
+        item.button.classList.remove("is-away");
+        item.button.classList.add("is-parked");
+        item.button.disabled = false;
+        item.button.style.opacity = "";
+        item.button.setAttribute("aria-label", `Read again, ${item.by}`);
+        const x = width * 0.5 + (slot - (quotes.length - 1) / 2) * 28 - half;
+        place(item, x, 2, 0, 0.62);
+      }
+
+      function restore() {
+        done.classList.remove("is-open");
+        done.hidden = true;
+        seen.clear();
+        paintCount();
+        flyers.forEach((item) => {
+          item.state = "fly";
+          item.slow = 1;
+          item.trail = [];
+          item.button.classList.remove("is-away", "is-parked");
+          item.button.disabled = false;
+          item.button.style.opacity = "";
+          item.button.setAttribute("aria-label", `Catch the kudos, ${item.by}`);
+        });
+        if (reduce) layoutStill();
+      }
+
+      function layoutStill() {
+        const width = portrait.clientWidth;
+        const height = portrait.clientHeight;
+        flyers.forEach((item, index) => {
+          if (item.state !== "fly") return;
+          const [x, y] = stillPoint(index, width, height);
+          place(item, x, y, 0, 1);
+        });
+      }
+
+      closeBtn.addEventListener("click", () => closeNote(true));
+      again.addEventListener("click", restore);
+      note.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeNote(true);
+          return;
+        }
+        if (event.key !== "Tab") return;
+        const stops = [closeBtn, source];
+        const first = stops[0];
+        const last = stops[stops.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && reading >= 0 && !event.target.closest(".kudo-note")) closeNote(true);
+      });
+      document.addEventListener("pointerdown", (event) => {
+        if (reading < 0) return;
+        if (event.target.closest(".kudo-note, .kudo-bubble")) return;
+        closeNote(false);
+      });
+
+      flyers.forEach((item, index) => {
+        item.button.addEventListener("pointerenter", () => { item.slow = 0.2; });
+        item.button.addEventListener("pointerleave", () => { if (document.activeElement !== item.button) item.slow = 1; });
+        item.button.addEventListener("focus", () => { item.slow = 0; });
+        item.button.addEventListener("blur", () => { item.slow = 1; });
+        item.button.addEventListener("pointerdown", () => { item.slow = 0; });
+        item.button.addEventListener("pointerup", () => {
+          if (document.activeElement !== item.button) item.slow = 1;
+        });
+        item.button.addEventListener("click", () => {
+          if (item.state === "parked") {
+            if (reading >= 0) closeNote(false);
+            openNote(index);
+            return;
+          }
+          catchBubble(index);
+        });
+      });
+
+      function resizeCanvas() {
+        const width = portrait.clientWidth;
+        const height = portrait.clientHeight;
+        const ratio = Math.min(2, window.devicePixelRatio || 1);
+        canvas.width = Math.max(1, width) * ratio;
+        canvas.height = Math.max(1, height) * ratio;
+        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      }
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+      if ("IntersectionObserver" in window) {
+        const watch = new IntersectionObserver((entries) => {
+          visible = entries.some((entry) => entry.isIntersecting);
+        }, { rootMargin: "120px" });
+        watch.observe(portrait);
+      }
+
+      const ease = (t) => 1 - (1 - t) ** 3;
+      let last = performance.now();
+      function frame(now) {
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        const width = portrait.clientWidth;
+        const height = portrait.clientHeight;
+        if (visible && width) {
+          context.clearRect(0, 0, width, height);
+          flyers.forEach((item, index) => {
+            let x = item.x;
+            let y = item.y;
+            let rot = 0;
+            let scale = 1;
+            if (item.state === "fly") {
+              if (!reduce) item.angle += dt * item.speed * item.slow;
+              const rx = width < 520 ? Math.min(item.rx, 0.4) : item.rx;
+              const ry = width < 520 ? Math.min(item.ry, 0.34) : item.ry;
+              const halfW = item.button.offsetWidth / 2 || 34;
+              const halfH = item.button.offsetHeight / 2 || 26;
+              if (reduce) {
+                [x, y] = stillPoint(index, width, height);
+              } else {
+                x = width * (0.5 + Math.cos(item.angle) * rx) - halfW;
+                y = height * (0.48 + Math.sin(item.angle) * ry) - halfH + Math.sin(now / 650 + item.bob) * 6;
+                const vx = -Math.sin(item.angle) * rx * width;
+                const vy = Math.cos(item.angle) * ry * height;
+                rot = Math.max(-16, Math.min(16, Math.atan2(vy, Math.abs(vx) + 40) * 30)) + Math.sin(now / 420 + item.bob) * 5;
+                item.trail.push([x + halfW, y + halfH]);
+                if (item.trail.length > 18) item.trail.shift();
+                context.beginPath();
+                item.trail.forEach((point, pointIndex) => {
+                  if (pointIndex) context.lineTo(point[0], point[1]);
+                  else context.moveTo(point[0], point[1]);
+                });
+                context.strokeStyle = "rgba(224, 119, 79, 0.32)";
+                context.setLineDash([2, 5]);
+                context.lineWidth = 1.3;
+                context.stroke();
+              }
+            } else if (item.state === "catch") {
+              const t = Math.min(1, (now - item.startedAt) / 560);
+              const e = ease(t);
+              const halfW = item.button.offsetWidth / 2 || 34;
+              x = item.from[0] + (width * 0.5 - halfW - item.from[0]) * e;
+              y = item.from[1] + (height * 0.16 - item.from[1]) * e - Math.sin(t * Math.PI) * 28;
+              rot = t * 18;
+              scale = 1 + t * 0.4;
+              item.button.style.opacity = String(1 - t * 0.85);
+              if (t >= 1) finishCatch(index);
+            } else if (item.state === "home") {
+              item.button.style.opacity = "0";
+              if (now - item.startedAt >= 280) park(item, index);
+              return;
+            } else if (item.state === "parked") {
+              park(item, index);
+              return;
+            } else {
+              x = item.x;
+              y = item.y;
+              scale = 0.7;
+              item.button.style.opacity = "0";
+            }
+            place(item, x, y, rot, scale);
+          });
+        }
+        if (!reduce) requestAnimationFrame(frame);
+      }
+      if (reduce) layoutStill();
+      else requestAnimationFrame(frame);
+      paintCount();
     }
 
     function load() {
@@ -334,7 +648,7 @@
         .catch(() => {});
     }
 
-    whenNear(about || mount, "200px", (near) => {
+    whenNear(about, "200px", (near) => {
       if (near) load();
     });
   }
