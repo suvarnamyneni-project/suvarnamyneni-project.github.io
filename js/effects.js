@@ -717,6 +717,7 @@
 
   function initFieldTags() {
     const tags = [...document.querySelectorAll("#about .float-tag")];
+    const shapes = [...document.querySelectorAll("#about .orbit-shape")];
     const about = document.getElementById("about");
     const portrait = document.querySelector("#about .portrait");
     if (!tags.length || !about || !portrait) return;
@@ -733,9 +734,10 @@
       observer.observe(about);
     }
 
+    let dragging = false;
     if (!reduce) {
       about.addEventListener("pointermove", (event) => {
-        if (event.pointerType && event.pointerType !== "mouse") return;
+        if (dragging || (event.pointerType && event.pointerType !== "mouse")) return;
         const rect = portrait.getBoundingClientRect();
         const nx = (event.clientX - rect.left - rect.width / 2) / Math.max(1, rect.width);
         const ny = (event.clientY - rect.top - rect.height / 2) / Math.max(1, rect.height);
@@ -743,21 +745,129 @@
         portrait.style.setProperty("--tag-y", Math.max(-1, Math.min(1, ny)).toFixed(3));
       }, { passive: true });
       about.addEventListener("pointerleave", () => {
+        if (dragging) return;
         portrait.style.setProperty("--tag-x", "0");
         portrait.style.setProperty("--tag-y", "0");
       });
     }
 
-    if (reduce) return;
     tags.forEach((tag) => {
+      let drag = null;
+      let x = 0;
+      let y = 0;
+      let vx = 0;
+      let vy = 0;
+      let frame = 0;
+      const place = (px, py) => {
+        tag.style.setProperty("--drag-x", `${px.toFixed(1)}px`);
+        tag.style.setProperty("--drag-y", `${py.toFixed(1)}px`);
+      };
+      const rest = () => {
+        const tx = parseFloat(portrait.style.getPropertyValue("--tag-x") || "0") * 16;
+        const ty = parseFloat(portrait.style.getPropertyValue("--tag-y") || "0") * 12;
+        return [Number.isFinite(tx) ? tx : 0, Number.isFinite(ty) ? ty : 0];
+      };
+      const settle = () => {
+        if (frame) cancelAnimationFrame(frame);
+        if (reduce) {
+          x = 0;
+          y = 0;
+          place(0, 0);
+          tag.classList.remove("is-drag", "is-held");
+          dragging = tags.some((node) => node.classList.contains("is-drag"));
+          return;
+        }
+        const step = () => {
+          const [tx, ty] = rest();
+          vx = (vx + (tx - x) * 0.16) * 0.74;
+          vy = (vy + (ty - y) * 0.16) * 0.74;
+          x += vx;
+          y += vy;
+          if (Math.hypot(x - tx, y - ty) < 0.6 && Math.hypot(vx, vy) < 0.6) {
+            x = 0;
+            y = 0;
+            vx = 0;
+            vy = 0;
+            place(0, 0);
+            tag.classList.remove("is-drag", "is-held");
+            dragging = tags.some((node) => node.classList.contains("is-drag"));
+            return;
+          }
+          place(x, y);
+          frame = requestAnimationFrame(step);
+        };
+        frame = requestAnimationFrame(step);
+      };
       tag.addEventListener("pointerdown", (event) => {
-        if (event.pointerType === "mouse") return;
-        tag.classList.add("is-held");
+        if (event.button != null && event.button !== 0) return;
+        if (frame) cancelAnimationFrame(frame);
+        const [tx, ty] = rest();
+        x = tx;
+        y = ty;
+        place(x, y);
+        dragging = true;
+        tag.classList.add("is-drag", "is-held");
+        tag.setPointerCapture(event.pointerId);
+        drag = { id: event.pointerId, lx: event.clientX, ly: event.clientY, t: performance.now() };
       });
-      const release = () => tag.classList.remove("is-held");
-      tag.addEventListener("pointerup", release);
-      tag.addEventListener("pointercancel", release);
+      tag.addEventListener("pointermove", (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        const dx = event.clientX - drag.lx;
+        const dy = event.clientY - drag.ly;
+        const dt = Math.max(16, performance.now() - drag.t);
+        vx = (dx / dt) * 16;
+        vy = (dy / dt) * 16;
+        x += dx;
+        y += dy;
+        drag.lx = event.clientX;
+        drag.ly = event.clientY;
+        drag.t = performance.now();
+        place(x, y);
+      });
+      const end = (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        drag = null;
+        tag.classList.remove("is-held");
+        settle();
+      };
+      tag.addEventListener("pointerup", end);
+      tag.addEventListener("pointercancel", end);
     });
+
+    if (reduce || !shapes.length) return;
+    const orbit = shapes.map((shape, index) => ({
+      shape,
+      angle: index * 1.5 + 0.4,
+      speed: 0.34 + (index % 3) * 0.08,
+      rx: 0.4 + (index % 2) * 0.05,
+      ry: 0.36 + ((index + 1) % 2) * 0.06,
+      bob: index * 1.3,
+    }));
+    let last = performance.now();
+    let seen = true;
+    if ("IntersectionObserver" in window) {
+      const watch = new IntersectionObserver((entries) => {
+        seen = entries.some((entry) => entry.isIntersecting);
+      }, { rootMargin: "120px" });
+      watch.observe(portrait);
+    }
+    const fly = (now) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      if (seen) {
+        const width = portrait.clientWidth;
+        const height = portrait.clientHeight;
+        orbit.forEach((item) => {
+          item.angle += dt * item.speed;
+          const px = width * (0.5 + Math.cos(item.angle) * item.rx) - item.shape.offsetWidth / 2;
+          const py = height * (0.46 + Math.sin(item.angle) * item.ry) - item.shape.offsetHeight / 2 + Math.sin(now / 680 + item.bob) * 10;
+          const tilt = Math.sin(item.angle * 2) * 14;
+          item.shape.style.transform = `translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) rotate(${tilt.toFixed(1)}deg)`;
+        });
+      }
+      requestAnimationFrame(fly);
+    };
+    requestAnimationFrame(fly);
   }
 
   window.deskCopy = copyEmail;
