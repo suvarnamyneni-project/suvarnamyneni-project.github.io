@@ -1222,82 +1222,140 @@ html.has-motion #about.is-live .float-tag:focus-visible {
   color: var(--ink);
 }
 
-/* Contact sky. */
+/* Contact sky and the paper-plane throw. */
 
 .night-band {
-  min-height: 100vh;
-  min-height: 100dvh;
-  background: #1a2744;
+  height: 100svh;
+  min-height: 660px;
+  background: #f6d9bc;
 }
 
-.sky-golden {
-  background: linear-gradient(180deg, #f6d7b8 0%, #f0b48a 42%, #e28b73 100%);
+.sky-layer img,
+.sky-layer picture {
+  width: 100%;
+  height: 100%;
 }
 
 .sky-dusk {
-  background: linear-gradient(180deg, #e7a48a 0%, #8d5d78 48%, #3d3a66 100%);
+  opacity: var(--dusk);
+  mix-blend-mode: normal;
+  background: none;
 }
 
 .sky-night {
-  background: linear-gradient(180deg, #243056 0%, #141a30 58%, #0c101c 100%);
+  opacity: var(--night);
+  mix-blend-mode: normal;
+  background: none;
 }
 
-.contact-scene {
-  position: relative;
+.sky-night::after {
+  content: none;
+}
+
+.cloud-drift {
+  z-index: 1;
+  height: 48%;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.9) 58%);
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.9) 58%);
+}
+
+.cloud-drift .sky-layer img {
+  object-fit: cover;
+  object-position: center 78%;
+  width: 112%;
+  height: 112%;
+  left: -6%;
+  top: auto;
+  bottom: -6%;
+  right: auto;
+  inset: auto;
+}
+
+.night-band #contact.contact-scene {
+  position: absolute;
+  inset: 0;
   z-index: 2;
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: calc(env(safe-area-inset-top) + 108px) max(22px, 6vw) 28px;
+  display: block;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
   background: transparent !important;
-  color: var(--ink);
+  color: #2b3236;
+  user-select: none;
 }
 
-.contact-copy {
-  position: relative;
-  z-index: 3;
-  max-width: 40rem;
+.plane-canvas {
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  touch-action: pan-y;
 }
 
-.contact-copy p {
-  margin-top: 12px;
-  max-width: 36rem;
-  font-size: 1.05rem;
+.contact-scene .contact-copy {
+  position: absolute;
+  left: 6vw;
+  top: clamp(90px, 13vh, 130px);
+  z-index: 4;
+  max-width: 560px;
+  pointer-events: none;
 }
 
-.contact-copy a {
+.contact-scene .contact-copy h2 {
+  max-width: 11ch;
+  font-family: var(--display);
+  font-size: clamp(40px, 5.2vw, 78px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+}
+
+.contact-scene .contact-copy p {
+  margin-top: 14px;
+  max-width: 28em;
+  color: #40464a;
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.5;
+}
+
+.contact-scene .contact-copy a {
   color: inherit;
-  font-weight: 700;
+  font-weight: 600;
+  pointer-events: auto;
+  position: relative;
+  z-index: 7;
+  text-decoration: underline;
+  text-decoration-color: rgba(224, 119, 79, 0.7);
+  text-underline-offset: 3px;
 }
 
-.steps {
+.contact-scene .steps {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 18px 0 0;
+  margin: 22px 0 0;
   padding: 0;
   list-style: none;
 }
 
-.steps li {
+.contact-scene .steps li {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 14px 8px 8px;
   border-radius: 999px;
-  background: rgba(255, 251, 247, 0.82);
-  -webkit-backdrop-filter: blur(10px) saturate(1.5);
-  backdrop-filter: blur(10px) saturate(1.5);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  color: #2b3236;
+  background: rgba(255, 251, 247, 0.6);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid transparent;
+  color: #4c5357;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 14px;
+  transition: background 0.3s, color 0.3s, transform 0.4s cubic-bezier(0.3, 1.6, 0.5, 1);
 }
 
-.steps li i {
+.contact-scene .steps li i {
   display: grid;
   place-items: center;
   width: 24px;
@@ -1305,124 +1363,557 @@ html.has-motion #about.is-live .float-tag:focus-visible {
   border-radius: 50%;
   background: #fff;
   font-style: normal;
-  font-size: 0.78rem;
-  color: var(--ink);
+  font-size: 12.5px;
+  color: #2b3236;
 }
 
-.steps li.is-on {
+.contact-scene .steps li.is-on {
   background: #fff;
+  color: #2b3236;
+  transform: scale(1.06);
+  box-shadow: 0 10px 24px -14px rgba(120, 60, 30, 0.5);
 }
 
-.contact-scene .sling-stage {
+.contact-scene .steps li.is-on i {
+  background: #c4512a;
+  color: #fff;
+}
+
+.contact-scene .steps li.is-ok {
+  color: #2b3236;
+}
+
+.contact-scene .steps li.is-ok i {
+  background: #2b3236;
+  color: #fff;
+}
+
+.throw-count {
   position: absolute;
-  inset: 0;
-  height: auto;
-  margin: 0;
-  border-radius: 0;
-  background: transparent;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.sling-plane {
-  pointer-events: auto;
-  background: rgba(255, 251, 247, 0.92);
-}
-
-.target {
-  right: 14%;
-  top: 46%;
-  width: 120px;
-  height: 120px;
-}
-
-.email-bar {
-  position: relative;
+  right: 6vw;
+  top: clamp(96px, 14vh, 134px);
   z-index: 4;
+  margin: 0;
+  padding: 11px 16px;
+  border-radius: 999px;
+  background: rgba(255, 251, 247, 0.75);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.throw-count.is-on {
+  opacity: 1;
+}
+
+.throw-count b {
+  color: #e0774f;
+  font-variant-numeric: tabular-nums;
+}
+
+.mail-ring {
+  position: absolute;
+  z-index: 3;
+  translate: -50% -50%;
+  border-radius: 50%;
+  border: 2.5px solid rgba(224, 119, 79, 0.85);
+  pointer-events: none;
+  animation: mail-ring 1.8s ease-out infinite;
+}
+
+.mail-ring::after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.9);
+  animation: mail-spin 14s linear infinite;
+}
+
+.contact-scene.is-aim .mail-ring {
+  border-color: #fff;
+  animation-duration: 0.8s;
+}
+
+.mail-tag {
+  position: absolute;
+  z-index: 3;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #c4512a;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  translate: -50% -100%;
+  box-shadow: 0 10px 20px -10px rgba(120, 60, 30, 0.6);
+  pointer-events: none;
+  animation: mail-bob 2.4s ease-in-out infinite;
+}
+
+.mail-tag::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: #c4512a;
+  border-radius: 2px;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.pull-hint {
+  position: absolute;
+  z-index: 5;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #2b3236;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  translate: -50% 0;
+  pointer-events: none;
+  animation: mail-nudge 1.6s ease-in-out infinite;
+}
+
+.plane-grab {
+  position: absolute;
+  z-index: 6;
+  width: 110px;
+  height: 110px;
+  margin: -55px 0 0 -55px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  touch-action: none;
+  cursor: pointer;
+}
+
+.contact-scene.is-miss .throw-count {
+  animation: mail-shake 0.4s;
+}
+
+.plane-done,
+.plane-nudge {
+  position: absolute;
+  z-index: 8;
+}
+
+.plane-done {
+  left: 50%;
+  top: 50%;
+  width: min(460px, 88vw);
+  padding: 30px;
+  border-radius: 28px;
+  text-align: center;
+  background: rgba(255, 251, 247, 0.92);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  border: 1px solid #fff;
+  box-shadow: 0 40px 80px -40px rgba(120, 60, 30, 0.6);
+  translate: -50% -50%;
+  opacity: 0;
+  transform: scale(0.92) translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.4s, transform 0.6s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.plane-done.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.plane-tick {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: #c4512a;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.plane-done h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.plane-done p,
+.plane-nudge p {
+  margin: 10px 0 0;
+  color: #41484c;
+  line-height: 1.5;
+}
+
+.plane-done-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.plane-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border: 1px solid rgba(90, 60, 40, 0.1);
+  border-radius: 999px;
+  background: #fff;
+  color: #2b3236;
+  font: 600 14.5px/1 var(--sans);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.plane-btn-pri {
+  background: #c4512a;
+  border-color: #c4512a;
+  color: #fff;
+}
+
+.plane-btn-quiet {
+  background: none;
+  border-color: transparent;
+  color: #41484c;
+}
+
+.plane-nudge {
+  right: clamp(16px, 6vw, 90px);
+  top: 18%;
+  z-index: 7;
+  width: min(330px, 86vw);
+  padding: 20px 20px 18px;
+  border-radius: 22px;
+  background: rgba(255, 251, 247, 0.94);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 30px 60px -30px rgba(80, 40, 30, 0.55);
+  opacity: 0;
+  transform: translateY(14px) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.4s, transform 0.6s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.plane-nudge.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.plane-nudge b {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.plane-nudge p {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.nudge-mail {
+  display: block;
+  margin-top: 10px;
+  color: #b2512c;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.plane-nudge .plane-btn {
+  padding: 9px 13px;
+  font-size: 13px;
+}
+
+.plane-done[hidden],
+.plane-nudge[hidden] {
+  display: none !important;
+}
+
+.contact-scene .email-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 62px;
+  z-index: 5;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  width: fit-content;
-  max-width: 100%;
-  margin: 18px auto 0;
-  padding: 5px 5px 5px 16px;
+  gap: 2px;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 5px;
   border-radius: 999px;
-  background: rgba(255, 251, 247, 0.86);
-  -webkit-backdrop-filter: blur(14px) saturate(1.5);
-  backdrop-filter: blur(14px) saturate(1.5);
+  background: rgba(255, 251, 247, 0.72);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 14px 30px -18px rgba(20, 20, 40, 0.45);
+  translate: -50% 0;
   color: #2b3236;
 }
 
-.email-bar a,
-.email-bar .copy-email {
-  color: #2b3236;
-  background: transparent;
-  font-weight: 600;
-  font-size: 0.84rem;
-  text-decoration: none;
-  padding: 10px 12px;
-  border-radius: 999px;
+.contact-scene .email-bar a,
+.contact-scene .email-bar .copy-email {
   border: 0;
-  font-family: inherit;
+  border-radius: 999px;
+  background: none;
+  color: #2b3236;
+  font: 600 13.5px/1 var(--sans);
+  padding: 10px 14px;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.email-bar a:hover,
-.email-bar .copy-email:hover {
-  background: rgba(255, 255, 255, 0.7);
+.contact-scene .email-bar a:hover,
+.contact-scene .email-bar .copy-email:hover,
+.contact-scene .email-bar .copy-email.is-copied {
+  background: #fff;
+}
+
+.contact-scene .bar-mail,
+.contact-scene .bar-mail:hover,
+.night-band.is-dusk .contact-scene .bar-mail,
+.night-band.is-dusk .contact-scene .bar-mail:hover,
+.night-band.is-night .contact-scene .bar-mail,
+.night-band.is-night .contact-scene .bar-mail:hover {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  background: #fff !important;
+  color: #2b3236;
+  box-shadow: 0 6px 14px -10px rgba(120, 60, 30, 0.5);
+}
+
+.contact-scene .bar-address,
+.night-band.is-night .contact-scene .bar-address,
+.night-band.is-dusk .contact-scene .bar-address {
+  color: #2b3236;
+  white-space: nowrap;
+}
+
+.contact-scene .bar-mail svg {
+  color: #e0774f;
+  transition: transform 0.5s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.contact-scene .bar-mail:hover svg {
+  transform: translate(2px, -2px) rotate(-10deg);
+}
+
+.bar-sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 4px;
+  background: rgba(43, 50, 54, 0.15);
+}
+
+.contact-scene .copy-email.is-copied {
+  color: #b2512c;
 }
 
 .contact-credit {
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
   z-index: 4;
-  margin: 10px 0 0;
+  margin: 0;
   text-align: center;
-  font-size: 0.84rem;
-  color: var(--muted);
+  font-size: 12.5px;
+  color: rgba(43, 50, 54, 0.78);
 }
 
-.night-band.is-night .contact-copy,
-.night-band.is-night .contact-copy h2,
+.night-band.is-night .contact-copy h2 {
+  color: #fff8ef;
+  text-shadow: 0 2px 30px rgba(20, 20, 60, 0.35);
+}
+
 .night-band.is-night .contact-copy p,
 .night-band.is-night .contact-copy a {
-  color: #fff8ef;
+  color: rgba(255, 246, 236, 0.92);
+  text-shadow: 0 1px 14px rgba(20, 20, 60, 0.35);
+}
+
+.night-band.is-night .contact-copy a {
+  color: #fff;
 }
 
 .night-band.is-night .contact-credit {
   color: rgba(255, 246, 236, 0.86);
+  text-shadow: 0 1px 10px rgba(20, 20, 60, 0.5);
 }
 
-.night-band.is-dusk .contact-copy,
-.night-band.is-dusk .contact-copy h2,
-.night-band.is-dusk .contact-copy p {
+.night-band.is-night .steps li {
+  background: rgba(255, 250, 245, 0.18);
+  color: #fff8ef;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.night-band.is-night .steps li.is-on {
+  background: #fff;
   color: #2b3236;
 }
 
-.sling-mail {
-  position: relative;
-  z-index: 4;
-  width: fit-content;
-  margin: 12px auto 0;
-  padding: 12px 16px;
-  border-radius: 18px;
+.night-band.is-night .steps li i {
+  color: #2b3236;
 }
 
-.sling-done {
-  position: relative;
-  z-index: 5;
-  width: min(360px, 88vw);
-  margin: 0 auto;
-  padding: 22px 20px;
-  border-radius: 28px;
-  text-align: center;
+.night-band.is-night .email-bar {
+  background: rgba(30, 30, 70, 0.45);
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
-.sling-done[hidden],
-.sling-mail[hidden] {
+.night-band.is-night .email-bar a,
+.night-band.is-night .email-bar .copy-email,
+.night-band.is-night .bar-sep {
+  color: #fff8ef;
+}
+
+.night-band.is-night .bar-sep {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.night-band.is-night .email-bar a.bar-mail svg,
+.contact-scene .bar-mail svg {
+  color: #c4512a;
+}
+
+.bar-in {
   display: none;
+  width: 22px;
+  height: 22px;
+}
+
+.night-band.is-night .mail-ring {
+  border-color: rgba(255, 214, 150, 0.6);
+}
+
+html.is-night .site-nav,
+html.is-night .brand-chip {
+  background: rgba(255, 250, 245, 0.9);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+@media (max-width: 860px) {
+  .contact-scene .contact-copy {
+    left: 20px;
+    right: 20px;
+  }
+
+  .contact-scene .email-bar {
+    flex-wrap: nowrap;
+    max-width: calc(100% - 16px);
+    padding: 4px;
+  }
+
+  .contact-scene .bar-address {
+    font-size: 11.5px;
+    letter-spacing: -0.03em;
+  }
+
+  .contact-scene .bar-mail {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .contact-scene .email-bar a,
+  .contact-scene .email-bar .copy-email {
+    padding: 10px 9px;
+  }
+
+  .contact-scene .bar-sep {
+    display: none;
+  }
+
+  .contact-scene .bar-linkedin-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .contact-scene .bar-in {
+    display: block;
+  }
+
+  .contact-scene .steps li {
+    font-size: 12.5px;
+    padding: 6px 10px 6px 6px;
+  }
+
+  .throw-count {
+    right: 20px;
+    top: auto;
+    bottom: 118px;
+  }
+
+  .plane-nudge {
+    top: auto;
+    right: auto;
+    bottom: 168px;
+    left: 50%;
+    transform: translate(-50%, 14px) scale(0.96);
+  }
+
+  .plane-nudge.is-on {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 430px) {
+  .contact-scene .contact-copy {
+    top: calc(env(safe-area-inset-top) + 168px);
+  }
+
+  .contact-scene .contact-copy h2 {
+    font-size: clamp(34px, 9.4vw, 44px);
+  }
+}
+
+@keyframes mail-ring {
+  0% { transform: scale(0.85); opacity: 1; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+@keyframes mail-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes mail-bob {
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes mail-nudge {
+  50% { transform: translateX(-10px); }
+}
+
+@keyframes mail-shake {
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 
 /* Cursor, toasts, selection. */
@@ -1625,7 +2116,7 @@ html.has-motion #about.is-live .float-tag:focus-visible {
   }
 
   .hero-copy {
-    top: calc(env(safe-area-inset-top) + 132px);
+    top: calc(env(safe-area-inset-top) + 176px);
   }
 }
 

@@ -127,7 +127,14 @@
       html .site-header { flex-wrap: wrap; row-gap: 8px; }
       html .brand-chip { margin-right: auto; }
       .site-nav { margin-left: auto; }
-      html .hero-copy { top: calc(env(safe-area-inset-top) + 132px); }
+      html .hero-copy { top: calc(env(safe-area-inset-top) + 176px); }
+    }
+    .night-band { position: relative; height: 100svh; min-height: 660px; overflow: hidden; background: #f6d9bc; }
+    .night-band .sky-layer, .night-band .star-field, .night-band .plane-canvas, #contact.contact-scene { position: absolute; inset: 0; }
+    .night-band .sky-layer picture, .night-band .sky-layer img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .cloud-drift { position: absolute; z-index: 1; left: -4%; right: -4%; bottom: 0; height: 46%; overflow: hidden; pointer-events: none; }
+    @media (max-width: 430px) {
+      .contact-scene .contact-copy { top: calc(env(safe-area-inset-top) + 168px); }
     }
   </style>
   <link rel="stylesheet" href="css/styles.css" media="print" onload="this.media='all'">
@@ -738,53 +745,79 @@
     </section>
 
     <div class="night-band" id="night-band">
-      <div class="sky-layer sky-golden" data-art="contact-sky" aria-hidden="true">
+      <div class="sky-layer sky-golden" aria-hidden="true">
         <picture>
-          <source type="image/webp" srcset="assets/art/contact-sky-1600.webp 1600w, assets/art/contact-sky.webp 2400w" sizes="100vw">
-          <img src="assets/art/contact-sky-1600.jpg" alt="" width="1600" height="900" decoding="async">
+          <source type="image/webp" srcset="assets/art/sky-golden.webp">
+          <img src="assets/art/sky-golden.jpg" alt="" width="1600" height="900" decoding="async" loading="lazy">
         </picture>
       </div>
-      <div class="sky-layer sky-dusk" aria-hidden="true"></div>
-      <div class="sky-layer sky-night" aria-hidden="true"></div>
+      <div class="sky-layer sky-dusk" aria-hidden="true">
+        <picture>
+          <source type="image/webp" srcset="assets/art/sky-dusk.webp">
+          <img src="assets/art/sky-dusk.jpg" alt="" width="1600" height="900" decoding="async" loading="lazy">
+        </picture>
+      </div>
+      <div class="sky-layer sky-night" aria-hidden="true">
+        <picture>
+          <source type="image/webp" srcset="assets/art/sky-night.webp">
+          <img src="assets/art/sky-night.jpg" alt="" width="1600" height="900" decoding="async" loading="lazy">
+        </picture>
+      </div>
+      <div class="cloud-drift" aria-hidden="true">
+        <div class="sky-layer sky-golden"><img src="assets/art/sky-golden.webp" alt="" width="1600" height="900" decoding="async" loading="lazy"></div>
+        <div class="sky-layer sky-dusk"><img src="assets/art/sky-dusk.webp" alt="" width="1600" height="900" decoding="async" loading="lazy"></div>
+        <div class="sky-layer sky-night"><img src="assets/art/sky-night.webp" alt="" width="1600" height="900" decoding="async" loading="lazy"></div>
+      </div>
       <canvas class="star-field" id="star-field" aria-hidden="true"></canvas>
-      <div class="lantern" aria-hidden="true"></div>
-      <div class="fireflies" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <section class="panel contact-scene" id="contact" aria-labelledby="contact-heading">
+        <canvas class="plane-canvas" id="plane-canvas" aria-hidden="true"></canvas>
         <div class="contact-copy">
           <h2 id="contact-heading">Toss me a paper plane.</h2>
-          <p>Write to me at <a href="mailto:suvarnamyneni@gmail.com">suvarnamyneni@gmail.com</a>. Or pull the plane back and land it on the mark.</p>
-          <ol class="steps" id="sling-steps">
-            <li class="is-on" data-step="1"><i>1</i> Pull back</li>
-            <li data-step="2"><i>2</i> Aim at the mark</li>
-            <li data-step="3"><i>3</i> Let go</li>
+          <p>I'm in Hyderabad, and open to remote or Hyderabad roles. Write to <a class="contact-mail" href="mailto:suvarnamyneni@gmail.com">suvarnamyneni@gmail.com</a>, or pull the plane back and land it in the mailbox.</p>
+          <ol class="steps" id="plane-steps">
+            <li class="is-on"><i>1</i> Pull back</li>
+            <li><i>2</i> Aim for the mailbox</li>
+            <li><i>3</i> Release</li>
           </ol>
         </div>
-        <div class="sling-stage" id="sling-stage">
-          <svg class="aim-preview" id="aim-preview" hidden aria-hidden="true"><polyline points=""></polyline></svg>
-          <div class="target" aria-hidden="true">
-            <span class="ring-pulse"></span>
-            <span class="ring-dash"></span>
+        <p class="throw-count" id="throw-count" aria-hidden="true">Throws <b id="throw-num">0</b></p>
+        <div class="mail-ring" id="mail-ring" aria-hidden="true"></div>
+        <p class="mail-tag" id="mail-tag">The mailbox</p>
+        <p class="pull-hint" id="pull-hint">Pull me back</p>
+        <button type="button" class="plane-grab" id="plane-grab" aria-describedby="plane-help" data-caption="Pull me back">
+          <span class="sr-only">Paper plane</span>
+        </button>
+        <div class="plane-done" id="plane-done" role="dialog" aria-modal="true" aria-labelledby="plane-done-title" hidden>
+          <div class="plane-tick" aria-hidden="true">✓</div>
+          <h3 id="plane-done-title">It landed.</h3>
+          <p id="plane-done-msg">suvarnamyneni@gmail.com is on your clipboard.</p>
+          <div class="plane-done-row">
+            <a class="plane-btn plane-btn-pri" href="mailto:suvarnamyneni@gmail.com">Write to me</a>
+            <button type="button" class="plane-btn" id="plane-again">Throw again</button>
           </div>
-          <canvas class="sling-confetti" id="sling-confetti" aria-hidden="true"></canvas>
-          <button type="button" class="sling-plane" id="sling-plane" aria-describedby="sling-help">
-            <span class="sr-only">Paper plane</span>
-            <svg viewBox="0 0 32 32" aria-hidden="true">
-              <path d="M3 16 29 5 19 16 29 20Z" fill="#FFFDFB" stroke="#2B3236" stroke-width="1.6" stroke-linejoin="round"/>
-              <path d="M19 16 13 27 16 17" fill="none" stroke="#A34728" stroke-width="1.6" stroke-linejoin="round"/>
-            </svg>
-          </button>
         </div>
-        <p id="sling-status" class="sr-only" aria-live="polite"></p>
-        <p id="sling-help" class="sr-only">Drag the plane toward the ring. A hit copies the email address. From the keyboard, press Enter to throw.</p>
-        <p class="sling-done glass-float" id="sling-done" hidden>Delivered. The address is on your clipboard.</p>
-        <p class="sling-mail glass-float" id="sling-mail" hidden><a href="mailto:suvarnamyneni@gmail.com">suvarnamyneni@gmail.com</a></p>
-        <div class="email-bar glass-float">
-          <a class="email" href="mailto:suvarnamyneni@gmail.com" data-caption="Email Suvarna">suvarnamyneni@gmail.com</a>
-          <button type="button" class="copy-email" data-caption="Copy email address">Copy</button>
-          <a href="https://www.linkedin.com/in/suvarnamyneni/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
-          <a href="https://motiveux.wixsite.com/suvarnaproject" target="_blank" rel="noopener noreferrer">Wix portfolio<span class="sr-only"> (opens in a new tab)</span></a>
+        <div class="plane-nudge" id="plane-nudge" hidden>
+          <b>So close.</b>
+          <p>The mailbox can wait. The note still reaches me.</p>
+          <a class="nudge-mail" href="mailto:suvarnamyneni@gmail.com">suvarnamyneni@gmail.com</a>
+          <div class="plane-done-row">
+            <a class="plane-btn plane-btn-pri" href="mailto:suvarnamyneni@gmail.com">Write to me</a>
+            <button type="button" class="plane-btn" id="nudge-copy">Copy</button>
+            <button type="button" class="plane-btn plane-btn-quiet" id="nudge-keep">I'll keep throwing</button>
+          </div>
         </div>
-        <p class="contact-credit">Suvarna Myneni. AI-Native UX Designer. Psst, type hire.</p>
+        <div class="email-bar">
+          <a class="bar-mail" href="mailto:suvarnamyneni@gmail.com" data-caption="Email Suvarna">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3.5 6.5h17v11h-17z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 7.2 12 13l8-5.8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            <span class="bar-address">suvarnamyneni@gmail.com</span>
+          </a>
+          <button type="button" class="copy-email" data-caption="Copy the address">Copy</button>
+          <span class="bar-sep" aria-hidden="true"></span>
+          <a class="bar-linkedin" href="https://www.linkedin.com/in/suvarnamyneni/" target="_blank" rel="noopener noreferrer" data-caption="LinkedIn" aria-label="LinkedIn"><svg class="bar-in" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.2 10.2V16M7.2 7.8h.1M10.6 16v-3.2c0-1 .6-1.8 1.6-1.8s1.5.8 1.5 1.8V16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="bar-linkedin-label">LinkedIn</span><span class="sr-only"> (opens in a new tab)</span></a>
+        </div>
+        <p class="contact-credit">Suvarna Myneni. AI-Native UX Designer in Hyderabad. Open to remote or Hyderabad roles. Psst, type hire.</p>
+        <p id="plane-status" class="sr-only" aria-live="polite"></p>
+        <p id="plane-help" class="sr-only">Drag the plane back, aim at the mailbox, and let go. A landing copies the email address. From the keyboard, press Enter to throw.</p>
       </section>
     </div>
   </main>

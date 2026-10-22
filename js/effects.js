@@ -158,10 +158,12 @@
     button.addEventListener("click", async () => {
       const ok = await copyEmail();
       button.textContent = ok ? "Copied" : "Copy";
+      button.classList.toggle("is-copied", ok);
       if (!ok) showToast("Could not copy the email address.");
       window.clearTimeout(timer);
       timer = window.setTimeout(() => {
         button.textContent = "Copy";
+        button.classList.remove("is-copied");
       }, 1600);
     });
   }
@@ -478,7 +480,7 @@
       const title = card.querySelector("h3");
       if (title) card.setAttribute("data-caption", title.textContent.trim());
     });
-    const linkedin = document.querySelector(".contact-links a[href*='linkedin']");
+    const linkedin = document.querySelector(".email-bar a[href*='linkedin'], .contact-links a[href*='linkedin']");
     const wix = document.querySelector(".contact-links a[href*='wixsite']");
     if (linkedin) linkedin.setAttribute("data-caption", "LinkedIn");
     if (wix) wix.setAttribute("data-caption", "Wix portfolio");
