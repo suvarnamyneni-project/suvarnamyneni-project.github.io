@@ -40,6 +40,17 @@ function initLenis() {
     wheelMultiplier: 0.8,
   });
   lenis.on("scroll", window.ScrollTrigger.update);
+  if (window.ScrollTrigger && window.ScrollTrigger.scrollerProxy) {
+    window.ScrollTrigger.scrollerProxy(document.documentElement, {
+      scrollTop(value) {
+        if (arguments.length) lenis.scrollTo(value, { immediate: true });
+        return lenis.scroll;
+      },
+      getBoundingClientRect() {
+        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
+      },
+    });
+  }
   window.gsap.ticker.add((time) => {
     lenis.raf(time * 1000);
   });

@@ -166,7 +166,7 @@
       var stack = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
       root.classList.toggle("is-stack", stack || reduce);
       root.classList.toggle("has-rail", !stack && !reduce);
-      if (reduce) root.classList.add("is-path-snap");
+      if (reduce || stack) root.classList.add("is-path-snap");
       if (!reduce) root.classList.add("has-motion");
       if (reduce || stack) {
         root.classList.add("ready");

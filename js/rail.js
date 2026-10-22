@@ -1,8 +1,8 @@
 /**
  * Round 2: pinned work rail and path timeline.
  * The work rail stays vertical on phone, tablet, and coarse pointers.
- * The path stays a horizontal track on every size. Reduced motion uses a
- * native scroll-snap row instead of pinning.
+ * The path stays horizontal. Desktop pins and snaps each stage to rest.
+ * Touch, narrow screens, and reduced motion use a native scroll-snap row.
  */
 (function () {
   const STACK_QUERY = "(max-width: 900px), (pointer: coarse)";
@@ -38,6 +38,10 @@
 
   function isStack() {
     return reduceMotion || window.matchMedia(STACK_QUERY).matches;
+  }
+
+  function pathIsSnap() {
+    return isStack();
   }
 
   function yearFor(card) {
@@ -122,10 +126,17 @@
     const step = episodes.length > 1
       ? episodes[1].offsetLeft - episodes[0].offsetLeft
       : episodes[0].offsetWidth;
-    pathBoard.maxShift = Math.max(1, (episodes.length - 1) * step);
-    pathBoard.travel = Math.round(pathBoard.maxShift * 0.8);
+    const steps = Math.max(1, episodes.length - 1);
+    pathBoard.maxShift = Math.max(1, steps * step);
+    pathBoard.travel = Math.round(steps * (window.innerHeight || 1));
+    const stageShift = (index) => {
+      const episode = episodes[index];
+      return (stick.clientWidth / 2) - (episode.offsetLeft + episode.offsetWidth / 2);
+    };
+    pathBoard.shift0 = stageShift(0);
+    pathBoard.shift1 = stageShift(episodes.length - 1);
     if (pin) pin.style.setProperty("--path-travel", `${pathBoard.travel}px`);
-    if (reduceMotion) track.style.transform = "none";
+    if (pathIsSnap()) track.style.transform = "none";
     const width = episodes[0].offsetWidth;
     const height = stick.clientHeight || window.innerHeight;
     const boardWidth = Math.max(track.scrollWidth, pathBoard.maxShift + width);
@@ -164,8 +175,9 @@
     if (!pathBoard) return;
     const p = clamp01(progress);
     const count = pathBoard.episodes.length;
-    if (!reduceMotion) {
-      pathBoard.track.style.transform = `translate3d(${(-p * pathBoard.maxShift).toFixed(2)}px, 0, 0)`;
+    if (!pathIsSnap()) {
+      const shift = pathBoard.shift0 + p * (pathBoard.shift1 - pathBoard.shift0);
+      pathBoard.track.style.transform = `translate3d(${shift.toFixed(2)}px, 0, 0)`;
     }
     const index = Math.round(p * Math.max(1, count - 1));
     setPathActive(Math.max(0, Math.min(count - 1, index)), p);
@@ -199,18 +211,27 @@
   }
 
   function applyStickyPath() {
-    if (!pathBoard || reduceMotion || !isStack()) return;
-    const travel = pathBoard.travel || 1;
-    const passed = -pathBoard.pin.getBoundingClientRect().top;
-    applyPathBoard(passed / travel);
+    return;
   }
 
   function syncSnapPath() {
-    if (!pathBoard || !reduceMotion) return;
+    if (!pathBoard || !pathIsSnap()) return;
     const scroller = pathBoard.track;
     const max = scroller.scrollWidth - scroller.clientWidth;
     const progress = max > 0 ? scroller.scrollLeft / max : 0;
+    const viewMid = scroller.scrollLeft + scroller.clientWidth / 2;
+    let nearest = 0;
+    let nearestDist = Infinity;
+    pathBoard.episodes.forEach((episode, index) => {
+      const mid = episode.offsetLeft + episode.offsetWidth / 2;
+      const dist = Math.abs(mid - viewMid);
+      if (dist < nearestDist) {
+        nearestDist = dist;
+        nearest = index;
+      }
+    });
     applyPathBoard(progress);
+    setPathActive(nearest, pathBoard.episodes.length === 1 ? 0 : nearest / (pathBoard.episodes.length - 1));
   }
 
   function syncStackPath() {
@@ -222,10 +243,14 @@
     const count = pathBoard.episodes.length;
     const next = Math.max(0, Math.min(count - 1, index));
     const progress = count === 1 ? 0 : next / (count - 1);
-    if (reduceMotion) {
+    if (pathIsSnap()) {
       const episode = pathBoard.episodes[next];
       if (!episode) return;
-      pathBoard.track.scrollTo({ left: Math.max(0, episode.offsetLeft - 18), behavior: "auto" });
+      const left = episode.offsetLeft - (pathBoard.track.clientWidth - episode.offsetWidth) / 2;
+      pathBoard.track.scrollTo({
+        left: Math.max(0, left),
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
       return;
     }
     if (pathTrigger) {
@@ -287,7 +312,8 @@
       const active = document.activeElement;
       if (active && active.closest("input, textarea, select, [contenteditable='true']")) return;
       const inPath = active && section.contains(active);
-      const snapVisible = reduceMotion && section.getBoundingClientRect().top < window.innerHeight * 0.8 && section.getBoundingClientRect().bottom > window.innerHeight * 0.2;
+      const box = section.getBoundingClientRect();
+      const snapVisible = pathIsSnap() && box.top < window.innerHeight * 0.85 && box.bottom > 80;
       if (!inPath && !pathEngaged() && !snapVisible) return;
       if (!inPath && active && active !== document.body && (active.tagName === "A" || active.tagName === "BUTTON")) return;
       event.preventDefault();
@@ -313,7 +339,7 @@
     }, { passive: false, capture: true });
     let drag = null;
     stick.addEventListener("touchstart", (event) => {
-      if (reduceMotion || !event.touches[0]) return;
+      if (pathIsSnap() || !event.touches[0]) return;
       drag = {
         x: event.touches[0].clientX,
         y: event.touches[0].clientY,
@@ -322,7 +348,7 @@
       };
     }, { passive: true });
     stick.addEventListener("touchmove", (event) => {
-      if (!drag || reduceMotion || !event.touches[0]) return;
+      if (!drag || pathIsSnap() || !event.touches[0]) return;
       const dx = event.touches[0].clientX - drag.x;
       const dy = event.touches[0].clientY - drag.y;
       if (!drag.lock) {
@@ -892,12 +918,45 @@
     snapTimer = window.setTimeout(snapCards, 170);
   }
 
+  let pathSettleTimer = 0;
+  let pathSettling = false;
+
+  function settlePathSnap() {
+    if (pathSettling || !pathTrigger || !pathBoard || pathIsSnap()) return;
+    const start = pathTrigger.start;
+    const end = pathTrigger.end;
+    const span = end - start;
+    if (span <= 1) return;
+    const y = currentScroll();
+    if (y < start - 4 || y > end + 4) return;
+    const steps = Math.max(1, pathBoard.episodes.length - 1);
+    const nearest = Math.round(clamp01((y - start) / span) * steps) / steps;
+    const target = start + span * nearest;
+    if (Math.abs(target - y) < 2) return;
+    pathSettling = true;
+    scrollTo(target, {
+      duration: 0.5,
+      easing: smootherstep,
+      force: true,
+      onComplete: () => { pathSettling = false; },
+    });
+    window.setTimeout(() => { pathSettling = false; }, 700);
+  }
+
+  function queuePathSettle() {
+    if (pathSettling || !pathTrigger || pathIsSnap()) return;
+    window.clearTimeout(pathSettleTimer);
+    pathSettleTimer = window.setTimeout(settlePathSnap, 140);
+  }
+
+  let pathSettleBound = false;
+
   function bindRound2() {
     const root = document.documentElement;
     const stack = isStack();
     root.classList.toggle("is-stack", stack);
     root.classList.toggle("has-rail", !stack);
-    root.classList.toggle("is-path-snap", reduceMotion);
+    root.classList.toggle("is-path-snap", stack);
     if (railTrigger) {
       railTrigger.kill(true);
       railTrigger = null;
@@ -948,23 +1007,25 @@
       applyStackPath();
     }
 
-    if (!reduceMotion && !stack && window.ScrollTrigger && pathBoard) {
+    if (!stack && window.ScrollTrigger && pathBoard) {
       layoutPath();
+      const steps = Math.max(1, pathBoard.episodes.length - 1);
       pathTrigger = window.ScrollTrigger.create({
         trigger: pathBoard.pin,
         pin: pathBoard.stick,
         start: "top top",
-        end: () => `+=${Math.max(pathBoard.travel || 1, 1)}`,
-        scrub: true,
+        end: () => `+=${Math.max(1, steps * window.innerHeight)}`,
+        scrub: 0.2,
         invalidateOnRefresh: true,
         anticipatePin: 1,
         onRefresh: () => layoutPath(),
         onUpdate: (self) => applyPathBoard(self.progress),
       });
       applyPathBoard(0);
-    } else if (pathBoard && !reduceMotion) {
-      layoutPath();
-      applyStickyPath();
+      if (!pathSettleBound) {
+        pathSettleBound = true;
+        window.addEventListener("wheel", queuePathSettle, { passive: true });
+      }
     } else if (pathBoard) {
       layoutPath();
       pathBoard.track.style.transform = "none";
