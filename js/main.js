@@ -1,10 +1,11 @@
 /**
  * Laptop screen as percentages of assets/art/hero.webp.
- * The painted laptop sits near the middle of the island.
- * ROOF_TOP is the peak of the house roof, which has to stay below the bio.
+ * DESK_TOP / DESK_BOTTOM bound the painted objects (laptop through notebook).
+ * At rest the headline sits in the sky and that band stays inside the viewport.
  */
-const LAPTOP_SCREEN = { x: 42, y: 50, w: 15, h: 13 };
-const ROOF_TOP = 27;
+const LAPTOP_SCREEN = { x: 40.5, y: 21, w: 15, h: 18 };
+const DESK_TOP = 18;
+const DESK_BOTTOM = 64;
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";
@@ -343,15 +344,20 @@ function initZoom() {
     const mobile = isMobile();
     const eased = smoothstep(0, 1, amount);
     const target = mobile ? Math.min(metrics.scaleToFill, 1.45) : metrics.scaleToFill;
-    /* Scale around the top of the painting until the roof clears the bio.
-       The zoom then eases from that rest frame into the laptop. */
+    /* Fit the desk between the bio and the bottom of the hero, then zoom into the laptop. */
     const copyBottom = copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top;
-    const clearance = copyBottom + 36;
-    const roofSpan = metrics.imageHeight * (ROOF_TOP / 100);
-    const restScale = Math.max(1, clearance / roofSpan);
+    const gap = 28;
+    const bottomMargin = 12;
+    const band = (DESK_BOTTOM - DESK_TOP) / 100;
+    const room = metrics.height - copyBottom - gap - bottomMargin;
+    const restScale = Math.max(1, room / (metrics.imageHeight * band));
     const scale = restScale + (target - restScale) * eased;
     const restX = (metrics.width - metrics.imageWidth * restScale) / 2;
-    const restY = 0;
+    let restY = copyBottom + gap - metrics.imageHeight * restScale * (DESK_TOP / 100);
+    const deskBottomY = restY + metrics.imageHeight * restScale * (DESK_BOTTOM / 100);
+    const limit = metrics.height - bottomMargin;
+    if (deskBottomY > limit) restY -= deskBottomY - limit;
+    if (restY < 0) restY = 0;
     const zoomX = metrics.width / 2 - metrics.screenX * target;
     const zoomY = metrics.height / 2 - metrics.screenY * target;
     let x = restX + (zoomX - restX) * eased;
@@ -384,6 +390,7 @@ function initZoom() {
 
     zoomLight = mobile ? amount > 0.5 : amount > 0.74;
     syncHeader();
+    if (amount < 0.04 && window.placeHeroSpots) window.placeHeroSpots();
   }
 
   function readAspect() {
