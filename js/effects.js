@@ -168,7 +168,8 @@
 
   const SPOT_BOXES = {
     plane: [22.5, 14, 9.7, 8],
-    laptop: [38, 18, 20, 26],
+    screen: [42.24, 19.44, 15.18, 17.23],
+    laptop: [38, 36.67, 20, 6.73],
     keys: [38, 43.4, 20.4, 10.1],
     coffee: [28.3, 33.3, 7.8, 11.5],
     sketch: [25.6, 44.8, 15.2, 16.2],
@@ -220,7 +221,7 @@
     });
     const glow = document.querySelector(".screen-glow");
     if (glow) {
-      const placed = mapSpot(box, 40.5, 21, 15, 18);
+      const placed = mapSpot(box, 42.24, 19.44, 15.18, 17.23);
       glow.style.left = `${placed.left}%`;
       glow.style.top = `${placed.top}%`;
       glow.style.width = `${placed.width}%`;
@@ -263,16 +264,16 @@
     root.classList.add("has-spots");
     const labelEl = card.querySelector(".spot-label");
     const storyEl = card.querySelector(".spot-story");
-    const laptop = document.querySelector(".hotspot-laptop");
+    const screenSpot = document.querySelector(".hotspot-screen");
     let target = null;
     let running = false;
     let pointerKind = "mouse";
     const pos = { x: 0, y: 0, w: 80, h: 48, vx: 0, vy: 0, vw: 0, vh: 0, ready: false };
 
     if (hint && window.matchMedia("(hover: none)").matches) hint.textContent = "Tap an object";
-    if (laptop && motion) laptop.classList.add("is-hinting");
+    if (screenSpot && motion) screenSpot.classList.add("is-hinting");
     window.setTimeout(() => {
-      if (laptop) laptop.classList.remove("is-hinting");
+      if (screenSpot) screenSpot.classList.remove("is-hinting");
     }, 3400);
 
     function springTo(current, velocity, dest) {
@@ -332,13 +333,13 @@
 
     function showSpot(spot) {
       if (hint) hint.classList.add("is-done");
-      if (laptop) laptop.classList.remove("is-hinting");
+      if (screenSpot) screenSpot.classList.remove("is-hinting");
       const changed = target !== spot;
       target = spot;
       labelEl.textContent = spot.dataset.label || "";
       storyEl.textContent = spot.dataset.story || "";
       card.classList.add("is-on");
-      hero.classList.toggle("is-laptop", spot.classList.contains("hotspot-laptop"));
+      hero.classList.toggle("is-laptop", spot.classList.contains("hotspot-screen"));
       if (changed && !running) {
         running = true;
         requestAnimationFrame(frame);

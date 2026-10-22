@@ -1,9 +1,16 @@
 /**
- * Laptop screen as percentages of assets/art/hero.webp.
+ * Display glass on assets/art/hero, as percentages of the painting.
+ * Corners run clockwise from the top left and follow the painted perspective.
  * DESK_TOP / DESK_BOTTOM bound the painted objects (laptop through notebook).
  * At rest the headline sits in the sky and that band stays inside the viewport.
  */
-const LAPTOP_SCREEN = { x: 40.5, y: 21, w: 15, h: 18 };
+const SCREEN_CORNERS = [
+  { x: 42.5, y: 19.44 },
+  { x: 57.42, y: 20.51 },
+  { x: 57.11, y: 36.67 },
+  { x: 42.24, y: 35.05 },
+];
+const LAPTOP_SCREEN = { x: 42.5, y: 20.51, w: 14.61, h: 14.54 };
 const DESK_TOP = 18;
 const DESK_BOTTOM = 64;
 
@@ -173,7 +180,7 @@ function matrix3dFromQuad(width, height, quad) {
   const h = solveHomography(src, quad);
   if (!h) return "none";
   const [a, b, c, d, e, f, g, hh] = h;
-  const num = (value) => Number(value.toFixed(5));
+  const num = (value) => Number(value.toFixed(8));
   return `matrix3d(${num(a)}, ${num(d)}, 0, ${num(g)}, ${num(b)}, ${num(e)}, 0, ${num(hh)}, 0, 0, 1, 0, ${num(c)}, ${num(f)}, 0, 1)`;
 }
 
@@ -206,11 +213,12 @@ function riseFor(settle, index, total) {
 
 function settleCards(workTop, viewport) {
   const settle = clamp01((viewport * 1.35 - workTop) / (viewport * 1.2));
-  document.querySelectorAll("#work, #unfold-plane").forEach((root) => {
-    const cards = [...root.querySelectorAll(".project")];
-    cards.forEach((card, index) => {
-      card.style.setProperty("--rise", `${riseFor(settle, index, cards.length).toFixed(2)}px`);
-    });
+  const cards = [...document.querySelectorAll("#work .project")];
+  cards.forEach((card, index) => {
+    card.style.setProperty("--rise", `${riseFor(settle, index, cards.length).toFixed(2)}px`);
+  });
+  document.querySelectorAll("#unfold-plane .project").forEach((card) => {
+    card.style.setProperty("--rise", "0px");
   });
 }
 
@@ -276,7 +284,7 @@ function initZoom() {
       scaleToFill: Math.max(
         width / (imageWidth * screen.w / 100),
         height / (imageHeight * screen.h / 100)
-      ),
+      ) * 1.04,
       screens,
     };
 
@@ -284,37 +292,35 @@ function initZoom() {
     scene.style.height = `${imageHeight}px`;
   }
 
-  function screenQuad(x, y, scale) {
-    const screen = LAPTOP_SCREEN;
-    const corners = [
-      [screen.x, screen.y],
-      [screen.x + screen.w, screen.y],
-      [screen.x + screen.w, screen.y + screen.h],
-      [screen.x, screen.y + screen.h],
-    ];
-    return corners.map(([px, py]) => ({
-      x: x + metrics.imageWidth * (px / 100) * scale,
-      y: y + metrics.imageHeight * (py / 100) * scale,
+  function renderedScreenQuad() {
+    const rect = heroImg.getBoundingClientRect();
+    const nw = heroImg.naturalWidth;
+    const nh = heroImg.naturalHeight;
+    let left = rect.left;
+    let top = rect.top;
+    let drawW = rect.width;
+    let drawH = rect.height;
+    if (nw && nh && rect.width && rect.height) {
+      const cover = Math.max(rect.width / nw, rect.height / nh);
+      drawW = nw * cover;
+      drawH = nh * cover;
+      left = rect.left + (rect.width - drawW) / 2;
+      top = rect.top + (rect.height - drawH) / 2;
+    }
+    const origin = hero.getBoundingClientRect();
+    return SCREEN_CORNERS.map((corner) => ({
+      x: left + drawW * (corner.x / 100) - origin.left,
+      y: top + drawH * (corner.y / 100) - origin.top,
     }));
   }
 
-  function applyUnfold(amount, sceneX, sceneY, scale) {
+  function applyUnfold(amount) {
     if (!plane || !metrics) return;
-    const open = smoothstep(0.72, 1, amount);
     const reveal = smoothstep(0.1, 0.28, amount);
-    const from = screenQuad(sceneX, sceneY, scale);
-    const persp = (1 - open) * 0.08;
-    const full = [
-      { x: metrics.width * persp, y: metrics.height * persp * 0.45 },
-      { x: metrics.width * (1 - persp * 0.65), y: metrics.height * persp * 0.2 },
-      { x: metrics.width, y: metrics.height },
-      { x: 0, y: metrics.height * (1 - persp * 0.15) },
-    ];
-    const quad = from.map((point, index) => ({
-      x: point.x + (full[index].x - point.x) * open,
-      y: point.y + (full[index].y - point.y) * open,
-    }));
-    plane.style.transform = matrix3dFromQuad(metrics.width, metrics.height, quad);
+    const quad = renderedScreenQuad();
+    const planeW = plane.offsetWidth || metrics.width;
+    const planeH = plane.offsetHeight || metrics.height;
+    plane.style.transform = matrix3dFromQuad(planeW, planeH, quad);
 
     let handoff = 1;
     const workTop = work ? work.getBoundingClientRect().top : metrics.height;
@@ -385,7 +391,7 @@ function initZoom() {
 
     const sceneFade = 1 - smoothstep(0.78, 1, amount);
     scene.style.opacity = String(sceneFade);
-    applyUnfold(amount, x, y, scale);
+    applyUnfold(amount);
     if (work) settleCards(work.getBoundingClientRect().top, metrics.height);
 
     zoomLight = mobile ? amount > 0.5 : amount > 0.74;

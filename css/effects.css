@@ -157,7 +157,9 @@ html.is-stack .scene-bob {
 }
 
 html.has-motion.is-zooming .scene-bob {
-  animation-play-state: paused;
+  animation: none;
+  transform: none;
+  perspective: none;
 }
 
 @keyframes desk-bob {
@@ -212,7 +214,8 @@ html.has-motion.is-zooming .scene-bob {
 }
 
 .hotspot-plane { left: 22.5%; top: 14%; width: 9.7%; height: 8%; }
-.hotspot-laptop { left: 38%; top: 18%; width: 20%; height: 26%; }
+.hotspot-screen { left: 42.24%; top: 19.44%; width: 15.18%; height: 17.23%; }
+.hotspot-laptop { left: 38%; top: 36.67%; width: 20%; height: 6.73%; }
 .hotspot-keys { left: 38%; top: 43.4%; width: 20.4%; height: 10.1%; }
 .hotspot-coffee { left: 28.3%; top: 33.3%; width: 7.8%; height: 11.5%; }
 .hotspot-sketch { left: 25.6%; top: 44.8%; width: 15.2%; height: 16.2%; }

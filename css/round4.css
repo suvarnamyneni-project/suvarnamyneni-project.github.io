@@ -1475,7 +1475,8 @@ html.has-spots .hotspot:focus-visible {
 }
 
 html body .hotspot-plane { left: 22.5%; top: 14%; width: 9.7%; height: 8%; }
-html body .hotspot-laptop { left: 38%; top: 18%; width: 20%; height: 26%; }
+html body .hotspot-screen { left: 42.24%; top: 19.44%; width: 15.18%; height: 17.23%; z-index: 5; }
+html body .hotspot-laptop { left: 38%; top: 36.67%; width: 20%; height: 6.73%; }
 html body .hotspot-keys { left: 38%; top: 43.4%; width: 20.4%; height: 10.1%; z-index: 5; }
 html body .hotspot-coffee { left: 28.3%; top: 33.3%; width: 7.8%; height: 11.5%; z-index: 4; }
 html body .hotspot-sketch { left: 25.6%; top: 44.8%; width: 15.2%; height: 16.2%; }
@@ -1485,7 +1486,7 @@ html body .hotspot-kit { left: 59.8%; top: 24.3%; width: 11.3%; height: 20%; }
 html body .hotspot-phone { left: 67.9%; top: 39.6%; width: 6%; height: 15.3%; z-index: 5; }
 html body .hotspot-plant { left: 71.5%; top: 32%; width: 6.1%; height: 14%; z-index: 4; }
 
-html.has-motion .hotspot-laptop.is-hinting::after {
+html.has-motion .hotspot-screen.is-hinting::after {
   content: "";
   position: absolute;
   inset: -7px;
@@ -1666,10 +1667,10 @@ html.has-motion .hover-hint {
 
 .screen-glow {
   position: absolute;
-  left: 40.5%;
-  top: 21%;
-  width: 15%;
-  height: 18%;
+  left: 42.24%;
+  top: 19.44%;
+  width: 15.18%;
+  height: 17.23%;
   border-radius: 8px;
   background: radial-gradient(ellipse at center, rgba(255, 244, 214, 0.95), rgba(255, 196, 120, 0.2) 68%, transparent 76%);
   opacity: 0;
