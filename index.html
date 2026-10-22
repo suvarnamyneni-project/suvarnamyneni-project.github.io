@@ -37,21 +37,24 @@
     .skip-link { position: absolute; left: 16px; top: -48px; }
     html .site-header { position: fixed; z-index: 20; inset: 16px 22px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0; background: none; pointer-events: none; color: #2b3236; }
     html .site-header > * { pointer-events: auto; }
-    .brand-chip, .site-nav { display: flex; align-items: center; border-radius: 999px; text-decoration: none; color: #2b3236; background: rgba(255,251,247,.86); border: 1px solid rgba(255,255,255,.7); }
+    .brand-chip, .site-nav { display: flex; align-items: center; border-radius: 999px; text-decoration: none; color: #2b3236; background: rgba(255,251,247,.55); border: 1px solid rgba(255,255,255,.7); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 8px 28px rgba(150,90,70,.1); }
     html .brand-chip { flex-direction: row; align-items: center; gap: 10px; padding: 5px 16px 5px 5px; }
-    html .brand-name { font-weight: 600; }
-    html .brand-role { font-weight: 500; }
-    .brand-chip > span { display: flex; flex-direction: column; line-height: 1.15; }
-    .brand-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; object-position: center center; }
-    .brand-name { font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: .9rem; }
-    .brand-role { font-size: .75rem; color: #41484c; }
+    .brand-copy { display: flex; flex-direction: column; line-height: 1.15; }
+    .brand-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; object-position: center center; box-shadow: 0 0 0 2px rgba(255,255,255,.9); }
+    .brand-name { font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: 14.5px; letter-spacing: -0.01em; line-height: 1.15; }
+    .brand-role { font-size: 12px; font-weight: 500; line-height: 1.15; color: #41484c; }
+    .brand-back { font-size: 12px; font-weight: 600; line-height: 1.15; color: #b2512c; }
+    body.is-home .brand-back, body:not(.is-home) .brand-role { display: none; }
     .site-nav { position: relative; gap: 2px; padding: 5px; }
     .nav-menu { display: flex; align-items: center; gap: 2px; }
-    .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 .875rem/1 Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
-    .mode-switch { display: flex; align-items: center; gap: 2px; margin-left: 4px; padding: 2px; border-radius: 999px; background: rgba(253,240,226,.72); }
-    .mode-switch a { padding: 5px 10px; font-size: .78rem; line-height: 1.2; border-radius: 999px; }
-    .mode-switch a[aria-current="page"] { background: #fffdfb; color: #2b3236; }
+    .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 14px/1 Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
+    .nav-menu a { display: inline-flex; align-items: center; min-height: 44px; }
     .nav-contact, .nav-toggle, .nav-cv, .nav-cv[hidden] { display: none; }
+    .mode-switch { display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,251,247,.92); border: 1px solid rgba(255,255,255,.7); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 8px 22px rgba(150,90,70,.14); }
+    .mode-switch a { padding: 6px 12px; font-size: 13px; font-weight: 500; line-height: 1.2; border-radius: 999px; color: #41484c; text-decoration: none; }
+    .mode-switch a[aria-current="page"] { background: #fffdfb; color: #2b3236; }
+    .mode-switch-dock { position: fixed; z-index: 22; left: 22px; bottom: calc(18px + env(safe-area-inset-bottom)); }
+    .mode-switch-menu, .mode-switch-foot { display: none; }
     html .hero-stage { position: relative; height: 100vh; height: 100dvh; overflow: hidden; background: #f1c0af; color: #2b3236; }
     html .scene, html .scene-bob, html .scene-tilt, html .scene-shift, html .scene picture, html .hero-scrim { position: absolute; inset: 0; width: 100%; height: 100%; }
     html .scene img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; aspect-ratio: 16 / 9; object-fit: cover; object-position: center center; }
@@ -111,23 +114,15 @@
       .scroll-pill { gap: 8px; padding: 8px 12px; font-size: .8rem; min-width: 0; max-width: calc(100vw - 28px - env(safe-area-inset-left) - env(safe-area-inset-right)); white-space: normal; text-align: center; }
     }
     @media (max-width: 759px) {
-      html .site-header { left: 12px; right: 12px; top: 12px; }
-      .brand-role, .nav-menu { display: none; }
+      html .site-header { left: 12px; right: 12px; top: 12px; flex-wrap: nowrap; }
+      .brand-role, .brand-last, .nav-menu, .mode-switch-dock { display: none; }
+      body:not(.is-home) .brand-back { display: block; }
+      .brand-name { font-size: 14px; }
       .brand-avatar { width: 32px; height: 32px; }
       html .brand-chip { flex-shrink: 0; }
-      .nav-contact, .nav-toggle { display: inline-flex; align-items: center; min-height: 44px; }
-      .mode-switch { margin-left: 0; }
-      .mode-switch a { padding: 6px 8px; font-size: .72rem; }
+      .site-nav { padding: 4px; background: rgba(255,250,245,.94); }
+      .nav-contact, .nav-toggle { display: inline-flex; align-items: center; min-height: 0; padding: 7px 12px; }
       html .hero-copy { top: calc(env(safe-area-inset-top) + 88px); width: min(100% - 32px, 560px); }
-    }
-    @media (max-width: 520px) {
-      .nav-contact { display: none !important; }
-    }
-    @media (max-width: 430px) {
-      html .site-header { flex-wrap: wrap; row-gap: 8px; }
-      html .brand-chip { margin-right: auto; }
-      .site-nav { margin-left: auto; }
-      html .hero-copy { top: calc(env(safe-area-inset-top) + 176px); }
     }
     .night-band { position: relative; height: 100svh; min-height: 660px; overflow: hidden; background: #f6d9bc; }
     .night-band .sky-layer, .night-band .star-field, .night-band .plane-canvas, #contact.contact-scene { position: absolute; inset: 0; }
@@ -184,26 +179,27 @@
     })();
   </script>
 </head>
-<body>
+<body class="is-home">
   <a class="skip-link" href="#work">Skip to work</a>
   <header class="site-header">
-    <a class="brand-chip glass-float" href="#top" data-caption="Suvarna Myneni">
+    <a class="brand-chip" href="#top" data-caption="Suvarna Myneni">
       <img class="brand-avatar" src="assets/avatar-96.webp" width="36" height="36" alt="" decoding="async" fetchpriority="low">
-      <span>
-        <span class="brand-name">Suvarna Myneni</span>
-        <span class="brand-role">AI-Native UX Designer</span>
+      <span class="brand-copy">
+        <b class="brand-name">Suvarna <span class="brand-last">Myneni</span></b>
+        <small class="brand-role">AI-Native UX Designer</small>
+        <small class="brand-back">← Back to all work</small>
       </span>
     </a>
-    <nav class="site-nav glass-float" aria-label="Primary">
+    <nav class="site-nav" aria-label="Primary">
       <div id="nav-menu" class="nav-menu">
         <a href="#work" data-caption="Selected work">Work</a>
         <a href="#path" data-caption="Path">Path</a>
         <a href="#about" data-caption="About">About</a>
         <a href="#contact" data-caption="Contact">Contact</a>
-      </div>
-      <div class="mode-switch" role="group" aria-label="Portfolio">
-        <a href="#top" aria-current="page">Interactive</a>
-        <a href="https://motiveux.wixsite.com/suvarnaproject" rel="noopener" title="Classic portfolio on Wix">Classic</a>
+        <div class="mode-switch mode-switch-menu" role="group" aria-label="Portfolio">
+          <a href="#top" aria-current="page">Interactive</a>
+          <a href="https://motiveux.wixsite.com/suvarnaproject" rel="noopener" title="Classic portfolio on Wix">Classic</a>
+        </div>
       </div>
       <a class="nav-contact" href="#contact">Contact</a>
       <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">
@@ -211,6 +207,10 @@
       </button>
     </nav>
   </header>
+  <div class="mode-switch mode-switch-dock" role="group" aria-label="Portfolio">
+    <a href="#top" aria-current="page">Interactive</a>
+    <a href="https://motiveux.wixsite.com/suvarnaproject" rel="noopener" title="Classic portfolio on Wix">Classic</a>
+  </div>
   <div class="nav-backdrop" hidden></div>
   <div class="mobile-top-fade" aria-hidden="true"></div>
 
@@ -817,6 +817,10 @@
           <a class="bar-linkedin" href="https://www.linkedin.com/in/suvarnamyneni/" target="_blank" rel="noopener noreferrer" data-caption="LinkedIn" aria-label="LinkedIn"><svg class="bar-in" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7.2 10.2V16M7.2 7.8h.1M10.6 16v-3.2c0-1 .6-1.8 1.6-1.8s1.5.8 1.5 1.8V16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="bar-linkedin-label">LinkedIn</span><span class="sr-only"> (opens in a new tab)</span></a>
         </div>
         <p class="contact-credit">Suvarna Myneni. AI-Native UX Designer in Hyderabad. Open to remote or Hyderabad roles. Psst, type hire.</p>
+        <div class="mode-switch mode-switch-foot" role="group" aria-label="Portfolio">
+          <a href="#top" aria-current="page">Interactive</a>
+          <a href="https://motiveux.wixsite.com/suvarnaproject" rel="noopener" title="Classic portfolio on Wix">Classic</a>
+        </div>
         <p id="plane-status" class="sr-only" aria-live="polite"></p>
         <p id="plane-help" class="sr-only">Drag the plane back, aim at the mailbox, and let go. A landing copies the email address. From the keyboard, press Enter to throw.</p>
       </section>
@@ -865,6 +869,10 @@
 
   <script>
     (function () {
+      if (!document.body.classList.contains("is-home")) {
+        var chip = document.querySelector(".brand-chip");
+        if (chip) chip.setAttribute("href", "/#work");
+      }
       var stack = document.documentElement.classList.contains("is-stack");
       var sources = stack
         ? ["js/effects.js", "js/rail.js", "js/main.js", "js/round3.js"]
