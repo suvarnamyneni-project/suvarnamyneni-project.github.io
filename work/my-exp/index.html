@@ -118,6 +118,52 @@
       <figcaption>Mission Control Home in the latest prototype. Demo data, names anonymized. Numbers on these screens are prototype mock data, not results.</figcaption>
     </figure>
 
+    <section class="story-map wrap case-reveal" aria-labelledby="story-map-heading">
+      <h2 class="story-title" id="story-map-heading">One front door</h2>
+      <p class="story-dek">Many systems, the trade-off, and what shipped.</p>
+      <div class="story-board">
+        <svg class="story-svg" viewBox="0 0 360 640" aria-hidden="true">
+          <defs>
+            <mask id="story-draw" maskUnits="userSpaceOnUse">
+              <path class="route-mask" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/>
+            </mask>
+          </defs>
+          <path class="route-grey" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <path class="route-rust" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <g class="story-plane" transform="translate(32 78)">
+            <g transform="translate(-16 -16) scale(0.5)">
+              <path d="M6 34 L58 8 L36 58 L28 36 Z" fill="#F6C7B0" stroke="#2B3236" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M28 36 L58 8" fill="none" stroke="#A34728" stroke-width="2"/>
+            </g>
+          </g>
+        </svg>
+        <article class="act-card" data-act="0">
+          <a class="act-name" href="#challenge-heading"><span class="act-copy"><span class="act-kicker">Act 1</span> The #1 concern</span></a>
+          <ol>
+            <li><a class="beat" href="#challenge-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Systems look different</span></a></li>
+            <li><a class="beat" href="#discover-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">#1 NPS concern</span></a></li>
+            <li><a class="beat" href="#door-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">One front door</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="1">
+          <a class="act-name" href="#mvp-heading"><span class="act-copy"><span class="act-kicker">Act 2</span> The trade-off</span></a>
+          <ol>
+            <li><a class="beat" href="#mvp-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Starts the conversation</span></a></li>
+            <li><a class="beat" href="#new-tab-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Opens in a new tab</span></a></li>
+            <li><a class="beat" href="#golive-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Hid trending topics</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="2">
+          <a class="act-name" href="#golive-heading"><span class="act-copy"><span class="act-kicker">Act 3</span> What shipped</span></a>
+          <ol>
+            <li><a class="beat is-key" href="#golive-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Mastermind agents first</span></a></li>
+            <li><a class="beat" href="#test-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">27 thumbs, +60</span></a></li>
+            <li><a class="beat" href="#next-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Voice and mobile ahead</span></a></li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
     <dl class="case-meta wrap case-reveal">
       <div>
         <dt>Role</dt>
@@ -279,7 +325,7 @@
         <li>
           <span class="case-num">02</span>
           <div>
-            <h3>External apps open in a new tab</h3>
+            <h3 id="new-tab-heading">External apps open in a new tab</h3>
             <p>Mira guides agents to the right place instead of trying to rebuild every system inside chat.</p>
           </div>
         </li>
