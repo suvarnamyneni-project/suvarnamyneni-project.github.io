@@ -58,11 +58,11 @@
     html .hero-stage { position: relative; height: 100vh; height: 100dvh; overflow: hidden; background: #f1c0af; color: #2b3236; }
     html .scene, html .scene-bob, html .scene-tilt, html .scene-shift, html .scene picture, html .hero-scrim { position: absolute; inset: 0; width: 100%; height: 100%; }
     html .scene img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; aspect-ratio: 16 / 9; object-fit: cover; object-position: center center; }
-    html .hero-copy { position: absolute; z-index: 3; display: block; grid-template-columns: none; left: 50%; right: auto; transform: translateX(-50%); width: min(920px, calc(100% - 48px)); top: calc(env(safe-area-inset-top) + 104px); text-align: center; }
-    html .hero-copy h1 { max-width: 18em; margin: 0 auto; font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: clamp(2.35rem, 4.35vw, 3.875rem); letter-spacing: -.035em; line-height: 1.02; color: #2b3236; text-shadow: none; }
+    html .hero-copy { position: absolute; z-index: 3; display: block; grid-template-columns: none; left: max(24px, 3vw); right: max(24px, 3vw); transform: none; width: auto; top: calc(env(safe-area-inset-top) + 68px); text-align: left; }
+    html .hero-copy h1 { max-width: 22em; margin: 0; font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: clamp(1.25rem, 1.7vw, 1.7rem); letter-spacing: -.03em; line-height: 1.05; color: #2b3236; text-shadow: none; }
     .h1-break { display: block; }
     html .hero-sub, html .hero-sub strong { font-family: Switzer, "Segoe UI", sans-serif; font-synthesis: none; }
-    html .hero-sub { position: static; left: auto; right: auto; bottom: auto; margin: .7rem auto 0; max-width: 44rem; padding: 0; background: none; font-size: clamp(1.02rem, 1.15vw, 1.125rem); font-weight: 400; line-height: 1.45; color: #41484c; text-shadow: none; }
+    html .hero-sub { position: static; left: auto; right: auto; bottom: auto; margin: .35rem 0 0; max-width: 46rem; padding: 0; background: none; font-size: .9rem; font-weight: 400; line-height: 1.35; color: #41484c; text-shadow: none; }
     html .hero-sub strong { color: #2b3236; font-weight: 600; }
     .scroll-pill { position: absolute; z-index: 4; left: 50%; bottom: calc(8px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0; padding: 6px 22px; border-radius: 999px; background: rgba(255,251,247,.86); color: #2b3236; font-size: .86rem; white-space: nowrap; max-width: calc(100% - 48px); min-width: min(520px, calc(100% - 48px)); }
     .scroll-pill a { color: #a34728; font-weight: 600; }
@@ -76,10 +76,10 @@
     .spot-card { opacity: 0; }
     .hover-hint { left: 50%; bottom: calc(64px + env(safe-area-inset-bottom)); transform: translateX(-50%); margin: 0; padding: 7px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600; line-height: 1.2; white-space: nowrap; width: max-content; }
     @media (min-width: 901px) {
-      .hover-hint { left: 24px; right: auto; top: calc(env(safe-area-inset-top) + 112px); bottom: auto; transform: none; }
+      .hover-hint { left: 50%; right: auto; top: auto; bottom: calc(72px + env(safe-area-inset-bottom)); transform: translateX(-50%); }
     }
     html.is-stack .scene-bob { animation: none !important; }
-    .hotspot { position: absolute; }
+    .hotspot { position: absolute; box-sizing: border-box; border: 2px solid #E8590C; border-radius: 4px; background: rgba(232, 89, 12, 0.16); box-shadow: 0 0 0 1px #fffdfb; }
     html .hotspot-plane { left: 23%; top: 14%; width: 9.2%; height: 7.6%; }
     html .hotspot-screen { left: 42.24%; top: 19.44%; width: 15.18%; height: 17.23%; z-index: 5; }
     html .hotspot-laptop { left: 37.6%; top: 36%; width: 22%; height: 5.4%; }
@@ -95,17 +95,18 @@
     .unfold, .veil, .hotspots, .seed-field { position: absolute; inset: 0; pointer-events: none; }
     html.is-stack #unfold { display: none; }
     @media (max-width: 900px) {
-      .hero-copy h1 { font-size: clamp(1.72rem, 6.6vw, 2.15rem); }
+      html .hero-copy { left: 12px; right: 12px; width: auto; top: calc(env(safe-area-inset-top) + 58px); text-align: left; }
+      html .hero-copy h1 { max-width: none; font-size: clamp(0.94rem, 3.9vw, 1.08rem); line-height: 1.02; }
     }
     @media (max-width: 900px) {
       html.is-stack .hero-sub {
-        margin: 0.4rem auto 0;
+        margin: 0.2rem 0 0;
         width: 100%;
         max-width: none;
-        padding: 7px 12px;
-        border-radius: 14px;
-        font-size: 12px;
-        line-height: 1.35;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        line-height: 1.18;
         text-wrap: balance;
         background: rgba(253, 240, 226, 0.94);
         color: #2b3236;
@@ -125,7 +126,7 @@
       html .brand-chip { flex-shrink: 0; }
       .site-nav { padding: 4px; background: rgba(255,250,245,.94); }
       .nav-contact, .nav-toggle { display: inline-flex; align-items: center; min-height: 0; padding: 7px 12px; }
-      html .hero-copy { top: calc(env(safe-area-inset-top) + 88px); width: min(100% - 32px, 560px); }
+      html .hero-copy { left: 12px; right: 12px; top: calc(env(safe-area-inset-top) + 58px); width: auto; transform: none; text-align: left; }
     }
     .night-band { position: relative; height: 100svh; min-height: 660px; overflow: hidden; background: #f6d9bc; }
     .night-band .sky-layer, .night-band .star-field, .night-band .plane-canvas, #contact.contact-scene { position: absolute; inset: 0; }
@@ -275,7 +276,7 @@
         </div>
       </div>
       <div class="veil" aria-hidden="true"></div>
-      <div class="unfold" id="unfold" aria-hidden="true" inert>
+      <div class="unfold" id="unfold" aria-hidden="true">
         <div class="unfold-plane" id="unfold-plane"></div>
       </div>
       <div class="hero-copy">
@@ -376,7 +377,7 @@
           <div class="project-body">
             <h3>Perfect Properties</h3>
             <p>A responsive web app that simplifies the home ownership experience for new buyers.</p>
-            <a class="case-link" href="https://motiveux.wixsite.com/perfectproperties" target="_blank" rel="noopener noreferrer">
+            <a class="case-link" href="https://myneni.wixsite.com/perfectproperties" target="_blank" rel="noopener noreferrer">
               Read the case
               <span class="sr-only">: Perfect Properties (opens in a new tab)</span>
               <span class="go" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>

@@ -362,23 +362,23 @@ body:not(.is-home) .brand-role {
 }
 
 .hero-copy {
-  left: 50%;
-  right: auto;
-  transform: translateX(-50%);
-  width: min(920px, calc(100% - 48px));
-  top: calc(env(safe-area-inset-top) + 104px);
+  left: max(24px, 3vw);
+  right: max(24px, 3vw);
+  transform: none;
+  width: auto;
+  top: calc(env(safe-area-inset-top) + 68px);
   display: block;
-  text-align: center;
+  text-align: left;
   pointer-events: none;
 }
 
 .hero-copy h1 {
-  max-width: 18em;
-  margin: 0 auto;
-  font-size: clamp(2.35rem, 4.35vw, 3.875rem);
+  max-width: 22em;
+  margin: 0;
+  font-size: clamp(1.25rem, 1.7vw, 1.7rem);
   font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 1.02;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   text-wrap: balance;
   color: var(--ink);
   text-shadow: none;
@@ -405,11 +405,11 @@ body:not(.is-home) .brand-role {
   left: auto;
   right: auto;
   bottom: auto;
-  margin: 0.7rem auto 0;
-  max-width: 44rem;
-  font-size: clamp(1.02rem, 1.15vw, 1.125rem);
+  margin: 0.35rem 0 0;
+  max-width: 46rem;
+  font-size: 0.9rem;
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.35;
   color: var(--muted);
   text-shadow: none;
 }
@@ -493,8 +493,22 @@ html.is-stack #unfold {
     pointer-events: auto;
   }
 
+  .hero-copy {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    top: calc(env(safe-area-inset-top) + 58px);
+    text-align: left;
+  }
+
+  html .hero-copy h1 {
+    max-width: none;
+    font-size: clamp(0.94rem, 3.9vw, 1.08rem);
+    line-height: 1.02;
+  }
+
   html.is-stack .hero-copy h1 {
-    margin: 0 auto;
+    margin: 0;
   }
 
   html.is-stack .hero-sub {
@@ -502,13 +516,13 @@ html.is-stack #unfold {
     left: auto;
     right: auto;
     bottom: auto;
-    margin: 0.4rem auto 0;
+    margin: 0.2rem 0 0;
     max-width: none;
     width: 100%;
-    padding: 7px 12px;
-    border-radius: 14px;
-    font-size: 12px;
-    line-height: 1.35;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    line-height: 1.18;
     text-wrap: balance;
     background: rgba(253, 240, 226, 0.94);
     color: #2b3236;
@@ -1042,6 +1056,39 @@ html.has-rail .project-body > h3 + p {
   border-top: 1px solid rgba(43, 50, 54, 0.1);
   color: var(--accent);
   font-weight: 600;
+}
+
+.project,
+.desk-card {
+  position: relative;
+  z-index: 0;
+}
+
+.project > .project-body > a.case-link::after,
+.desk-card > a.case-link::after,
+.more-card > a.case-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+
+/* A transform on the anchor would become the overlay's containing block and
+   shrink the hit target down to the words "Read the case". */
+html.has-motion .case-link,
+html.has-motion .case-link:hover,
+html.has-motion .case-link:focus-visible,
+html.has-motion .case-link:active {
+  transform: none;
+}
+
+.year-stamp,
+.org-pill {
+  pointer-events: none;
+}
+
+.hero-stage.is-unfolding .unfold-plane {
+  pointer-events: auto;
 }
 
 .case-link {
@@ -2350,8 +2397,10 @@ html.is-night .brand-chip {
 }
 
 @media (max-width: 900px) {
-  .hero-copy h1 {
-    font-size: clamp(1.72rem, 6.6vw, 2.15rem);
+  html .hero-copy h1 {
+    max-width: none;
+    font-size: clamp(0.94rem, 3.9vw, 1.08rem);
+    line-height: 1.02;
   }
 
   .desk-grid {
@@ -2573,8 +2622,12 @@ html.is-night .brand-chip {
   }
 
   .hero-copy {
-    top: calc(env(safe-area-inset-top) + 88px);
-    width: min(100% - 32px, 560px);
+    left: 12px;
+    right: 12px;
+    top: calc(env(safe-area-inset-top) + 58px);
+    width: auto;
+    transform: none;
+    text-align: left;
   }
 
   .target {
@@ -2595,7 +2648,7 @@ html.is-night .brand-chip {
   }
 
   .hero-copy {
-    top: calc(env(safe-area-inset-top) + 88px);
+    top: calc(env(safe-area-inset-top) + 54px);
   }
 }
 
@@ -2696,13 +2749,40 @@ html.is-stack .timeline li {
 }
 
 .hotspot {
+  box-sizing: border-box;
   pointer-events: auto;
+  border: 2px solid #E8590C;
   border-radius: 4px;
+  background: rgba(232, 89, 12, 0.16);
+  box-shadow: 0 0 0 1px rgba(255, 253, 251, 0.95);
 }
 
-html.has-spots .hotspot:hover,
-html.has-spots .hotspot:focus-visible {
+html.has-spots .hotspot:hover {
   outline: none;
+}
+
+html.has-spots .hotspot:focus-visible {
+  outline: 2px solid #E8590C;
+  outline-offset: 3px;
+}
+
+html.is-stack .hotspot::before {
+    content: attr(data-label);
+    position: absolute;
+    z-index: 2;
+    left: 4px;
+    top: 4px;
+    max-width: calc(100% - 8px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: #fffdfb;
+    color: #2b3236;
+    border: 1px solid #E8590C;
+    font: 600 11px/1.2 Switzer, sans-serif;
+    white-space: nowrap;
+    pointer-events: none;
 }
 
 html body .hotspot-plane { left: 23%; top: 14%; width: 9.2%; height: 7.6%; }
@@ -2727,6 +2807,13 @@ html.is-zooming .hotspot:focus-visible,
 .hero-stage.is-unfolding .hotspot:focus-visible {
   outline: none !important;
   box-shadow: none !important;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+html.is-zooming .hotspot::before,
+.hero-stage.is-unfolding .hotspot::before {
+  display: none !important;
 }
 
 html.is-zooming .hotspot.is-hinting::after,
@@ -2859,11 +2946,11 @@ html.has-motion .hotspot-screen.is-hinting::after {
 
 @media (min-width: 901px) {
   .hover-hint {
-    left: 24px;
+    left: 50%;
     right: auto;
-    top: calc(env(safe-area-inset-top) + 112px);
-    bottom: auto;
-    transform: none;
+    top: auto;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
   }
 }
 
@@ -3364,9 +3451,14 @@ html.has-motion:not(.is-path-snap) .path-copy {
   }
 
   html.is-path-snap .path-yr {
-    top: 8%;
+    position: relative;
+    top: auto;
+    right: auto;
     bottom: auto;
-    font-size: 72px;
+    left: auto;
+    margin: 0;
+    font-size: clamp(40px, 12vw, 56px);
+    line-height: 0.85;
     -webkit-text-stroke: 1.2px rgba(224, 119, 79, 0.45);
   }
 
@@ -3425,27 +3517,38 @@ html.is-path-snap .path-track::-webkit-scrollbar {
 html.is-path-snap .path-ep {
   display: grid;
   grid-template-columns: 1fr;
-  align-content: center;
+  align-content: start;
   justify-items: start;
-  gap: 10px;
+  gap: 6px;
   flex: 0 0 85vw;
   height: 100%;
   margin: 0;
-  padding: 8px 12vw 12px 0;
+  padding: 0 8vw 8px 0;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
   scroll-snap-align: center;
   scroll-snap-stop: always;
 }
 
 html.is-path-snap .path-art {
   justify-self: start;
-  width: min(72vw, 280px);
+  width: min(46vw, 28vh, 210px);
   margin: 0;
 }
 
 html.is-path-snap .path-yr {
-  left: 16vw;
+  position: relative;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+  margin: 0;
+  font-size: clamp(40px, 12vw, 56px);
+  line-height: 0.85;
+}
+
+html.is-path-snap .path-copy h3 {
+  margin-top: 8px;
 }
 
 html.is-path-snap .path-copy {

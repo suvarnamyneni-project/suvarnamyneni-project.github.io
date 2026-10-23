@@ -562,18 +562,24 @@
       if ("IntersectionObserver" in window) {
         const watch = new IntersectionObserver((entries) => {
           visible = entries.some((entry) => entry.isIntersecting);
+          if (visible) startFrame();
         }, { rootMargin: "120px" });
         watch.observe(portrait);
       }
 
       const ease = (t) => 1 - (1 - t) ** 3;
       let last = performance.now();
+      let rafOn = false;
       function frame(now) {
+        if (!visible) {
+          rafOn = false;
+          return;
+        }
         const dt = Math.min(0.05, (now - last) / 1000);
         last = now;
         const width = portrait.clientWidth;
         const height = portrait.clientHeight;
-        if (visible && width) {
+        if (width) {
           context.clearRect(0, 0, width, height);
           flyers.forEach((item, index) => {
             let x = item.x;
@@ -632,10 +638,17 @@
             place(item, x, y, rot, scale);
           });
         }
-        if (!reduce) requestAnimationFrame(frame);
+        if (!reduce && visible) requestAnimationFrame(frame);
+        else rafOn = false;
+      }
+      function startFrame() {
+        if (reduce || rafOn || !visible) return;
+        rafOn = true;
+        last = performance.now();
+        requestAnimationFrame(frame);
       }
       if (reduce) layoutStill();
-      else requestAnimationFrame(frame);
+      else startFrame();
       paintCount();
     }
 

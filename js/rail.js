@@ -61,6 +61,59 @@
     return d;
   }
 
+  // Sample the same cubics as smoothPath in JS. getPointAtLength on the live
+  // SVG flushes layout, and walking the whole length of it blocked the load.
+  function curveFromPoints(points) {
+    const samples = [];
+    let length = 0;
+    const push = (pt) => {
+      if (samples.length) {
+        const prev = samples[samples.length - 1];
+        length += Math.hypot(pt.x - prev.x, pt.y - prev.y);
+      }
+      samples.push({ d: length, x: pt.x, y: pt.y });
+    };
+    if (!points.length) return { length: 1, samples: [{ d: 0, x: 0, y: 0 }] };
+    push(points[0]);
+    for (let i = 0; i < points.length - 1; i += 1) {
+      const a = points[i];
+      const b = points[i + 1];
+      const c1x = (a.x + b.x) / 2;
+      const c2x = c1x;
+      const c1y = a.y;
+      const c2y = b.y;
+      for (let step = 1; step <= 8; step += 1) {
+        const t = step / 8;
+        const u = 1 - t;
+        push({
+          x: u * u * u * a.x + 3 * u * u * t * c1x + 3 * u * t * t * c2x + t * t * t * b.x,
+          y: u * u * u * a.y + 3 * u * u * t * c1y + 3 * u * t * t * c2y + t * t * t * b.y,
+        });
+      }
+    }
+    return { length: Math.max(1, length), samples };
+  }
+
+  function pointOnCurve(curve, distance) {
+    const samples = curve.samples;
+    const dist = Math.max(0, Math.min(curve.length, distance));
+    let lo = 0;
+    let hi = samples.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (samples[mid].d < dist) lo = mid + 1;
+      else hi = mid;
+    }
+    const next = samples[lo];
+    const prev = samples[Math.max(0, lo - 1)];
+    const span = next.d - prev.d || 1;
+    const t = lo === 0 ? 0 : (dist - prev.d) / span;
+    return {
+      x: prev.x + (next.x - prev.x) * t,
+      y: prev.y + (next.y - prev.y) * t,
+    };
+  }
+
   function routeSvg() {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("aria-hidden", "true");
@@ -111,7 +164,8 @@
     const d = smoothPath(points);
     route.ghost.setAttribute("d", d);
     route.hot.setAttribute("d", d);
-    route.length = route.hot.getTotalLength ? route.hot.getTotalLength() : 0;
+    route.curve = curveFromPoints(points);
+    route.length = route.curve.length;
   }
 
   function layoutPath() {
@@ -177,19 +231,18 @@
       points.push({ x: x + episodeWidth * 0.88, y: yEnd });
     });
     paintWeave(route, points);
-    const total = route.length || 1;
+    const curve = route.curve;
     pathBoard.stationFrac = episodes.map((episode) => {
       const target = episode.offsetLeft + episode.offsetWidth * 0.5;
       let best = 0;
       let bestDist = Infinity;
-      for (let step = 0; step <= total; step += 8) {
-        const sample = route.hot.getPointAtLength(step);
+      curve.samples.forEach((sample) => {
         const dist = Math.abs(sample.x - target);
         if (dist < bestDist) {
           bestDist = dist;
-          best = step / total;
+          best = sample.d / curve.length;
         }
-      }
+      });
       return best;
     });
   }
@@ -210,8 +263,8 @@
     if (!length || fractions.length < 2) return;
     const t = fractions[0] + (fractions[fractions.length - 1] - fractions[0]) * p;
     const dist = length * t;
-    const point = route.hot.getPointAtLength(dist);
-    const ahead = route.hot.getPointAtLength(Math.min(length, dist + 18));
+    const point = pointOnCurve(route.curve, dist);
+    const ahead = pointOnCurve(route.curve, Math.min(length, dist + 18));
     route.rect.setAttribute("width", String(Math.max(0, point.x + 10)));
     const angle = Math.atan2(ahead.y - point.y, ahead.x - point.x) * (180 / Math.PI);
     if (pathBoard.plane) {
@@ -639,27 +692,15 @@
     svg.style.height = `${h}px`;
   }
 
-  function dottedRevealArray(length) {
-    const dash = 1.6;
-    const hole = 7.4;
-    const pair = dash + hole;
-    const pairs = Math.max(1, Math.floor(length / pair));
-    const parts = [];
-    for (let i = 0; i < pairs; i += 1) parts.push(dash, hole);
-    const rest = Math.max(0, length - pairs * pair);
-    parts.push(rest > 0.4 ? Number(rest.toFixed(2)) : 0, Number(length.toFixed(2)));
-    return parts.join(" ");
-  }
-
   function paintRoute(route, points) {
     const d = smoothPath(points);
     route.ghost.setAttribute("d", d);
     route.hot.setAttribute("d", d);
-    const length = route.hot.getTotalLength ? route.hot.getTotalLength() : 0;
-    route.hot.style.setProperty("stroke-dasharray", dottedRevealArray(length), "important");
-    route.hot.style.strokeDashoffset = String(length);
-    route.length = length;
-    return length;
+    route.curve = curveFromPoints(points);
+    route.length = route.curve.length;
+    route.hot.style.strokeDasharray = "1.6 7.4";
+    route.hot.style.strokeDashoffset = String(route.length);
+    return route.length;
   }
 
   function placePlane(el, x, y, angle) {
@@ -697,10 +738,10 @@
     rail.track.style.transform = `translate3d(${shift.toFixed(2)}px, 0, 0)`;
     const length = rail.route.length || 0;
     const hot = rail.route.hot;
-    if (length) {
+    if (length && rail.route.curve) {
       hot.style.strokeDashoffset = String(length * (1 - progress));
-      const current = hot.getPointAtLength(length * progress);
-      const next = hot.getPointAtLength(Math.min(length, length * progress + 12));
+      const current = pointOnCurve(rail.route.curve, length * progress);
+      const next = pointOnCurve(rail.route.curve, Math.min(length, length * progress + 12));
       const angle = Math.atan2(next.y - current.y, next.x - current.x) * (180 / Math.PI);
       placePlane(rail.plane, current.x, current.y, angle);
       cards.forEach((card) => {
@@ -875,7 +916,9 @@
     let startX = 0;
     let startScroll = 0;
     let suppress = false;
+    let fromPointer = false;
     rail.viewport.addEventListener("pointerdown", (event) => {
+      fromPointer = true;
       if (!document.documentElement.classList.contains("has-rail")) return;
       if (event.pointerType && event.pointerType !== "mouse") return;
       if (event.button !== 0) return;
@@ -883,14 +926,16 @@
       suppress = false;
       startX = event.clientX;
       startScroll = window.deskLenis ? window.deskLenis.scroll : window.scrollY;
-      rail.viewport.classList.add("is-grabbing");
-      rail.viewport.setPointerCapture(event.pointerId);
     });
     rail.viewport.addEventListener("pointermove", (event) => {
       if (!active) return;
       const delta = event.clientX - startX;
       if (Math.abs(delta) < 8) return;
-      suppress = true;
+      if (!suppress) {
+        suppress = true;
+        rail.viewport.classList.add("is-grabbing");
+        rail.viewport.setPointerCapture(event.pointerId);
+      }
       const next = startScroll - delta * 1.4;
       scrollTo(next, { immediate: true });
     });
@@ -908,6 +953,10 @@
     }, true);
     rail.track.addEventListener("focusin", (event) => {
       if (!document.documentElement.classList.contains("has-rail") || !railTrigger) return;
+      if (fromPointer) {
+        fromPointer = false;
+        return;
+      }
       const card = event.target.closest(".project");
       if (!card) return;
       const center = card.offsetLeft + card.offsetWidth / 2 - rail.viewport.clientWidth * 0.5;
