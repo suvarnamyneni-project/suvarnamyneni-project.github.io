@@ -220,7 +220,7 @@ html.has-motion.is-zooming .scene-bob {
 }
 
 .hotspot-plane { left: 46.6%; top: 45%; width: 9%; height: 10.2%; }
-.hotspot-screen { left: 45%; top: 46.2%; width: 16.2%; height: 12.4%; }
+.hotspot-screen { left: 46%; top: 43.6%; width: 10.8%; height: 13.8%; }
 .hotspot-laptop { left: 43%; top: 62.6%; width: 17.8%; height: 5.2%; }
 .hotspot-keys { left: 43.6%; top: 67.4%; width: 16.4%; height: 4.8%; }
 .hotspot-coffee { left: 28%; top: 61%; width: 8.8%; height: 15%; }
@@ -232,7 +232,7 @@ html.has-motion.is-zooming .scene-bob {
 .hotspot-plant { left: 75.5%; top: 56.5%; width: 6.5%; height: 13%; }
 @media (max-width: 600px) {
   .hotspot-plane { left: 8%; top: 52%; width: 14%; height: 8%; }
-  .hotspot-screen { left: 32.5%; top: 55.2%; width: 35%; height: 9%; }
+  .hotspot-screen { left: 33%; top: 54%; width: 34%; height: 7.5%; }
   .hotspot-laptop { left: 32%; top: 66.5%; width: 36%; height: 5%; }
   .hotspot-keys { left: 28%; top: 71%; width: 44%; height: 4.5%; }
   .hotspot-coffee { left: 7%; top: 63%; width: 15%; height: 13%; }
@@ -276,21 +276,25 @@ html.has-motion.is-zooming .scene-bob {
 
 .unfold {
   position: absolute;
-  inset: 0;
-  z-index: 5;
+  z-index: 4;
   pointer-events: none;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .unfold-plane {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  transform-origin: 0 0;
-  opacity: 0;
+  transform: none;
   background: var(--bg);
   color: var(--navy);
-  will-change: transform, opacity;
+}
+
+.unfold-fit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
 }
 
 /* The hero paints its own type white. Work headings must stay navy on the light screen at every zoom, including the settled page. */

@@ -2777,7 +2777,7 @@ html.has-spots .hotspot:focus-visible {
 }
 
 html body .hotspot-plane { left: 46.6%; top: 45%; width: 9%; height: 10.2%; }
-html body .hotspot-screen { left: 45%; top: 46.2%; width: 16.2%; height: 12.4%; z-index: 5; }
+html body .hotspot-screen { left: 46%; top: 43.6%; width: 10.8%; height: 13.8%; z-index: 5; }
 html body .hotspot-laptop { left: 43%; top: 62.6%; width: 17.8%; height: 5.2%; }
 html body .hotspot-keys { left: 43.6%; top: 67.4%; width: 16.4%; height: 4.8%; z-index: 5; }
 html body .hotspot-coffee { left: 28%; top: 61%; width: 8.8%; height: 15%; z-index: 4; }
@@ -2789,7 +2789,7 @@ html body .hotspot-phone { left: 71%; top: 58.5%; width: 6%; height: 12.5%; z-in
 html body .hotspot-plant { left: 75.5%; top: 56.5%; width: 6.5%; height: 13%; z-index: 4; }
 @media (max-width: 600px) {
   html body .hotspot-plane { left: 8%; top: 52%; width: 14%; height: 8%; }
-  html body .hotspot-screen { left: 32.5%; top: 55.2%; width: 35%; height: 9%; }
+  html body .hotspot-screen { left: 33%; top: 54%; width: 34%; height: 7.5%; }
   html body .hotspot-laptop { left: 32%; top: 66.5%; width: 36%; height: 5%; }
   html body .hotspot-keys { left: 28%; top: 71%; width: 44%; height: 4.5%; }
   html body .hotspot-coffee { left: 7%; top: 63%; width: 15%; height: 13%; }

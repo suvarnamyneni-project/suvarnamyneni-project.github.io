@@ -1,22 +1,13 @@
 /**
- * Laptop glass, clockwise from the top left, as percentages of each painting.
- * The wide shot is 16:9. The phone shot is 9:16. The work panel is mapped
- * onto this quad and rides the same rendered image box as the painting.
+ * Laptop glass as fractions of the painting (0–1), not pixels.
+ * Wide is the 16:9 desk. Stack is the 9:16 phone painting.
+ * The panel is a child of the same transformed scene as the image,
+ * placed with these fractions of the rendered cover box.
  */
-const SCREEN_WIDE = [
-  { x: 45.4, y: 46.2 },
-  { x: 60.8, y: 46.6 },
-  { x: 61.2, y: 58.6 },
-  { x: 45.0, y: 58.2 },
-];
-const SCREEN_STACK = [
-  { x: 33.0, y: 55.2 },
-  { x: 67.0, y: 55.4 },
-  { x: 67.5, y: 64.2 },
-  { x: 32.5, y: 64.0 },
-];
-const SCREEN_TOP_WIDE = 0.462;
-const SCREEN_TOP_STACK = 0.552;
+const GLASS_WIDE = { x: 0.46, y: 0.436, w: 0.108, h: 0.138 };
+const GLASS_STACK = { x: 0.33, y: 0.54, w: 0.34, h: 0.075 };
+const SCREEN_TOP_WIDE = GLASS_WIDE.y;
+const SCREEN_TOP_STACK = GLASS_STACK.y;
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";
@@ -154,55 +145,10 @@ function initNavState() {
   sections.forEach((section) => observer.observe(section));
 }
 
-function solveHomography(src, dst) {
-  const rows = [];
-  for (let i = 0; i < 4; i += 1) {
-    const { x, y } = src[i];
-    const X = dst[i].x;
-    const Y = dst[i].y;
-    rows.push([x, y, 1, 0, 0, 0, -x * X, -y * X, X]);
-    rows.push([0, 0, 0, x, y, 1, -x * Y, -y * Y, Y]);
-  }
-  const n = 8;
-  for (let col = 0; col < n; col += 1) {
-    let pivot = col;
-    for (let r = col + 1; r < n; r += 1) {
-      if (Math.abs(rows[r][col]) > Math.abs(rows[pivot][col])) pivot = r;
-    }
-    if (Math.abs(rows[pivot][col]) < 1e-8) return null;
-    const swap = rows[col];
-    rows[col] = rows[pivot];
-    rows[pivot] = swap;
-    const div = rows[col][col];
-    for (let c = col; c <= n; c += 1) rows[col][c] /= div;
-    for (let r = 0; r < n; r += 1) {
-      if (r === col) continue;
-      const factor = rows[r][col];
-      if (!factor) continue;
-      for (let c = col; c <= n; c += 1) rows[r][c] -= factor * rows[col][c];
-    }
-  }
-  return rows.map((row) => row[n]);
-}
-
-function matrix3dFromQuad(width, height, quad) {
-  const src = [
-    { x: 0, y: 0 },
-    { x: width, y: 0 },
-    { x: width, y: height },
-    { x: 0, y: height },
-  ];
-  const h = solveHomography(src, quad);
-  if (!h) return "none";
-  const [a, b, c, d, e, f, g, hh] = h;
-  const num = (value) => Number(value.toFixed(8));
-  return `matrix3d(${num(a)}, ${num(d)}, 0, ${num(g)}, ${num(b)}, ${num(e)}, 0, ${num(hh)}, 0, 0, 1, 0, ${num(c)}, ${num(f)}, 0, 1)`;
-}
-
 function buildUnfold() {
   const work = document.getElementById("work");
-  const plane = document.getElementById("unfold-plane");
-  if (!work || !plane || plane.childElementCount) return;
+  const fit = document.getElementById("unfold-fit");
+  if (!work || !fit || fit.childElementCount) return;
   const clone = work.cloneNode(true);
   clone.removeAttribute("id");
   clone.querySelectorAll("[id]").forEach((el) => {
@@ -215,7 +161,7 @@ function buildUnfold() {
   clone.querySelectorAll("a, button").forEach((el) => {
     el.setAttribute("tabindex", "-1");
   });
-  plane.appendChild(clone);
+  fit.appendChild(clone);
 }
 
 function riseFor(settle, index, total) {
@@ -244,6 +190,8 @@ function initZoom() {
   const copy = document.querySelector(".hero-copy");
   const pill = document.querySelector(".scroll-pill");
   const plane = document.getElementById("unfold-plane");
+  const fit = document.getElementById("unfold-fit");
+  const picture = scene ? scene.querySelector("picture") : null;
   const spacer = document.querySelector(".hero-spacer");
   const header = document.querySelector(".site-header");
   const work = document.getElementById("work");
@@ -285,21 +233,26 @@ function initZoom() {
       imageWidth = height * imageAspect;
     }
 
-    const corners = heroImg.naturalHeight > heroImg.naturalWidth ? SCREEN_STACK : SCREEN_WIDE;
-    const xs = corners.map((corner) => imageWidth * corner.x / 100);
-    const ys = corners.map((corner) => imageHeight * corner.y / 100);
-    const screenLeft = Math.min(...xs);
-    const screenTop = Math.min(...ys);
-    const screenW = Math.max(...xs) - screenLeft;
-    const screenH = Math.max(...ys) - screenTop;
+    const frac = heroImg.naturalHeight > heroImg.naturalWidth ? GLASS_STACK : GLASS_WIDE;
+    const nw = heroImg.naturalWidth || imageWidth;
+    const nh = heroImg.naturalHeight || imageHeight;
+    const cover = Math.max(imageWidth / nw, imageHeight / nh);
+    const drawW = nw * cover;
+    const drawH = nh * cover;
+    const ox = (imageWidth - drawW) / 2;
+    const oy = (imageHeight - drawH) / 2;
+    const screenX = ox + drawW * frac.x;
+    const screenY = oy + drawH * frac.y;
+    const screenW = drawW * frac.w;
+    const screenH = drawH * frac.h;
     metrics = {
       width,
       height,
       imageWidth,
       imageHeight,
-      corners,
-      screenX: screenLeft + screenW / 2,
-      screenY: screenTop + screenH / 2,
+      frac,
+      screenX,
+      screenY,
       screenW,
       screenH,
       scaleToFit: Math.min(width / screenW, height / screenH),
@@ -314,29 +267,30 @@ function initZoom() {
     scene.style.height = `${imageHeight}px`;
   }
 
-  function renderedImageBox() {
-    const rect = heroImg.getBoundingClientRect();
-    const heroRect = hero.getBoundingClientRect();
-    const nw = heroImg.naturalWidth || rect.width || 1;
-    const nh = heroImg.naturalHeight || rect.height || 1;
-    const cover = Math.max(rect.width / nw, rect.height / nh);
-    const drawW = nw * cover;
-    const drawH = nh * cover;
-    return {
-      x: rect.left + (rect.width - drawW) / 2 - heroRect.left,
-      y: rect.top + (rect.height - drawH) / 2 - heroRect.top,
-      w: drawW,
-      h: drawH,
-    };
+  function placePanel() {
+    if (!plane || !fit || !metrics) return;
+    const slot = plane.parentElement;
+    slot.style.left = `${metrics.screenX}px`;
+    slot.style.top = `${metrics.screenY}px`;
+    slot.style.width = `${metrics.screenW}px`;
+    slot.style.height = `${metrics.screenH}px`;
+    slot.style.right = "auto";
+    slot.style.bottom = "auto";
+    plane.style.transform = "none";
+    plane.dataset.gx = String(metrics.frac.x);
+    plane.dataset.gy = String(metrics.frac.y);
+    plane.dataset.gw = String(metrics.frac.w);
+    plane.dataset.gh = String(metrics.frac.h);
+    if (!fit.childElementCount) buildUnfold();
+    fit.style.width = `${metrics.width}px`;
+    fit.style.height = `${metrics.height}px`;
+    fit.style.transformOrigin = "0 0";
+    fit.style.transform = `scale(${metrics.screenW / metrics.width}, ${metrics.screenH / metrics.height})`;
   }
 
-  function applyUnfold(amount, quad, workTop) {
+  function applyUnfold(amount, workTop) {
     if (!plane || !metrics) return;
-    if (!plane.childElementCount) buildUnfold();
-    const planeW = plane.offsetWidth || metrics.width;
-    const planeH = plane.offsetHeight || metrics.height;
-    plane.style.transform = matrix3dFromQuad(planeW, planeH, quad);
-
+    placePanel();
     let handoff = 1;
     const covered = Boolean(work) && workTop < metrics.height * 0.62;
     hero.classList.toggle("is-handed", covered && amount > 0.2);
@@ -362,19 +316,19 @@ function initZoom() {
     hero.classList.toggle("is-unfolding", amount > 0.22);
 
     const mobile = isMobile();
-    const z = clamp01(amount);
-    const eased = 0.5 - Math.cos(Math.PI * z) / 2;
-    /* Scale around the screen centre, from a centred full-bleed rest
-       position, until the glass covers the viewport. */
-    const S = mobile ? Math.min(metrics.scaleToFit, 1.45) : metrics.scaleToFit;
-    const sc = Math.pow(Math.max(S, 1), eased);
+    const eased = 0.5 - Math.cos(Math.PI * clamp01(amount)) / 2;
+    /* One transform on the scene. Origin stays at 0,0 so the glass
+       fractions are not translated a second time. */
+    const S = Math.max(metrics.scaleToFit, 1);
+    const sc = Math.pow(S, eased);
     const restX = (metrics.width - metrics.imageWidth) / 2;
-    const cx = metrics.screenX;
-    const cy = metrics.screenY;
-    const tx = restX + (metrics.width / 2 - (restX + cx)) * eased;
-    const ty = (metrics.height / 2 - cy) * eased;
-    scene.style.transformOrigin = `${cx.toFixed(2)}px ${cy.toFixed(2)}px`;
-    scene.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) scale(${sc.toFixed(4)})`;
+    const cx = metrics.screenX + metrics.screenW / 2;
+    const cy = metrics.screenY + metrics.screenH / 2;
+    const move = (sc - 1) / (S - 1 || 1);
+    const panX = restX + (metrics.width / 2 - cx * S - restX) * move;
+    const panY = (metrics.height / 2 - cy * S) * move;
+    scene.style.transformOrigin = "0px 0px";
+    scene.style.transform = `translate3d(${panX.toFixed(2)}px, ${panY.toFixed(2)}px, 0) scale(${sc.toFixed(4)})`;
 
     if (amount < 0.02) {
       copy.style.opacity = "";
@@ -390,27 +344,8 @@ function initZoom() {
       pill.style.pointerEvents = pillFade < 0.15 ? "none" : "";
     }
 
-    const sceneFade = 1 - smoothstep(0.82, 1, amount);
-    scene.style.opacity = String(sceneFade);
-    const box = renderedImageBox();
-    const mapped = metrics.corners.map((corner) => ({
-      x: box.x + box.w * corner.x / 100,
-      y: box.y + box.h * corner.y / 100,
-    }));
-    const full = [
-      { x: 0, y: 0 },
-      { x: metrics.width, y: 0 },
-      { x: metrics.width, y: metrics.height },
-      { x: 0, y: metrics.height },
-    ];
-    /* The glass stays inside the window. Near the end the panel eases from
-       that glass to the viewport, so the settled page keeps its margins. */
-    const settle = smoothstep(0.84, 1, z);
-    const quad = mapped.map((point, index) => ({
-      x: point.x + (full[index].x - point.x) * settle,
-      y: point.y + (full[index].y - point.y) * settle,
-    }));
-    applyUnfold(amount, quad, workTop);
+    if (picture) picture.style.opacity = String(1 - smoothstep(0.88, 1, amount));
+    applyUnfold(amount, workTop);
     if (work) settleCards(workTop, metrics.height);
 
     zoomLight = mobile ? amount > 0.5 : amount > 0.74;
