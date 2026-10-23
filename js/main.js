@@ -357,31 +357,17 @@ function initZoom() {
     const mobile = isMobile();
     const eased = smoothstep(0, 1, amount);
     const target = mobile ? Math.min(metrics.scaleToFill, 1.45) : metrics.scaleToFill;
-    /* The painting stays full-bleed from the top. Scale it so the laptop
-       screen sits below the headline, then slide it left if the paper plane
-       crosses the type. The keyboard stays above the scroll pill. */
+    /* The painting stays full-bleed from the top and centred. Scale from
+       the top so the laptop screen starts just under the copy. */
     const copyBottom = metrics.copyBottom;
     const skyLine = 0.208;
-    const skyScale = (copyBottom + 18) / (metrics.imageHeight * skyLine);
-    const pillTop = metrics.pillTop;
-    const deskScale = (pillTop - 8) / (metrics.imageHeight * 0.45);
-    const restScale = Math.max(1, Math.min(skyScale, deskScale));
+    const gap = Math.max(10, metrics.height * 0.02);
+    const skyScale = (copyBottom + gap) / (metrics.imageHeight * skyLine);
+    const restScale = Math.max(1, skyScale);
     const scale = restScale + (target - restScale) * eased;
     const iw = metrics.imageWidth * restScale;
-    const ih = metrics.imageHeight * restScale;
-    let restX = (metrics.width - iw) / 2;
+    const restX = (metrics.width - iw) / 2;
     const restY = 0;
-    const planeRight = restX + iw * 0.312;
-    const planeTop = ih * 0.15;
-    const planeBottom = ih * 0.208;
-    const hitsCopy = planeBottom > metrics.copyTop + 6
-      && planeTop < metrics.copyBottom - 4
-      && planeRight > metrics.copyLeft + 8;
-    if (hitsCopy) restX -= planeRight - metrics.copyLeft + 12;
-    const screenLeft = restX + iw * (Math.min(SCREEN_CORNERS[0].x, SCREEN_CORNERS[3].x) / 100);
-    const screenRight = restX + iw * (Math.max(SCREEN_CORNERS[1].x, SCREEN_CORNERS[2].x) / 100);
-    if (screenLeft < 16) restX += 16 - screenLeft;
-    if (screenRight > metrics.width - 16) restX -= screenRight - (metrics.width - 16);
     const zoomX = metrics.width / 2 - metrics.screenX * target;
     const zoomY = metrics.height / 2 - metrics.screenY * target;
     let x = restX + (zoomX - restX) * eased;
@@ -512,18 +498,26 @@ function fitStackSky() {
   if (!document.documentElement.classList.contains("is-stack")) return;
   const shift = document.querySelector(".scene-shift");
   const copy = document.querySelector(".hero-copy");
-  const screen = document.querySelector(".hotspot-screen");
+  const img = document.querySelector(".scene img");
   const hero = document.querySelector(".hero-stage");
-  if (!shift || !copy || !screen || !hero) return;
+  if (!shift || !copy || !img || !hero) return;
   shift.style.transform = "none";
-  const heroTop = hero.getBoundingClientRect().top;
-  const screenTop = screen.getBoundingClientRect().top - heroTop;
-  const copyBottom = copy.getBoundingClientRect().bottom - heroTop;
+  const heroRect = hero.getBoundingClientRect();
+  const elW = img.offsetWidth || heroRect.width;
+  const elH = img.offsetHeight || heroRect.height;
+  const nw = img.naturalWidth || 2400;
+  const nh = img.naturalHeight || 1350;
+  const cover = Math.max(elW / nw, elH / nh);
+  const drawH = nh * cover;
+  const screenTop = (elH - drawH) / 2 + drawH * 0.208;
+  const copyBottom = copy.getBoundingClientRect().bottom - heroRect.top;
   if (screenTop < 40) return;
-  const needed = (copyBottom + 20) / screenTop;
-  const scale = Math.max(1.25, Math.min(needed, 2.4));
-  shift.style.transformOrigin = "48% 0";
+  const gap = Math.max(10, heroRect.height * 0.02);
+  const needed = (copyBottom + gap) / screenTop;
+  const scale = Math.max(1.05, Math.min(needed, 2.6));
+  shift.style.transformOrigin = "50% 0";
   shift.style.transform = `scale(${scale.toFixed(3)})`;
+  if (window.placeHeroSpots) window.placeHeroSpots();
 }
 
 initLenis();

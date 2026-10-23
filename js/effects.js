@@ -303,11 +303,8 @@
     let pointerKind = "mouse";
     const pos = { x: 0, y: 0, w: 80, h: 48, vx: 0, vy: 0, vw: 0, vh: 0, ready: false };
 
-    if (hint && window.matchMedia("(hover: none)").matches) hint.textContent = "Tap an object";
-    if (screenSpot && motion) screenSpot.classList.add("is-hinting");
-    window.setTimeout(() => {
-      if (screenSpot) screenSpot.classList.remove("is-hinting");
-    }, 3400);
+    const phoneHint = window.matchMedia("(max-width: 900px)").matches;
+    if (hint && phoneHint) hint.textContent = "Tap an object";
 
     function springTo(current, velocity, dest) {
       if (!motion) return [dest, 0];
@@ -365,7 +362,7 @@
     }
 
     function showSpot(spot) {
-      if (hint) hint.classList.add("is-done");
+      if (hint && !window.matchMedia("(max-width: 900px)").matches) hint.classList.add("is-done");
       if (screenSpot) screenSpot.classList.remove("is-hinting");
       const changed = target !== spot;
       target = spot;
