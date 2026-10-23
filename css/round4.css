@@ -2784,24 +2784,26 @@ html.has-spots .hotspot[data-armed="true"] {
 }
 
 html body .hotspot-screen { left: 46.13%; top: 44.26%; width: 10.17%; height: 11.86%; z-index: 5; }
-html body .hotspot-keys { left: 44.5%; top: 57.6%; width: 13%; height: 8.6%; z-index: 5; }
+html body .hotspot-plane { left: 12.6%; top: 69.3%; width: 14%; height: 7.6%; }
+html body .hotspot-keys { left: 43%; top: 59.8%; width: 14.1%; height: 8%; z-index: 5; }
 html body .hotspot-coffee { left: 37.6%; top: 54.4%; width: 5%; height: 7.8%; z-index: 4; }
-html body .hotspot-sketch { left: 22.5%; top: 65.8%; width: 13.5%; height: 9.2%; }
-html body .hotspot-notebook { left: 42.8%; top: 67.4%; width: 13.6%; height: 7%; z-index: 4; }
-html body .hotspot-glass { left: 57.8%; top: 54.6%; width: 7.6%; height: 8.4%; z-index: 4; }
-html body .hotspot-phone { left: 65.8%; top: 54%; width: 5.2%; height: 9.6%; z-index: 5; }
-html body .hotspot-kit { left: 59.4%; top: 63.2%; width: 6.8%; height: 4.6%; }
-html body .hotspot-plant { left: 67.6%; top: 63.8%; width: 7.4%; height: 7.6%; z-index: 4; }
+html body .hotspot-sketch { left: 35.1%; top: 61.8%; width: 9.9%; height: 12%; }
+html body .hotspot-notebook { left: 45.4%; top: 68%; width: 11%; height: 6.2%; z-index: 4; }
+html body .hotspot-glass { left: 56.4%; top: 62.6%; width: 7%; height: 10.3%; z-index: 4; }
+html body .hotspot-phone { left: 63.1%; top: 57.6%; width: 5.1%; height: 12.2%; z-index: 5; }
+html body .hotspot-kit { left: 57.3%; top: 46.9%; width: 8.5%; height: 15.3%; }
+html body .hotspot-plant { left: 65.6%; top: 52.4%; width: 5.1%; height: 12%; z-index: 4; }
 @media (max-width: 600px) {
   html body .hotspot-screen { left: 40.85%; top: 52.85%; width: 19.64%; height: 7.69%; }
-  html body .hotspot-keys { left: 38%; top: 60.7%; width: 23.5%; height: 6.5%; }
-  html body .hotspot-coffee { left: 25.2%; top: 59.2%; width: 9.5%; height: 5%; }
-  html body .hotspot-sketch { left: 16%; top: 65%; width: 20%; height: 6.8%; }
-  html body .hotspot-notebook { left: 40.5%; top: 67.4%; width: 20%; height: 4.2%; }
-  html body .hotspot-glass { left: 62.8%; top: 56%; width: 12%; height: 7%; }
-  html body .hotspot-phone { left: 77.2%; top: 58.8%; width: 8%; height: 7.6%; }
-  html body .hotspot-kit { left: 65.5%; top: 63.2%; width: 7.5%; height: 4.4%; }
-  html body .hotspot-plant { left: 84.2%; top: 63%; width: 8.8%; height: 7.2%; }
+  html body .hotspot-plane { left: 0; top: 0; width: 0; height: 0; }
+  html body .hotspot-keys { left: 42.6%; top: 62.8%; width: 22.8%; height: 5.2%; }
+  html body .hotspot-coffee { left: 24%; top: 58%; width: 12%; height: 6.5%; }
+  html body .hotspot-sketch { left: 19%; top: 65.6%; width: 20.2%; height: 5.9%; }
+  html body .hotspot-notebook { left: 39.7%; top: 68.2%; width: 21.9%; height: 4.3%; }
+  html body .hotspot-glass { left: 61.4%; top: 64.2%; width: 14.1%; height: 7.2%; }
+  html body .hotspot-phone { left: 72.5%; top: 59.7%; width: 10.3%; height: 9.1%; }
+  html body .hotspot-kit { left: 61.6%; top: 55.2%; width: 13.9%; height: 8.3%; }
+  html body .hotspot-plant { left: 76.1%; top: 57.8%; width: 12%; height: 7.5%; }
 }
 
 html.is-zooming .hotspot,

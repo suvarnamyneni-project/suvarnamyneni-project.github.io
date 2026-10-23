@@ -203,25 +203,27 @@
   // Wide is the 16:9 desk. Stack is the 9:16 desk. Screen matches the inner-glass AABB.
   const SPOTS_WIDE = {
     screen: [46.13, 44.26, 10.17, 11.86],
-    keys: [44.5, 57.6, 13.0, 8.6],
+    plane: [12.6, 69.3, 14.0, 7.6],
     coffee: [37.6, 54.4, 5.0, 7.8],
-    sketch: [22.5, 65.8, 13.5, 9.2],
-    notebook: [42.8, 67.4, 13.6, 7.0],
-    glass: [57.8, 54.6, 7.6, 8.4],
-    phone: [65.8, 54.0, 5.2, 9.6],
-    kit: [59.4, 63.2, 6.8, 4.6],
-    plant: [67.6, 63.8, 7.4, 7.6],
+    sketch: [35.1, 61.8, 9.9, 12.0],
+    keys: [43.0, 59.8, 14.1, 8.0],
+    notebook: [45.4, 68.0, 11.0, 6.2],
+    kit: [57.3, 46.9, 8.5, 15.3],
+    glass: [56.4, 62.6, 7.0, 10.3],
+    phone: [63.1, 57.6, 5.1, 12.2],
+    plant: [65.6, 52.4, 5.1, 12.0],
   };
+  // The 9:16 crop leaves the paper plane outside the frame, so it has no stack box.
   const SPOTS_STACK = {
     screen: [40.85, 52.85, 19.64, 7.69],
-    keys: [38.0, 60.7, 23.5, 6.5],
-    coffee: [25.2, 59.2, 9.5, 5.0],
-    sketch: [16.0, 65.0, 20.0, 6.8],
-    notebook: [40.5, 67.4, 20.0, 4.2],
-    glass: [62.8, 56.0, 12.0, 7.0],
-    phone: [77.2, 58.8, 8.0, 7.6],
-    kit: [65.5, 63.2, 7.5, 4.4],
-    plant: [84.2, 63.0, 8.8, 7.2],
+    coffee: [24.0, 58.0, 12.0, 6.5],
+    sketch: [19.0, 65.6, 20.2, 5.9],
+    keys: [42.6, 62.8, 22.8, 5.2],
+    notebook: [39.7, 68.2, 21.9, 4.3],
+    kit: [61.6, 55.2, 13.9, 8.3],
+    glass: [61.4, 64.2, 14.1, 7.2],
+    phone: [72.5, 59.7, 10.3, 9.1],
+    plant: [76.1, 57.8, 12.0, 7.5],
   };
   const NARROW_ART = "(max-width: 600px)";
   function spotBoxes() {
@@ -262,7 +264,12 @@
       const name = named ? named.slice("hotspot-".length) : "";
       if (!name) return;
       const frac = spotBoxes()[name];
-      if (!frac) return;
+      if (!frac) {
+        spot.hidden = true;
+        spot.dataset.unplaced = "1";
+        return;
+      }
+      delete spot.dataset.unplaced;
       const placed = mapSpot(box, ...frac);
       spot.style.left = `${placed.left}%`;
       spot.style.top = `${placed.top}%`;
@@ -287,6 +294,11 @@
     }
     requestAnimationFrame(() => {
       document.querySelectorAll(".hotspot").forEach((spot) => {
+        if (spot.dataset.unplaced) {
+          spot.hidden = true;
+          spot.tabIndex = -1;
+          return;
+        }
         const rect = spot.getBoundingClientRect();
         const seenW = Math.max(0, Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0));
         const seenH = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
