@@ -199,31 +199,29 @@
     });
   }
 
+  // Image fractions [left, top, width, height] of the current painting.
+  // Wide is the 16:9 desk. Stack is the 9:16 desk. Screen matches the inner-glass AABB.
   const SPOTS_WIDE = {
-    plane: [46.6, 45.0, 9.0, 10.2],
     screen: [46.13, 44.26, 10.17, 11.86],
-    laptop: [43.0, 62.6, 17.8, 5.2],
-    keys: [43.6, 67.4, 16.4, 4.8],
-    coffee: [28.0, 61.0, 8.8, 15.0],
-    sketch: [30.5, 73.5, 11.5, 9.0],
-    notebook: [43.5, 71.5, 15.0, 8.5],
-    glass: [58.6, 57.0, 12.0, 15.5],
-    kit: [66.0, 70.0, 8.5, 9.0],
-    phone: [71.0, 58.5, 6.0, 12.5],
-    plant: [75.5, 56.5, 6.5, 13.0],
+    keys: [44.5, 57.6, 13.0, 8.6],
+    coffee: [37.6, 54.4, 5.0, 7.8],
+    sketch: [22.5, 65.8, 13.5, 9.2],
+    notebook: [42.8, 67.4, 13.6, 7.0],
+    glass: [57.8, 54.6, 7.6, 8.4],
+    phone: [65.8, 54.0, 5.2, 9.6],
+    kit: [59.4, 63.2, 6.8, 4.6],
+    plant: [67.6, 63.8, 7.4, 7.6],
   };
   const SPOTS_STACK = {
-    plane: [8.0, 52.0, 14.0, 8.0],
     screen: [40.85, 52.85, 19.64, 7.69],
-    laptop: [32.0, 66.5, 36.0, 5.0],
-    keys: [28.0, 71.0, 44.0, 4.5],
-    coffee: [7.0, 63.0, 15.0, 13.0],
-    sketch: [10.0, 75.0, 18.0, 9.0],
-    notebook: [34.0, 75.0, 28.0, 8.0],
-    glass: [58.0, 60.0, 16.0, 13.0],
-    kit: [68.0, 72.0, 14.0, 9.0],
-    phone: [74.0, 61.0, 9.0, 11.0],
-    plant: [82.0, 58.0, 12.0, 13.0],
+    keys: [38.0, 60.7, 23.5, 6.5],
+    coffee: [25.2, 59.2, 9.5, 5.0],
+    sketch: [16.0, 65.0, 20.0, 6.8],
+    notebook: [40.5, 67.4, 20.0, 4.2],
+    glass: [62.8, 56.0, 12.0, 7.0],
+    phone: [77.2, 58.8, 8.0, 7.6],
+    kit: [65.5, 63.2, 7.5, 4.4],
+    plant: [84.2, 63.0, 8.8, 7.2],
   };
   const NARROW_ART = "(max-width: 600px)";
   function spotBoxes() {
@@ -263,7 +261,9 @@
       const named = [...spot.classList].find((item) => item.indexOf("hotspot-") === 0);
       const name = named ? named.slice("hotspot-".length) : "";
       if (!name) return;
-      const placed = mapSpot(box, ...spotBoxes()[name]);
+      const frac = spotBoxes()[name];
+      if (!frac) return;
+      const placed = mapSpot(box, ...frac);
       spot.style.left = `${placed.left}%`;
       spot.style.top = `${placed.top}%`;
       spot.style.width = `${placed.width}%`;
