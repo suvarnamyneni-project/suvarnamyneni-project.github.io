@@ -916,7 +916,9 @@
     let startX = 0;
     let startScroll = 0;
     let suppress = false;
+    let fromPointer = false;
     rail.viewport.addEventListener("pointerdown", (event) => {
+      fromPointer = true;
       if (!document.documentElement.classList.contains("has-rail")) return;
       if (event.pointerType && event.pointerType !== "mouse") return;
       if (event.button !== 0) return;
@@ -924,14 +926,16 @@
       suppress = false;
       startX = event.clientX;
       startScroll = window.deskLenis ? window.deskLenis.scroll : window.scrollY;
-      rail.viewport.classList.add("is-grabbing");
-      rail.viewport.setPointerCapture(event.pointerId);
     });
     rail.viewport.addEventListener("pointermove", (event) => {
       if (!active) return;
       const delta = event.clientX - startX;
       if (Math.abs(delta) < 8) return;
-      suppress = true;
+      if (!suppress) {
+        suppress = true;
+        rail.viewport.classList.add("is-grabbing");
+        rail.viewport.setPointerCapture(event.pointerId);
+      }
       const next = startScroll - delta * 1.4;
       scrollTo(next, { immediate: true });
     });
@@ -949,6 +953,10 @@
     }, true);
     rail.track.addEventListener("focusin", (event) => {
       if (!document.documentElement.classList.contains("has-rail") || !railTrigger) return;
+      if (fromPointer) {
+        fromPointer = false;
+        return;
+      }
       const card = event.target.closest(".project");
       if (!card) return;
       const center = card.offsetLeft + card.offsetWidth / 2 - rail.viewport.clientWidth * 0.5;

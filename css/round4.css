@@ -1058,6 +1058,39 @@ html.has-rail .project-body > h3 + p {
   font-weight: 600;
 }
 
+.project,
+.desk-card {
+  position: relative;
+  z-index: 0;
+}
+
+.project > .project-body > a.case-link::after,
+.desk-card > a.case-link::after,
+.more-card > a.case-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+}
+
+/* A transform on the anchor would become the overlay's containing block and
+   shrink the hit target down to the words "Read the case". */
+html.has-motion .case-link,
+html.has-motion .case-link:hover,
+html.has-motion .case-link:focus-visible,
+html.has-motion .case-link:active {
+  transform: none;
+}
+
+.year-stamp,
+.org-pill {
+  pointer-events: none;
+}
+
+.hero-stage.is-unfolding .unfold-plane {
+  pointer-events: auto;
+}
+
 .case-link {
   display: inline-flex;
   align-items: center;
