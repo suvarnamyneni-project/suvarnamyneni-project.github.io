@@ -199,19 +199,36 @@
     });
   }
 
-  const SPOT_BOXES = {
-    plane: [24.0, 15.0, 7.2, 5.8],
-    screen: [43.2, 20.8, 13.2, 14.0],
-    laptop: [40.8, 35.8, 16.4, 3.8],
-    keys: [41.4, 40.8, 15.0, 5.0],
-    coffee: [30.8, 34.6, 5.2, 8.2],
-    sketch: [27.4, 48.0, 11.0, 10.4],
-    notebook: [43.2, 50.0, 13.2, 9.6],
-    glass: [59.6, 46.2, 7.0, 12.8],
-    kit: [61.0, 23.6, 10.4, 14.2],
-    phone: [68.8, 40.4, 4.4, 12.6],
-    plant: [74.0, 32.4, 5.0, 12.2],
+  const SPOTS_WIDE = {
+    plane: [46.6, 45.0, 9.0, 10.2],
+    screen: [44.2, 52.0, 15.4, 11.2],
+    laptop: [43.0, 62.6, 17.8, 5.2],
+    keys: [43.6, 67.4, 16.4, 4.8],
+    coffee: [28.0, 61.0, 8.8, 15.0],
+    sketch: [30.5, 73.5, 11.5, 9.0],
+    notebook: [43.5, 71.5, 15.0, 8.5],
+    glass: [58.6, 57.0, 12.0, 15.5],
+    kit: [66.0, 70.0, 8.5, 9.0],
+    phone: [71.0, 58.5, 6.0, 12.5],
+    plant: [75.5, 56.5, 6.5, 13.0],
   };
+  const SPOTS_STACK = {
+    plane: [8.0, 52.0, 14.0, 8.0],
+    screen: [34.0, 55.0, 32.0, 12.0],
+    laptop: [32.0, 66.5, 36.0, 5.0],
+    keys: [28.0, 71.0, 44.0, 4.5],
+    coffee: [7.0, 63.0, 15.0, 13.0],
+    sketch: [10.0, 75.0, 18.0, 9.0],
+    notebook: [34.0, 75.0, 28.0, 8.0],
+    glass: [58.0, 60.0, 16.0, 13.0],
+    kit: [68.0, 72.0, 14.0, 9.0],
+    phone: [74.0, 61.0, 9.0, 11.0],
+    plant: [82.0, 58.0, 12.0, 13.0],
+  };
+  const NARROW_ART = "(max-width: 600px)";
+  function spotBoxes() {
+    return window.matchMedia(NARROW_ART).matches ? SPOTS_STACK : SPOTS_WIDE;
+  }
 
   function coverBox(img) {
     const elW = img.offsetWidth || 1;
@@ -246,7 +263,7 @@
       const named = [...spot.classList].find((item) => item.indexOf("hotspot-") === 0);
       const name = named ? named.slice("hotspot-".length) : "";
       if (!name) return;
-      const placed = mapSpot(box, ...SPOT_BOXES[name]);
+      const placed = mapSpot(box, ...spotBoxes()[name]);
       spot.style.left = `${placed.left}%`;
       spot.style.top = `${placed.top}%`;
       spot.style.width = `${placed.width}%`;
@@ -254,7 +271,8 @@
     });
     const glow = document.querySelector(".screen-glow");
     if (glow) {
-      const placed = mapSpot(box, 42.24, 19.44, 15.18, 17.23);
+      const screen = spotBoxes().screen;
+      const placed = mapSpot(box, screen[0], screen[1], screen[2], screen[3]);
       glow.style.left = `${placed.left}%`;
       glow.style.top = `${placed.top}%`;
       glow.style.width = `${placed.width}%`;
@@ -262,7 +280,7 @@
     }
     const steam = document.querySelector(".steam");
     if (steam) {
-      const [x, y, w] = SPOT_BOXES.coffee;
+      const [x, y, w] = spotBoxes().coffee;
       const placed = mapSpot(box, x + w * 0.42, y - 1.6, 0, 0);
       steam.style.left = `${placed.left}%`;
       steam.style.top = `${placed.top}%`;

@@ -1,20 +1,17 @@
 /**
- * Display glass on assets/art/hero, as percentages of the painting.
- * Corners run clockwise from the top left and follow the painted perspective.
- * At rest the painting fills the hero from the top. Scale stops before the
- * keyboard, notebook and magnifier drop under the scroll pill.
+ * Laptop screen on the wide hero painting, as percentages of the image.
+ * Corners run clockwise from the top left. At rest the painting fills the
+ * hero from the top, so the open sky stays above the type.
  */
-const DESK_LEFT = 23.0;
-const DESK_RIGHT = 79.2;
-const DESK_BOTTOM = 61.6;
-const SKY_CLEAR = 14;
 const SCREEN_CORNERS = [
-  { x: 42.5, y: 19.44 },
-  { x: 57.42, y: 20.51 },
-  { x: 57.11, y: 36.67 },
-  { x: 42.24, y: 35.05 },
+  { x: 44.4, y: 52.1 },
+  { x: 59.4, y: 52.4 },
+  { x: 59.2, y: 63.0 },
+  { x: 44.2, y: 62.8 },
 ];
-const LAPTOP_SCREEN = { x: 42.5, y: 20.51, w: 14.61, h: 14.54 };
+const LAPTOP_SCREEN = { x: 44.2, y: 52.0, w: 15.4, h: 11.2 };
+const SCREEN_TOP_WIDE = 0.52;
+const SCREEN_TOP_STACK = 0.55;
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";
@@ -360,7 +357,7 @@ function initZoom() {
     /* The painting stays full-bleed from the top and centred. Scale from
        the top so the laptop screen starts just under the copy. */
     const copyBottom = metrics.copyBottom;
-    const skyLine = 0.208;
+    const skyLine = SCREEN_TOP_WIDE;
     const gap = Math.max(10, metrics.height * 0.02);
     const skyScale = (copyBottom + gap) / (metrics.imageHeight * skyLine);
     const restScale = Math.max(1, skyScale);
@@ -509,12 +506,14 @@ function fitStackSky() {
   const nh = img.naturalHeight || 1350;
   const cover = Math.max(elW / nw, elH / nh);
   const drawH = nh * cover;
-  const screenTop = (elH - drawH) / 2 + drawH * 0.208;
+  const narrow = window.matchMedia("(max-width: 600px)").matches;
+  const screenLine = narrow ? SCREEN_TOP_STACK : SCREEN_TOP_WIDE;
+  const screenTop = (elH - drawH) / 2 + drawH * screenLine;
   const copyBottom = copy.getBoundingClientRect().bottom - heroRect.top;
   if (screenTop < 40) return;
   const gap = Math.max(10, heroRect.height * 0.02);
   const needed = (copyBottom + gap) / screenTop;
-  const scale = Math.max(1.05, Math.min(needed, 2.6));
+  const scale = Math.max(1, Math.min(needed, 1.8));
   shift.style.transformOrigin = "50% 0";
   shift.style.transform = `scale(${scale.toFixed(3)})`;
   if (window.placeHeroSpots) window.placeHeroSpots();
