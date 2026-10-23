@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>iMobile — Suvarna Myneni</title>
+  <meta name="description" content="Redesigning ICICI Bank's iMobile app for iOS: 15 interviews, three personas, and a home screen that puts frequent tasks and spending in reach.">
+  <link rel="canonical" href="https://suvarnamyneni-project.github.io/work/imobile/">
+  <meta name="theme-color" content="#FDF0E2">
+  <meta property="og:title" content="iMobile — Redesigning a mobile banking experience">
+  <meta property="og:description" content="Research and core UX for ICICI Bank's iMobile iOS app: findability, a personalized home, and spending that is easier to read.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://suvarnamyneni-project.github.io/work/imobile/">
+  <meta property="og:image" content="https://suvarnamyneni-project.github.io/assets/case/imobile/final-1.webp">
+  <link rel="icon" href="../../assets/favicon.png" type="image/png">
+  <link rel="preload" href="../../assets/fonts/general-sans-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face { font-family: "General Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/general-sans-600.woff2") format("woff2"); }
+    @font-face { font-family: Switzer; font-style: normal; font-weight: 400; font-display: swap; src: url("../../assets/fonts/switzer-400.woff2") format("woff2"); }
+    @font-face { font-family: Switzer; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/switzer-600.woff2") format("woff2"); }
+    :root { --ink: #2b3236; --muted: #41484c; --accent: #a34728; --paper: #fdf0e2; --display: "General Sans", Switzer, sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #fdf0e2; color: #2b3236; font-family: Switzer, "Segoe UI", sans-serif; font-size: 1.0625rem; line-height: 1.5; }
+    img { max-width: 100%; display: block; }
+    h1, h2, p { margin: 0; }
+    a { color: inherit; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .skip-link { position: absolute; left: 16px; top: -48px; }
+    html .site-header { position: fixed; z-index: 20; inset: 16px 22px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0; background: none; pointer-events: none; color: #2b3236; }
+    html .site-header > * { pointer-events: auto; }
+    .brand-chip, .site-nav { display: flex; align-items: center; border-radius: 999px; text-decoration: none; color: #2b3236; background: rgba(255,251,247,.86); border: 1px solid rgba(255,255,255,.7); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 8px 28px rgba(150,90,70,.12); }
+    html .brand-chip { flex-direction: row; align-items: center; gap: 10px; padding: 5px 16px 5px 5px; }
+    .brand-copy { display: flex; flex-direction: column; line-height: 1.15; }
+    .brand-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .brand-name { font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: 14.5px; }
+    .brand-role { display: none; }
+    .brand-back { font-size: 12px; font-weight: 600; color: #b2512c; }
+    .site-nav { position: relative; width: max-content; gap: 2px; padding: 5px; }
+    .nav-menu { display: flex; align-items: center; gap: 2px; }
+    .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 14px/normal Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
+    .nav-contact, .nav-toggle { display: none; }
+    @media (max-width: 759px) {
+      html .site-header { left: 12px; right: 12px; top: 12px; }
+      .brand-last, .nav-menu { display: none; }
+      .brand-back { display: block; }
+      .nav-contact, .nav-toggle { display: inline-flex; align-items: center; padding: 7px 12px; }
+    }
+  </style>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/effects.css">
+  <link rel="stylesheet" href="../../css/round4.css">
+  <link rel="stylesheet" href="../../css/case.css">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var stack = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+      root.classList.toggle("is-stack", stack || reduce);
+      if (!reduce) root.classList.add("has-motion");
+      root.classList.add("ready");
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#story">Skip to the story</a>
+  <header class="site-header">
+    <a class="brand-chip" href="/#work" data-caption="Back to all work">
+      <img class="brand-avatar" src="../../assets/avatar-96.webp" width="36" height="36" alt="" decoding="async">
+      <span class="brand-copy">
+        <b class="brand-name">Suvarna <span class="brand-last">Myneni</span></b>
+        <small class="brand-role">AI-Native UX Designer</small>
+        <small class="brand-back">← Back to all work</small>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <div id="nav-menu" class="nav-menu">
+        <a href="/#work">Work</a>
+        <a href="/#path">Path</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </div>
+      <a class="nav-contact" href="/#contact">Contact</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+    </nav>
+  </header>
+  <div class="nav-backdrop" hidden></div>
+
+  <main class="case" id="story">
+    <nav class="case-rail" aria-label="On this page">
+      <div class="case-rail-list">
+        <span class="case-rail-mark" aria-hidden="true"></span>
+        <ol>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#discover">Discover &amp; explore</a></li>
+          <li><a href="#design">Design</a></li>
+          <li><a href="#test">Test &amp; evaluate</a></li>
+          <li><a href="#conclusion">Conclusion</a></li>
+        </ol>
+      </div>
+      <div class="case-rail-progress" aria-hidden="true"><span class="case-rail-fill"></span></div>
+    </nav>
+
+    <header class="case-hero wrap case-reveal" id="introduction">
+      <p class="case-eyebrow">ICICI Bank · iMobile · iOS · UX Design</p>
+      <h1>Redesigning a mobile banking experience</h1>
+      <p class="case-lede">A personal banking app for a wide range of financial needs, balanced for simplicity, accessibility and efficiency.</p>
+      <ul class="case-tags" aria-label="Work">
+        <li>User interviews</li>
+        <li>Personas</li>
+        <li>Information architecture</li>
+        <li>Wireframes</li>
+        <li>Prototype</li>
+      </ul>
+    </header>
+
+    <figure class="case-frame wrap case-reveal">
+      <img src="../../assets/case/imobile/final-1.webp" width="1092" height="647" alt="Final iMobile UI from the redesign case study." fetchpriority="high" decoding="async">
+      <figcaption>Final UI from the iMobile case study.</figcaption>
+    </figure>
+
+    <section class="story-map wrap case-reveal" aria-labelledby="story-map-heading">
+      <h2 class="story-title" id="story-map-heading">Find it on the home</h2>
+      <p class="story-dek">A crowded app, the research, and the redesign.</p>
+      <div class="story-board">
+        <svg class="story-svg" viewBox="0 0 360 640" aria-hidden="true">
+          <defs>
+            <mask id="story-draw" maskUnits="userSpaceOnUse">
+              <path class="route-mask" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/>
+            </mask>
+          </defs>
+          <path class="route-grey" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <path class="route-rust" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <g class="story-plane" transform="translate(32 78)">
+            <g transform="translate(-16 -16) scale(0.5)">
+              <path d="M6 34 L58 8 L36 58 L28 36 Z" fill="#F6C7B0" stroke="#2B3236" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M28 36 L58 8" fill="none" stroke="#A34728" stroke-width="2"/>
+            </g>
+          </g>
+        </svg>
+        <article class="act-card" data-act="0">
+          <a class="act-name" href="#challenge-heading"><span class="act-copy"><span class="act-kicker">Act 1</span> The challenge</span></a>
+          <ol>
+            <li><a class="beat" href="#challenge-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Features hard to find</span></a></li>
+            <li><a class="beat" href="#known-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Forrester score 63</span></a></li>
+            <li><a class="beat" href="#heuristic-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Balance not on home</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="1">
+          <a class="act-name" href="#personas-heading"><span class="act-copy"><span class="act-kicker">Act 2</span> The research</span></a>
+          <ol>
+            <li><a class="beat" href="#personas-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">15 user interviews</span></a></li>
+            <li><a class="beat" href="#personas-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Three detailed personas</span></a></li>
+            <li><a class="beat" href="#heuristic-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Dashboard hides actions</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="2">
+          <a class="act-name" href="#solutions-heading"><span class="act-copy"><span class="act-kicker">Act 3</span> The redesign</span></a>
+          <ol>
+            <li><a class="beat is-key" href="#solutions-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Personalized homepage</span></a></li>
+            <li><a class="beat" href="#upcoming-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Upcoming transactions</span></a></li>
+            <li><a class="beat" href="#outcome-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Siri and Face ID</span></a></li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <dl class="case-meta wrap case-reveal">
+      <div>
+        <dt>Role</dt>
+        <dd>Led research and core UX design. First major role as a UX designer, in a fast-paced agency.</dd>
+      </div>
+      <div>
+        <dt>Team</dt>
+        <dd>Ravi, Suvarna, Salma Shaik, and Priyanka Kane (PM).</dd>
+      </div>
+      <div>
+        <dt>Time and tools</dt>
+        <dd><span class="case-count" data-count="6" style="--digits: 1">6</span> months · Figma, X-Mind, Invision</dd>
+      </div>
+    </dl>
+
+    <section class="case-block wrap case-reveal" id="challenge" aria-labelledby="challenge-heading">
+      <p class="case-eyebrow">The challenge</p>
+      <h2 id="challenge-heading">A full personal bank, still easy to use.</h2>
+      <p class="case-copy">ICICI Bank set out to revamp iMobile for iOS: an intuitive, delightful personal banking app that holds many functions for people with different financial needs. The interface had to stay simple, accessible and efficient, and still feel engaging.</p>
+      <p class="case-copy">iMobile launched in 2008 as India's first mobile banking app. The case study describes ICICI Bank as India's largest private bank, with a presence in <span class="case-count" data-count="16" style="--digits: 2">16</span> countries, and iMobile serving over <span class="case-count" data-count="10" style="--digits: 2">10</span> million users. The bank's customers span all age groups, totaling over 100 million.</p>
+    </section>
+
+    <section class="case-block wrap case-reveal" aria-labelledby="known-heading">
+      <p class="case-eyebrow">What we knew before starting</p>
+      <h2 id="known-heading">Strongest among Indian apps, still under the global line.</h2>
+      <p class="case-copy">Forrester's analysis showed Indian banking apps performing poorly against international ones. No app passed the global average of <span class="case-count" data-count="65" style="--digits: 2">65</span>/100. ICICI received the highest rating among Indian apps, <span class="case-count" data-count="63" style="--digits: 2">63</span>/100, and was seen as one of the best among competitors, and the most popular.</p>
+      <p class="case-copy">Stakeholder interviews covered how the app worked, and where it was limited. Some restrictions, set by the Reserve Bank of India, could not be changed.</p>
+      <figure class="case-frame">
+        <img src="../../assets/case/imobile/forrester.webp" width="1324" height="1419" alt="Research chart from the iMobile case study on mobile banking activities." loading="lazy" decoding="async">
+        <figcaption>Research chart from the case study, placed with what the team knew before designing.</figcaption>
+      </figure>
+    </section>
+
+    <section class="case-block wrap case-reveal" id="discover" aria-labelledby="personas-heading">
+      <p class="case-eyebrow">Discover &amp; explore</p>
+      <h2 id="personas-heading">Fifteen interviews, then three personas.</h2>
+      <p class="case-copy">To understand how often people used the app, what hurt, and whether the most-used features could be found, I interviewed <span class="case-count" data-count="15" style="--digits: 2">15</span> people: eight ICICI customers and seven customers of other banks. With client-provided data, that became <span class="case-count" data-count="3" style="--digits: 1">3</span> personas for the redesign.</p>
+      <div class="case-gallery">
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/persona.webp" width="1323" height="810" alt="First of three iMobile personas from the interviews." loading="lazy" decoding="async">
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/persona-2.webp" width="1323" height="810" alt="Second of three iMobile personas." loading="lazy" decoding="async">
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/persona-3.webp" width="1323" height="810" alt="Third of three iMobile personas." loading="lazy" decoding="async">
+          <figcaption>Three personas from the 15 interviews and client data.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="case-block wrap case-reveal" aria-labelledby="compete-heading">
+      <p class="case-eyebrow">Competition</p>
+      <h2 id="compete-heading">Feature-rich, and hard to discover.</h2>
+      <p class="case-copy">No Indian bank app in the set, including HDFC and SBI, stood out for design, features and usability together. The comparison widened to Dhani, Walnut and Paytm. ICICI's app was notable for UPI payments, loan applications and card design. The key functions were still not easy to find. Discoverability and access became the focus.</p>
+    </section>
+
+    <section class="case-block wrap case-reveal" aria-labelledby="heuristic-heading">
+      <p class="case-eyebrow">Heuristic evaluation</p>
+      <h2 id="heuristic-heading">The dashboard hid the thing people do most.</h2>
+      <p class="case-copy">A heuristic pass on the dashboard found extra taps, convoluted navigation and long forms. The notes from that review:</p>
+      <ul class="case-themes">
+        <li><b>Stagnant layout</b> Notifications and account updates are not seen on the dashboard.</li>
+        <li><b>Favourite transaction</b> Not a frequent action, and given too much prominence.</li>
+        <li><b>Unprioritized grid</b> Many services, not ordered by how the person actually uses them.</li>
+        <li><b>Profile area</b> Takes 30–35% of the screen that could show relevant data.</li>
+        <li><b>Balance</b> The most-used action, and not present on the dashboard.</li>
+        <li><b>Hamburger</b> Hides all actions. No way to discover new features or get personalized suggestions.</li>
+      </ul>
+      <figure class="case-frame">
+        <img src="../../assets/case/imobile/heuristic.webp" width="457" height="953" alt="Heuristic notes on the iMobile dashboard." loading="lazy" decoding="async">
+        <figcaption>Dashboard heuristic notes from the case study.</figcaption>
+      </figure>
+    </section>
+
+    <section class="case-block wrap case-reveal" id="design" aria-labelledby="ia-heading">
+      <p class="case-eyebrow">Design</p>
+      <h2 id="ia-heading">Frequent services first. The rest still findable.</h2>
+      <p class="case-copy">The information architecture dropped unnecessary states, rearranged pages, and added Expenditure Analysis, Upcoming Transactions and Discover. Frequent services stay easy to reach. Less common ones stay discoverable. Adding and managing lines of credit, insurance, debit cards and investments was streamlined. Contextual prompts offer a conversation without breaking the flow.</p>
+      <figure class="case-frame">
+        <img src="../../assets/case/imobile/ia.webp" width="1600" height="436" alt="Information architecture for the iMobile redesign." loading="lazy" decoding="async">
+        <figcaption>Information architecture for iMobile.</figcaption>
+      </figure>
+    </section>
+
+    <section class="case-block wrap case-reveal" aria-labelledby="wire-heading">
+      <p class="case-eyebrow">Wireframes</p>
+      <h2 id="wire-heading">Some simpler journeys fought the business goal.</h2>
+      <p class="case-copy">Concepts covered Login, Dashboard, Accounts, Expenditure Analysis, Fund Transfer, Bill Pay, Offers and Help. The options that most simplified the journey sometimes worked against discoverability and cross-sell. The final choices kept both: a clear path, and a way to meet new features and other financial products.</p>
+      <p class="case-copy">The dashboard is the gateway. Explorations aimed at an overview of accounts, a way to discover features and products, and quick access to the most-used features.</p>
+      <figure class="case-frame">
+        <img src="../../assets/case/imobile/wireframe.webp" width="1311" height="1574" alt="Dashboard wireframe explorations for iMobile." loading="lazy" decoding="async">
+        <figcaption>Dashboard explorations. The case study also points to a download of the full wireframes.</figcaption>
+      </figure>
+    </section>
+
+    <section class="case-block wrap case-reveal" aria-labelledby="solutions-heading">
+      <p class="case-eyebrow">Solutions</p>
+      <h2 id="solutions-heading">The home is personal from the start.</h2>
+      <div class="case-steps">
+        <article>
+          <h3>Top Activities and Discover</h3>
+          <p>The homepage follows what the person actually does. Top Activities keeps frequent tasks close. Discover introduces banking tools and services they have not used yet.</p>
+        </article>
+        <article>
+          <h3>Budgeting and comparisons</h3>
+          <p>Monthly expenses are easier to compare, with visualizations of spending patterns and a place to set a monthly limit.</p>
+        </article>
+        <article>
+          <h3 id="spend-heading">Expenditure analysis</h3>
+          <p>A category breakdown shows where money went, and alerts fire when a category passes its budget. Vague transaction narration was a pain point, so the narration patterns were tightened to say more clearly what each expense was.</p>
+        </article>
+      </div>
+      <div class="case-band">
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/home.webp" width="231" height="402" alt="iMobile screen from the redesign." loading="lazy" decoding="async">
+          <figcaption>A screen from the redesign.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/budget.webp" width="355" height="636" alt="Budget and spending comparison screen from iMobile." loading="lazy" decoding="async">
+          <figcaption>Budgeting and comparisons.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/spend.webp" width="355" height="636" alt="Expenditure analysis screen from iMobile." loading="lazy" decoding="async">
+          <figcaption>Expenditure analysis.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="case-block wrap case-reveal" aria-labelledby="upcoming-heading">
+      <p class="case-eyebrow">Recurring money</p>
+      <h2 id="upcoming-heading">Tell people before the EMI, the bill, or the rent.</h2>
+      <p class="case-copy">Spending patterns were used to spot recurring transactions such as EMIs, bills and rent, and to notify people before those payments. The same narration problem showed up here: descriptions were hard to trust, so the recommendation was clearer narration for recurring expenses.</p>
+      <p class="case-copy">Transaction history is meant to be easy to read. Transactions are tagged automatically, and people can change or add tags. They can filter and sort in more than one way. That redesign also came from the narration feedback.</p>
+      <div class="case-band">
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/upcoming.webp" width="350" height="620" alt="Upcoming transactions screen from iMobile." loading="lazy" decoding="async">
+          <figcaption>Upcoming transactions.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/history.webp" width="350" height="620" alt="Transaction history screen from iMobile." loading="lazy" decoding="async">
+          <figcaption>Transaction history.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/discover.webp" width="229" height="404" alt="Discover screen from the iMobile redesign." loading="lazy" decoding="async">
+          <figcaption>Discover.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="case-block wrap case-reveal" id="test" aria-labelledby="test-heading">
+      <p class="case-eyebrow">Test &amp; evaluate</p>
+      <h2 id="test-heading">Test, then fold the notes in before UI.</h2>
+      <p class="case-copy">Testing ran in phases. Wireframes were refined with the internal team. <span class="case-count" data-count="8" style="--digits: 1">8</span>–10 internal people from different departments tested in short sessions so usability issues showed up early. User and client feedback was worked into the wireframes before UI design, so the result could meet both user expectations and business goals.</p>
+    </section>
+
+    <section class="case-block wrap case-reveal" id="conclusion" aria-labelledby="outcome-heading">
+      <p class="case-eyebrow">Conclusion</p>
+      <h2 id="outcome-heading">Primary tasks stay easy. The rest can still be found.</h2>
+      <p class="case-copy">The case study describes the end product as what the team envisioned: a functional banking app, one of its kind in India. People can do the primary tasks, and the less common features stay discoverable when they need them.</p>
+      <p class="case-copy">To keep the app relevant, the work also included payments via Siri and QR codes, login via Touch ID, Face ID and voice recognition, and Siri-enabled in-app voice search.</p>
+      <div class="case-gallery">
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/final-2.webp" width="1049" height="643" alt="Another final iMobile UI screen." loading="lazy" decoding="async">
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/imobile/final-3.webp" width="1038" height="668" alt="A third final iMobile UI screen." loading="lazy" decoding="async">
+          <figcaption>Further final UI screens from the case study.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="case-block wrap case-reveal" aria-labelledby="learned-heading">
+      <p class="case-eyebrow">What I learned</p>
+      <h2 id="learned-heading">Don't get married to an idea.</h2>
+      <p class="case-copy">The project taught the design thinking process, the do's and don'ts of mobile design, especially on iOS, and the importance of not getting married to an idea.</p>
+    </section>
+
+    <section class="case-next wrap case-reveal" aria-labelledby="next-project-heading">
+      <p class="case-eyebrow">Next project</p>
+      <h2 id="next-project-heading" class="sr-only">Next project</h2>
+      <a href="/work/deal-desk/">Deal Desk</a>
+      <p class="case-copy" style="margin-top: 0">A team project at eXp Realty. As AI UI/UX Designer, I mapped 14 deal journeys and designed one AI-assisted desk that replaces about 11 separate tools.</p>
+    </section>
+    <footer class="case-foot wrap case-reveal">
+      <a href="/#work">← Back to all work</a>
+      <a href="mailto:suvarnamyneni@gmail.com">suvarnamyneni@gmail.com</a>
+    </footer>
+  </main>
+
+  <div class="cursor" id="cursor" hidden aria-hidden="true">
+    <div class="cursor-sprite">
+      <svg viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M6 3 L22 14 L13 15.5 L10.5 24 Z" fill="#FFFDFB" stroke="#2B3236" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <p class="cursor-bubble"></p>
+  </div>
+  <script src="../../js/case.js"></script>
+  <script>
+    (function () {
+      var chip = document.querySelector(".brand-chip");
+      if (chip) chip.setAttribute("href", "/#work");
+      var stack = document.documentElement.classList.contains("is-stack");
+      var sources = stack
+        ? ["../../js/effects.js"]
+        : ["../../js/vendor/lenis.min.js", "../../js/effects.js"];
+      var index = 0;
+      function next() {
+        if (index >= sources.length) {
+          if (window.initCaseScroll) window.initCaseScroll();
+          return;
+        }
+        var script = document.createElement("script");
+        script.src = sources[index++];
+        script.onload = next;
+        script.onerror = next;
+        document.body.appendChild(script);
+      }
+      next();
+    })();
+  </script>
+</body>
+</html>
