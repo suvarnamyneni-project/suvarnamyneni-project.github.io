@@ -78,30 +78,28 @@
       .hover-hint { display: none; }
     }
     html.is-stack .scene-bob { animation: none !important; }
-    .hotspot { position: absolute; box-sizing: border-box; border: 1.5px solid transparent; border-radius: 16px; background: transparent; box-shadow: none; }
-    html .hotspot-plane { left: 46.6%; top: 45%; width: 9%; height: 10.2%; }
+    .hotspot { position: absolute; box-sizing: border-box; border: 2px solid rgba(232, 89, 12, 0.92); border-radius: 16px; background: rgba(232, 89, 12, 0.18); box-shadow: inset 0 0 0 1px rgba(255, 248, 240, 0.45); }
     html .hotspot-screen { left: 46.13%; top: 44.26%; width: 10.17%; height: 11.86%; z-index: 5; }
-    html .hotspot-laptop { left: 43%; top: 62.6%; width: 17.8%; height: 5.2%; }
-    html .hotspot-keys { left: 43.6%; top: 67.4%; width: 16.4%; height: 4.8%; z-index: 5; }
-    html .hotspot-coffee { left: 28%; top: 61%; width: 8.8%; height: 15%; z-index: 4; }
-    html .hotspot-sketch { left: 30.5%; top: 73.5%; width: 11.5%; height: 9%; }
-    html .hotspot-notebook { left: 43.5%; top: 71.5%; width: 15%; height: 8.5%; z-index: 4; }
-    html .hotspot-glass { left: 58.6%; top: 57%; width: 12%; height: 15.5%; z-index: 4; }
-    html .hotspot-kit { left: 66%; top: 70%; width: 8.5%; height: 9%; }
-    html .hotspot-phone { left: 71%; top: 58.5%; width: 6%; height: 12.5%; z-index: 5; }
-    html .hotspot-plant { left: 75.5%; top: 56.5%; width: 6.5%; height: 13%; z-index: 4; }
+    html .hotspot-plane { left: 12.6%; top: 69.3%; width: 14%; height: 7.6%; }
+    html .hotspot-keys { left: 43%; top: 59.8%; width: 14.1%; height: 8%; z-index: 5; }
+    html .hotspot-coffee { left: 37.6%; top: 54.4%; width: 5%; height: 7.8%; z-index: 4; }
+    html .hotspot-sketch { left: 35.1%; top: 61.8%; width: 9.9%; height: 12%; }
+    html .hotspot-notebook { left: 45.4%; top: 68%; width: 11%; height: 6.2%; z-index: 4; }
+    html .hotspot-glass { left: 56.4%; top: 62.6%; width: 7%; height: 10.3%; z-index: 4; }
+    html .hotspot-phone { left: 63.1%; top: 57.6%; width: 5.1%; height: 12.2%; z-index: 5; }
+    html .hotspot-kit { left: 57.3%; top: 46.9%; width: 8.5%; height: 15.3%; }
+    html .hotspot-plant { left: 65.6%; top: 52.4%; width: 5.1%; height: 12%; z-index: 4; }
     @media (max-width: 600px) {
-      html .hotspot-plane { left: 8%; top: 52%; width: 14%; height: 8%; }
       html .hotspot-screen { left: 40.85%; top: 52.85%; width: 19.64%; height: 7.69%; }
-      html .hotspot-laptop { left: 32%; top: 66.5%; width: 36%; height: 5%; }
-      html .hotspot-keys { left: 28%; top: 71%; width: 44%; height: 4.5%; }
-      html .hotspot-coffee { left: 7%; top: 63%; width: 15%; height: 13%; }
-      html .hotspot-sketch { left: 10%; top: 75%; width: 18%; height: 9%; }
-      html .hotspot-notebook { left: 34%; top: 75%; width: 28%; height: 8%; }
-      html .hotspot-glass { left: 58%; top: 60%; width: 16%; height: 13%; }
-      html .hotspot-kit { left: 68%; top: 72%; width: 14%; height: 9%; }
-      html .hotspot-phone { left: 74%; top: 61%; width: 9%; height: 11%; }
-      html .hotspot-plant { left: 82%; top: 58%; width: 12%; height: 13%; }
+      html .hotspot-plane { left: 0; top: 0; width: 0; height: 0; }
+      html .hotspot-keys { left: 42.6%; top: 62.8%; width: 22.8%; height: 5.2%; }
+      html .hotspot-coffee { left: 24%; top: 58%; width: 12%; height: 6.5%; }
+      html .hotspot-sketch { left: 19%; top: 65.6%; width: 20.2%; height: 5.9%; }
+      html .hotspot-notebook { left: 39.7%; top: 68.2%; width: 21.9%; height: 4.3%; }
+      html .hotspot-glass { left: 61.4%; top: 64.2%; width: 14.1%; height: 7.2%; }
+      html .hotspot-phone { left: 72.5%; top: 59.7%; width: 10.3%; height: 9.1%; }
+      html .hotspot-kit { left: 61.6%; top: 55.2%; width: 13.9%; height: 8.3%; }
+      html .hotspot-plant { left: 76.1%; top: 57.8%; width: 12%; height: 7.5%; }
     }
     .hero-spacer { display: none; }
     .veil, .hotspots, .seed-field { position: absolute; inset: 0; pointer-events: none; }
@@ -264,7 +262,6 @@
             <div class="hotspots">
               <a class="hotspot hotspot-plane" href="#path" data-label="Plane" data-story="Follow the path so far."><span class="sr-only">Plane. Follow the path so far.</span></a>
               <a class="hotspot hotspot-screen" href="#work" data-label="Screen" data-story="Where the work lives. Scroll in to see my selected projects."><span class="sr-only">Screen. Where the work lives. Scroll in to see my selected projects.</span></a>
-              <a class="hotspot hotspot-laptop" href="#work" data-label="Laptop" data-story="Where the work lives. Open my selected projects."><span class="sr-only">Laptop. Where the work lives. Open my selected projects.</span></a>
               <a class="hotspot hotspot-keys" href="#work" data-label="Keyboard" data-story="I prototype what I design, in Figma, Lovable and code."><span class="sr-only">Keyboard. I prototype what I design, in Figma, Lovable and code.</span></a>
               <a class="hotspot hotspot-coffee" href="#contact" data-label="Coffee" data-story="Always up for a chat about design. Say hi."><span class="sr-only">Coffee. Always up for a chat about design. Say hi.</span></a>
               <a class="hotspot hotspot-sketch" href="#path" data-label="Sketchbooks" data-story="Postgraduate in Design, Manipal University."><span class="sr-only">Sketchbooks. Postgraduate in Design, Manipal University.</span></a>

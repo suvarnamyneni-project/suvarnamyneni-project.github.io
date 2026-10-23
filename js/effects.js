@@ -199,31 +199,31 @@
     });
   }
 
+  // Image fractions [left, top, width, height] of the current painting.
+  // Wide is the 16:9 desk. Stack is the 9:16 desk. Screen matches the inner-glass AABB.
   const SPOTS_WIDE = {
-    plane: [46.6, 45.0, 9.0, 10.2],
     screen: [46.13, 44.26, 10.17, 11.86],
-    laptop: [43.0, 62.6, 17.8, 5.2],
-    keys: [43.6, 67.4, 16.4, 4.8],
-    coffee: [28.0, 61.0, 8.8, 15.0],
-    sketch: [30.5, 73.5, 11.5, 9.0],
-    notebook: [43.5, 71.5, 15.0, 8.5],
-    glass: [58.6, 57.0, 12.0, 15.5],
-    kit: [66.0, 70.0, 8.5, 9.0],
-    phone: [71.0, 58.5, 6.0, 12.5],
-    plant: [75.5, 56.5, 6.5, 13.0],
+    plane: [12.6, 69.3, 14.0, 7.6],
+    coffee: [37.6, 54.4, 5.0, 7.8],
+    sketch: [35.1, 61.8, 9.9, 12.0],
+    keys: [43.0, 59.8, 14.1, 8.0],
+    notebook: [45.4, 68.0, 11.0, 6.2],
+    kit: [57.3, 46.9, 8.5, 15.3],
+    glass: [56.4, 62.6, 7.0, 10.3],
+    phone: [63.1, 57.6, 5.1, 12.2],
+    plant: [65.6, 52.4, 5.1, 12.0],
   };
+  // The 9:16 crop leaves the paper plane outside the frame, so it has no stack box.
   const SPOTS_STACK = {
-    plane: [8.0, 52.0, 14.0, 8.0],
     screen: [40.85, 52.85, 19.64, 7.69],
-    laptop: [32.0, 66.5, 36.0, 5.0],
-    keys: [28.0, 71.0, 44.0, 4.5],
-    coffee: [7.0, 63.0, 15.0, 13.0],
-    sketch: [10.0, 75.0, 18.0, 9.0],
-    notebook: [34.0, 75.0, 28.0, 8.0],
-    glass: [58.0, 60.0, 16.0, 13.0],
-    kit: [68.0, 72.0, 14.0, 9.0],
-    phone: [74.0, 61.0, 9.0, 11.0],
-    plant: [82.0, 58.0, 12.0, 13.0],
+    coffee: [24.0, 58.0, 12.0, 6.5],
+    sketch: [19.0, 65.6, 20.2, 5.9],
+    keys: [42.6, 62.8, 22.8, 5.2],
+    notebook: [39.7, 68.2, 21.9, 4.3],
+    kit: [61.6, 55.2, 13.9, 8.3],
+    glass: [61.4, 64.2, 14.1, 7.2],
+    phone: [72.5, 59.7, 10.3, 9.1],
+    plant: [76.1, 57.8, 12.0, 7.5],
   };
   const NARROW_ART = "(max-width: 600px)";
   function spotBoxes() {
@@ -263,7 +263,14 @@
       const named = [...spot.classList].find((item) => item.indexOf("hotspot-") === 0);
       const name = named ? named.slice("hotspot-".length) : "";
       if (!name) return;
-      const placed = mapSpot(box, ...spotBoxes()[name]);
+      const frac = spotBoxes()[name];
+      if (!frac) {
+        spot.hidden = true;
+        spot.dataset.unplaced = "1";
+        return;
+      }
+      delete spot.dataset.unplaced;
+      const placed = mapSpot(box, ...frac);
       spot.style.left = `${placed.left}%`;
       spot.style.top = `${placed.top}%`;
       spot.style.width = `${placed.width}%`;
@@ -287,6 +294,11 @@
     }
     requestAnimationFrame(() => {
       document.querySelectorAll(".hotspot").forEach((spot) => {
+        if (spot.dataset.unplaced) {
+          spot.hidden = true;
+          spot.tabIndex = -1;
+          return;
+        }
         const rect = spot.getBoundingClientRect();
         const seenW = Math.max(0, Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0));
         const seenH = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
