@@ -7,6 +7,7 @@
 const DESK_LEFT = 23.0;
 const DESK_RIGHT = 79.2;
 const DESK_BOTTOM = 61.6;
+const SKY_CLEAR = 14;
 const SCREEN_CORNERS = [
   { x: 42.5, y: 19.44 },
   { x: 57.42, y: 20.51 },
@@ -33,7 +34,7 @@ function initLenis() {
   if (reduceMotion || !window.Lenis || !window.gsap) return null;
   const lenis = new window.Lenis({
     autoRaf: false,
-    lerp: 0.06,
+    lerp: 0.1,
     smoothWheel: true,
     syncTouch: false,
     anchors: false,
@@ -249,7 +250,6 @@ function initZoom() {
 
   const gsap = window.gsap;
   gsap.registerPlugin(window.ScrollTrigger);
-  buildUnfold();
 
   let metrics = null;
   let zoomLight = false;
@@ -298,44 +298,36 @@ function initZoom() {
         height / (imageHeight * screen.h / 100)
       ) * 1.04,
       screens,
+      copyBottom: copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top,
+      pillTop: pill.getBoundingClientRect().top - hero.getBoundingClientRect().top,
     };
 
     scene.style.width = `${imageWidth}px`;
     scene.style.height = `${imageHeight}px`;
   }
 
-  function renderedScreenQuad() {
-    const rect = heroImg.getBoundingClientRect();
-    const nw = heroImg.naturalWidth;
-    const nh = heroImg.naturalHeight;
-    let left = rect.left;
-    let top = rect.top;
-    let drawW = rect.width;
-    let drawH = rect.height;
-    if (nw && nh && rect.width && rect.height) {
-      const cover = Math.max(rect.width / nw, rect.height / nh);
-      drawW = nw * cover;
-      drawH = nh * cover;
-      left = rect.left + (rect.width - drawW) / 2;
-      top = rect.top + (rect.height - drawH) / 2;
-    }
-    const origin = hero.getBoundingClientRect();
+  function screenQuad(x, y, scale) {
     return SCREEN_CORNERS.map((corner) => ({
-      x: left + drawW * (corner.x / 100) - origin.left,
-      y: top + drawH * (corner.y / 100) - origin.top,
+      x: x + metrics.imageWidth * scale * (corner.x / 100),
+      y: y + metrics.imageHeight * scale * (corner.y / 100),
     }));
   }
 
-  function applyUnfold(amount) {
+  function applyUnfold(amount, x, y, scale, workTop) {
     if (!plane || !metrics) return;
+    if (amount < 0.08) {
+      plane.style.opacity = "0";
+      plane.style.visibility = "hidden";
+      return;
+    }
+    if (!plane.childElementCount) buildUnfold();
     const reveal = smoothstep(0.1, 0.28, amount);
-    const quad = renderedScreenQuad();
+    const quad = screenQuad(x, y, scale);
     const planeW = plane.offsetWidth || metrics.width;
     const planeH = plane.offsetHeight || metrics.height;
     plane.style.transform = matrix3dFromQuad(planeW, planeH, quad);
 
     let handoff = 1;
-    const workTop = work ? work.getBoundingClientRect().top : metrics.height;
     const covered = Boolean(work) && workTop < metrics.height * 0.62;
     hero.classList.toggle("is-handed", covered && amount > 0.2);
     if (covered && amount > 0.2) {
@@ -353,6 +345,7 @@ function initZoom() {
 
   function applyZoom(amount) {
     if (!metrics) return;
+    const workTop = work ? work.getBoundingClientRect().top : metrics.height;
     progress = amount;
     window.deskZoom = amount;
     hero.dataset.zoom = amount.toFixed(3);
@@ -365,13 +358,12 @@ function initZoom() {
     /* The painting covers the hero from the top. Keep the headline in the
        painted sky when there is room, keep the outer objects inside the
        frame, and keep the keyboard, notebook and magnifier above the pill. */
-    const heroTop = hero.getBoundingClientRect().top;
-    const copyBottom = copy.getBoundingClientRect().bottom - heroTop;
-    const skyLine = SCREEN_CORNERS[0].y / 100;
+    const copyBottom = metrics.copyBottom;
+    const skyLine = SKY_CLEAR / 100;
     const skyScale = (copyBottom + 12) / (metrics.imageHeight * skyLine);
     const objectSpan = (DESK_RIGHT - DESK_LEFT) / 100;
     const fitScale = metrics.width / (metrics.imageWidth * objectSpan);
-    const pillTop = pill.getBoundingClientRect().top - heroTop;
+    const pillTop = metrics.pillTop;
     const deskScale = (pillTop - 8) / (metrics.imageHeight * (DESK_BOTTOM / 100));
     const restScale = Math.max(1, Math.min(skyScale, fitScale, deskScale));
     const scale = restScale + (target - restScale) * eased;
@@ -404,8 +396,8 @@ function initZoom() {
 
     const sceneFade = 1 - smoothstep(0.78, 1, amount);
     scene.style.opacity = String(sceneFade);
-    applyUnfold(amount);
-    if (work) settleCards(work.getBoundingClientRect().top, metrics.height);
+    applyUnfold(amount, x, y, scale, workTop);
+    if (work) settleCards(workTop, metrics.height);
 
     zoomLight = mobile ? amount > 0.5 : amount > 0.74;
     syncHeader();

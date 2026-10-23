@@ -454,12 +454,19 @@
 
   function initDayAndFade() {
     const work = document.getElementById("work");
+    let lastStep = -1;
+    const phoneQuery = window.matchMedia("(max-width: 759px)");
     function paint() {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const t = max > 0 ? clamp01(window.scrollY / max) : 0;
-      root.style.setProperty("--bg", mixHex("#fdf0e2", "#f6e0cc", t));
-      root.style.setProperty("--paper", mixHex("#fdf0e2", "#f8e6d4", t));
-      if (work && window.matchMedia("(max-width: 759px)").matches) {
+      const step = Math.round(t * 24);
+      if (step !== lastStep) {
+        lastStep = step;
+        const tone = step / 24;
+        root.style.setProperty("--bg", mixHex("#fdf0e2", "#f6e0cc", tone));
+        root.style.setProperty("--paper", mixHex("#fdf0e2", "#f8e6d4", tone));
+      }
+      if (work && phoneQuery.matches) {
         const top = work.getBoundingClientRect().top;
         root.classList.toggle("past-hero", top < window.innerHeight * 0.72);
       } else {
@@ -575,12 +582,22 @@
     let ty = 0;
     let cx = 0;
     let cy = 0;
-    window.addEventListener("pointermove", (event) => {
-      if (event.pointerType && event.pointerType !== "mouse") return;
-      cx = event.clientX / window.innerWidth - 0.5;
-      cy = event.clientY / window.innerHeight - 0.5;
-    });
+    let raf = 0;
+    let heroOn = true;
+    const hero = document.querySelector(".hero-stage");
+    if (hero && "IntersectionObserver" in window) {
+      const watch = new IntersectionObserver((entries) => {
+        heroOn = entries.some((entry) => entry.isIntersecting);
+        if (!heroOn && raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+      });
+      watch.observe(hero);
+    }
     function frame() {
+      raf = 0;
+      if (!heroOn) return;
       tx += (cx - tx) * 0.08;
       ty += (cy - ty) * 0.08;
       const zooming = root.classList.contains("is-zooming");
@@ -588,9 +605,14 @@
       tilt.style.transform = zooming
         ? ""
         : `rotateX(${(-ty * 1.15).toFixed(3)}deg) rotateY(${(tx * 1.5).toFixed(3)}deg)`;
-      requestAnimationFrame(frame);
+      if (Math.abs(cx - tx) > 0.001 || Math.abs(cy - ty) > 0.001) raf = requestAnimationFrame(frame);
     }
-    frame();
+    window.addEventListener("pointermove", (event) => {
+      if (event.pointerType && event.pointerType !== "mouse") return;
+      cx = event.clientX / window.innerWidth - 0.5;
+      cy = event.clientY / window.innerHeight - 0.5;
+      if (!raf && heroOn) raf = requestAnimationFrame(frame);
+    });
   }
 
   function initSeeds() {
@@ -613,6 +635,7 @@
     let gustY = 0;
     let last = null;
     let running = true;
+    let onScreen = true;
 
     function resize() {
       const rect = canvas.getBoundingClientRect();
@@ -674,6 +697,7 @@
 
     document.addEventListener("visibilitychange", () => {
       running = !document.hidden;
+      if (running && onScreen) startSeeds();
     });
 
     let time = 0;
@@ -685,9 +709,26 @@
       pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top, v: Math.hypot(gustX, gustY) };
     }, { passive: true });
 
+    let seedFrame = 0;
+    function startSeeds() {
+      if (seedFrame || !running || !onScreen) return;
+      seedFrame = requestAnimationFrame(frame);
+    }
+
+    const heroStage = document.querySelector(".hero-stage");
+    if (heroStage && "IntersectionObserver" in window) {
+      const watch = new IntersectionObserver((entries) => {
+        onScreen = entries.some((entry) => entry.isIntersecting);
+        if (onScreen) startSeeds();
+      });
+      watch.observe(heroStage);
+    }
+
     function frame() {
-      requestAnimationFrame(frame);
-      if (!running || root.classList.contains("is-zooming") && window.deskZoom > 0.82) return;
+      seedFrame = 0;
+      if (!running || !onScreen) return;
+      seedFrame = requestAnimationFrame(frame);
+      if (root.classList.contains("is-zooming") && window.deskZoom > 0.82) return;
       time += 0.016;
       context.clearRect(0, 0, width, height);
       gustX *= 0.92;
@@ -743,7 +784,7 @@
       }
       caught = nextCaught;
     }
-    frame();
+    startSeeds();
   }
 
   function initFieldTags() {
@@ -876,30 +917,42 @@
       bob: index * 1.3,
     }));
     let last = performance.now();
-    let seen = true;
+    let seen = false;
+    let flying = false;
+    const fly = (now) => {
+      if (!seen) {
+        flying = false;
+        return;
+      }
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      const width = portrait.clientWidth;
+      const height = portrait.clientHeight;
+      orbit.forEach((item) => {
+        item.angle += dt * item.speed;
+        const px = width * (0.5 + Math.cos(item.angle) * item.rx) - item.shape.offsetWidth / 2;
+        const py = height * (0.46 + Math.sin(item.angle) * item.ry) - item.shape.offsetHeight / 2 + Math.sin(now / 680 + item.bob) * 10;
+        const tilt = Math.sin(item.angle * 2) * 14;
+        item.shape.style.transform = `translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) rotate(${tilt.toFixed(1)}deg)`;
+      });
+      requestAnimationFrame(fly);
+    };
+    const startFly = () => {
+      if (flying || !seen) return;
+      flying = true;
+      last = performance.now();
+      requestAnimationFrame(fly);
+    };
     if ("IntersectionObserver" in window) {
       const watch = new IntersectionObserver((entries) => {
         seen = entries.some((entry) => entry.isIntersecting);
+        if (seen) startFly();
       }, { rootMargin: "120px" });
       watch.observe(portrait);
+    } else {
+      seen = true;
+      startFly();
     }
-    const fly = (now) => {
-      const dt = Math.min(0.05, (now - last) / 1000);
-      last = now;
-      if (seen) {
-        const width = portrait.clientWidth;
-        const height = portrait.clientHeight;
-        orbit.forEach((item) => {
-          item.angle += dt * item.speed;
-          const px = width * (0.5 + Math.cos(item.angle) * item.rx) - item.shape.offsetWidth / 2;
-          const py = height * (0.46 + Math.sin(item.angle) * item.ry) - item.shape.offsetHeight / 2 + Math.sin(now / 680 + item.bob) * 10;
-          const tilt = Math.sin(item.angle * 2) * 14;
-          item.shape.style.transform = `translate(${px.toFixed(1)}px, ${py.toFixed(1)}px) rotate(${tilt.toFixed(1)}deg)`;
-        });
-      }
-      requestAnimationFrame(fly);
-    };
-    requestAnimationFrame(fly);
   }
 
   window.deskCopy = copyEmail;
