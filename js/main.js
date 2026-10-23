@@ -1,13 +1,24 @@
 /**
- * Laptop glass as fractions of the painting (0–1), not pixels.
- * Wide is the 16:9 desk. Stack is the 9:16 phone painting.
- * The panel is a child of the same transformed scene as the image,
- * placed with these fractions of the rendered cover box.
+ * Inner glass of the painted laptop, clockwise from the top left,
+ * as fractions of the image (0–1). Wide is the 16:9 desk. Stack is
+ * the 9:16 phone painting. The quad is slightly skewed, so the panel
+ * is mapped onto it with a perspective matrix in the painting's own
+ * coordinate space, then the scene's one scale moves both together.
  */
-const GLASS_WIDE = { x: 0.46, y: 0.436, w: 0.108, h: 0.138 };
-const GLASS_STACK = { x: 0.33, y: 0.54, w: 0.34, h: 0.075 };
-const SCREEN_TOP_WIDE = GLASS_WIDE.y;
-const SCREEN_TOP_STACK = GLASS_STACK.y;
+const GLASS_WIDE = [
+  { x: 0.4638, y: 0.4426 },
+  { x: 0.563, y: 0.4513 },
+  { x: 0.5603, y: 0.5612 },
+  { x: 0.4613, y: 0.5471 },
+];
+const GLASS_STACK = [
+  { x: 0.412, y: 0.5285 },
+  { x: 0.6049, y: 0.5372 },
+  { x: 0.5986, y: 0.6054 },
+  { x: 0.4085, y: 0.5967 },
+];
+const SCREEN_TOP_WIDE = 0.4426;
+const SCREEN_TOP_STACK = 0.5285;
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";
@@ -145,6 +156,81 @@ function initNavState() {
   sections.forEach((section) => observer.observe(section));
 }
 
+function solveHomography(src, dst) {
+  const rows = [];
+  for (let i = 0; i < 4; i += 1) {
+    const { x, y } = src[i];
+    const X = dst[i].x;
+    const Y = dst[i].y;
+    rows.push([x, y, 1, 0, 0, 0, -x * X, -y * X, X]);
+    rows.push([0, 0, 0, x, y, 1, -x * Y, -y * Y, Y]);
+  }
+  const n = 8;
+  for (let col = 0; col < n; col += 1) {
+    let pivot = col;
+    for (let r = col + 1; r < n; r += 1) {
+      if (Math.abs(rows[r][col]) > Math.abs(rows[pivot][col])) pivot = r;
+    }
+    if (Math.abs(rows[pivot][col]) < 1e-8) return null;
+    const swap = rows[col];
+    rows[col] = rows[pivot];
+    rows[pivot] = swap;
+    const div = rows[col][col];
+    for (let c = col; c <= n; c += 1) rows[col][c] /= div;
+    for (let r = 0; r < n; r += 1) {
+      if (r === col) continue;
+      const factor = rows[r][col];
+      if (!factor) continue;
+      for (let c = col; c <= n; c += 1) rows[r][c] -= factor * rows[col][c];
+    }
+  }
+  return rows.map((row) => row[n]);
+}
+
+function matrix3dFromQuad(width, height, quad) {
+  const src = [
+    { x: 0, y: 0 },
+    { x: width, y: 0 },
+    { x: width, y: height },
+    { x: 0, y: height },
+  ];
+  const h = solveHomography(src, quad);
+  if (!h) return "none";
+  const [a, b, c, d, e, f, g, hh] = h;
+  /* Perspective terms are ~1e-5. Five decimals zeroes them and
+     shifts the far corners by a couple of pixels. */
+  const num = (value) => {
+    const digits = Math.abs(value) > 0 && Math.abs(value) < 0.01 ? 9 : 6;
+    return value.toFixed(digits);
+  };
+  return `matrix3d(${num(a)}, ${num(d)}, 0, ${num(g)}, ${num(b)}, ${num(e)}, 0, ${num(hh)}, 0, 0, 1, 0, ${num(c)}, ${num(f)}, 0, 1)`;
+}
+
+function glassCornersFor(img) {
+  if (img && img.naturalWidth && img.naturalHeight) {
+    return img.naturalHeight > img.naturalWidth ? GLASS_STACK : GLASS_WIDE;
+  }
+  return window.matchMedia("(max-width: 600px)").matches ? GLASS_STACK : GLASS_WIDE;
+}
+
+function coverQuad(img, elW, elH) {
+  const nw = (img && img.naturalWidth) || elW || 1;
+  const nh = (img && img.naturalHeight) || elH || 1;
+  const corners = glassCornersFor(img);
+  const cover = Math.max(elW / nw, elH / nh);
+  const drawW = nw * cover;
+  const drawH = nh * cover;
+  const ox = (elW - drawW) / 2;
+  const oy = (elH - drawH) / 2;
+  return {
+    corners,
+    quad: corners.map((corner) => ({
+      x: ox + drawW * corner.x,
+      y: oy + drawH * corner.y,
+    })),
+  };
+}
+
 function buildUnfold() {
   const work = document.getElementById("work");
   const fit = document.getElementById("unfold-fit");
@@ -233,24 +319,20 @@ function initZoom() {
       imageWidth = height * imageAspect;
     }
 
-    const frac = heroImg.naturalHeight > heroImg.naturalWidth ? GLASS_STACK : GLASS_WIDE;
-    const nw = heroImg.naturalWidth || imageWidth;
-    const nh = heroImg.naturalHeight || imageHeight;
-    const cover = Math.max(imageWidth / nw, imageHeight / nh);
-    const drawW = nw * cover;
-    const drawH = nh * cover;
-    const ox = (imageWidth - drawW) / 2;
-    const oy = (imageHeight - drawH) / 2;
-    const screenX = ox + drawW * frac.x;
-    const screenY = oy + drawH * frac.y;
-    const screenW = drawW * frac.w;
-    const screenH = drawH * frac.h;
+    const { corners, quad } = coverQuad(heroImg, imageWidth, imageHeight);
+    const xs = quad.map((point) => point.x);
+    const ys = quad.map((point) => point.y);
+    const screenX = Math.min(...xs);
+    const screenY = Math.min(...ys);
+    const screenW = Math.max(...xs) - screenX;
+    const screenH = Math.max(...ys) - screenY;
     metrics = {
       width,
       height,
       imageWidth,
       imageHeight,
-      frac,
+      corners,
+      quad,
       screenX,
       screenY,
       screenW,
@@ -268,24 +350,24 @@ function initZoom() {
   }
 
   function placePanel() {
-    if (!plane || !fit || !metrics) return;
+    if (!plane || !metrics) return;
     const slot = plane.parentElement;
-    slot.style.left = `${metrics.screenX}px`;
-    slot.style.top = `${metrics.screenY}px`;
-    slot.style.width = `${metrics.screenW}px`;
-    slot.style.height = `${metrics.screenH}px`;
+    slot.style.left = "0px";
+    slot.style.top = "0px";
     slot.style.right = "auto";
     slot.style.bottom = "auto";
+    slot.style.width = `${metrics.width}px`;
+    slot.style.height = `${metrics.height}px`;
+    slot.style.transformOrigin = "0 0";
+    slot.style.transform = matrix3dFromQuad(metrics.width, metrics.height, metrics.quad);
     plane.style.transform = "none";
-    plane.dataset.gx = String(metrics.frac.x);
-    plane.dataset.gy = String(metrics.frac.y);
-    plane.dataset.gw = String(metrics.frac.w);
-    plane.dataset.gh = String(metrics.frac.h);
-    if (!fit.childElementCount) buildUnfold();
-    fit.style.width = `${metrics.width}px`;
-    fit.style.height = `${metrics.height}px`;
-    fit.style.transformOrigin = "0 0";
-    fit.style.transform = `scale(${metrics.screenW / metrics.width}, ${metrics.screenH / metrics.height})`;
+    plane.dataset.glass = metrics.corners.map((corner) => `${corner.x},${corner.y}`).join(" ");
+    if (fit) {
+      fit.style.width = "100%";
+      fit.style.height = "100%";
+      fit.style.transform = "none";
+      if (!fit.childElementCount) buildUnfold();
+    }
   }
 
   function applyUnfold(amount, workTop) {
@@ -485,7 +567,48 @@ window.addEventListener("resize", () => {
 });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStackSky);
 
+function initRestGlass() {
+  const hero = document.querySelector(".hero-stage");
+  const img = document.querySelector(".scene img");
+  const plane = document.getElementById("unfold-plane");
+  const fit = document.getElementById("unfold-fit");
+  if (!hero || !img || !plane) return;
+
+  const place = () => {
+    const elW = img.offsetWidth || hero.clientWidth;
+    const elH = img.offsetHeight || hero.clientHeight;
+    if (!elW || !elH) return;
+    const { corners, quad } = coverQuad(img, elW, elH);
+    const slot = plane.parentElement;
+    slot.style.left = "0px";
+    slot.style.top = "0px";
+    slot.style.right = "auto";
+    slot.style.bottom = "auto";
+    slot.style.width = `${elW}px`;
+    slot.style.height = `${elH}px`;
+    slot.style.transformOrigin = "0 0";
+    slot.style.transform = matrix3dFromQuad(elW, elH, quad);
+    plane.style.transform = "none";
+    plane.style.opacity = "1";
+    plane.style.visibility = "visible";
+    plane.dataset.glass = corners.map((corner) => `${corner.x},${corner.y}`).join(" ");
+    if (fit) {
+      fit.style.width = "100%";
+      fit.style.height = "100%";
+      fit.style.transform = "none";
+      if (!fit.childElementCount) buildUnfold();
+    }
+  };
+
+  place();
+  img.addEventListener("load", place);
+  window.addEventListener("resize", () => requestAnimationFrame(place));
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+}
+
 if (!reduceMotion && document.documentElement.classList.contains("has-zoom")) {
   initZoom();
+} else {
+  initRestGlass();
 }
 if (window.bindRound2) window.bindRound2();
