@@ -362,23 +362,23 @@ body:not(.is-home) .brand-role {
 }
 
 .hero-copy {
-  left: max(24px, 3vw);
-  right: max(24px, 3vw);
+  left: max(28px, 3.2vw);
+  right: max(28px, 3.2vw);
   transform: none;
   width: auto;
-  top: calc(env(safe-area-inset-top) + 68px);
+  top: calc(env(safe-area-inset-top) + 116px);
   display: block;
   text-align: left;
   pointer-events: none;
 }
 
 .hero-copy h1 {
-  max-width: 22em;
+  max-width: 14em;
   margin: 0;
-  font-size: clamp(1.25rem, 1.7vw, 1.7rem);
+  font-size: clamp(3rem, 4.15vw, 4rem);
   font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
   text-wrap: balance;
   color: var(--ink);
   text-shadow: none;
@@ -405,11 +405,11 @@ body:not(.is-home) .brand-role {
   left: auto;
   right: auto;
   bottom: auto;
-  margin: 0.35rem 0 0;
-  max-width: 46rem;
-  font-size: 0.9rem;
+  margin: 18px 0 0;
+  max-width: 40rem;
+  font-size: clamp(1.05rem, 1.25vw, 1.2rem);
   font-weight: 400;
-  line-height: 1.35;
+  line-height: 1.45;
   color: var(--muted);
   text-shadow: none;
 }
@@ -493,18 +493,24 @@ html.is-stack #unfold {
     pointer-events: auto;
   }
 
+  html.is-stack .scene-shift {
+    transform: scale(1.64);
+    transform-origin: 46% 0;
+  }
+
   .hero-copy {
-    left: 12px;
-    right: 12px;
+    left: 16px;
+    right: 16px;
     width: auto;
-    top: calc(env(safe-area-inset-top) + 58px);
+    top: calc(env(safe-area-inset-top) + 90px);
     text-align: left;
   }
 
   html .hero-copy h1 {
-    max-width: none;
-    font-size: clamp(0.94rem, 3.9vw, 1.08rem);
-    line-height: 1.02;
+    max-width: 11em;
+    font-size: clamp(2rem, 9vw, 2.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
   }
 
   html.is-stack .hero-copy h1 {
@@ -516,13 +522,13 @@ html.is-stack #unfold {
     left: auto;
     right: auto;
     bottom: auto;
-    margin: 0.2rem 0 0;
+    margin: 14px 0 0;
     max-width: none;
     width: 100%;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 10px;
-    line-height: 1.18;
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-size: 15px;
+    line-height: 1.4;
     text-wrap: balance;
     background: rgba(253, 240, 226, 0.94);
     color: #2b3236;
@@ -2398,9 +2404,10 @@ html.is-night .brand-chip {
 
 @media (max-width: 900px) {
   html .hero-copy h1 {
-    max-width: none;
-    font-size: clamp(0.94rem, 3.9vw, 1.08rem);
-    line-height: 1.02;
+    max-width: 11em;
+    font-size: clamp(2rem, 9vw, 2.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
   }
 
   .desk-grid {
@@ -2622,9 +2629,9 @@ html.is-night .brand-chip {
   }
 
   .hero-copy {
-    left: 12px;
-    right: 12px;
-    top: calc(env(safe-area-inset-top) + 58px);
+    left: 16px;
+    right: 16px;
+    top: calc(env(safe-area-inset-top) + 88px);
     width: auto;
     transform: none;
     text-align: left;
@@ -2648,7 +2655,7 @@ html.is-night .brand-chip {
   }
 
   .hero-copy {
-    top: calc(env(safe-area-inset-top) + 54px);
+    top: calc(env(safe-area-inset-top) + 84px);
   }
 }
 
@@ -2691,6 +2698,7 @@ html.is-stack .timeline li {
   html.has-motion .desk-card .art-slot,
   .project:hover .thumb,
   .project:hover .go,
+  .hotspot,
   .path-art img,
   .cloud,
   .petal,
@@ -2751,10 +2759,20 @@ html.is-stack .timeline li {
 .hotspot {
   box-sizing: border-box;
   pointer-events: auto;
-  border: 2px solid #E8590C;
-  border-radius: 4px;
-  background: rgba(232, 89, 12, 0.16);
-  box-shadow: 0 0 0 1px rgba(255, 253, 251, 0.95);
+  border: 1.5px solid rgba(232, 89, 12, 0.72);
+  border-radius: 16px;
+  background: rgba(232, 89, 12, 0.07);
+  box-shadow: none;
+}
+
+html.has-motion .hotspot {
+  animation: hotspot-breathe 2.8s ease-in-out infinite;
+}
+
+@keyframes hotspot-breathe {
+  0%,
+  100% { box-shadow: 0 0 0 0 rgba(232, 89, 12, 0.2); }
+  50% { box-shadow: 0 0 0 6px rgba(232, 89, 12, 0); }
 }
 
 html.has-spots .hotspot:hover {
@@ -2785,17 +2803,17 @@ html.is-stack .hotspot::before {
     pointer-events: none;
 }
 
-html body .hotspot-plane { left: 23%; top: 14%; width: 9.2%; height: 7.6%; }
-html body .hotspot-screen { left: 42.24%; top: 19.44%; width: 15.18%; height: 17.23%; z-index: 5; }
-html body .hotspot-laptop { left: 37.6%; top: 36%; width: 22%; height: 5.4%; }
-html body .hotspot-keys { left: 38.4%; top: 41.2%; width: 19.6%; height: 6.6%; z-index: 5; }
-html body .hotspot-coffee { left: 30%; top: 33.4%; width: 6.8%; height: 10.4%; z-index: 4; }
-html body .hotspot-sketch { left: 26%; top: 46.2%; width: 13.6%; height: 13.2%; }
-html body .hotspot-notebook { left: 41.6%; top: 48.4%; width: 16.4%; height: 12.8%; z-index: 4; }
-html body .hotspot-glass { left: 58.2%; top: 44%; width: 9.4%; height: 17%; z-index: 4; }
-html body .hotspot-kit { left: 59.2%; top: 22.4%; width: 14.2%; height: 19%; }
-html body .hotspot-phone { left: 68%; top: 38.8%; width: 6%; height: 16%; z-index: 5; }
-html body .hotspot-plant { left: 71.6%; top: 30%; width: 7.6%; height: 16.4%; z-index: 4; }
+html body .hotspot-plane { left: 24%; top: 15%; width: 7.2%; height: 5.8%; }
+html body .hotspot-screen { left: 43.2%; top: 20.8%; width: 13.2%; height: 14%; z-index: 5; }
+html body .hotspot-laptop { left: 40.8%; top: 35.8%; width: 16.4%; height: 3.8%; }
+html body .hotspot-keys { left: 41.4%; top: 40.8%; width: 15%; height: 5%; z-index: 5; }
+html body .hotspot-coffee { left: 30.8%; top: 34.6%; width: 5.2%; height: 8.2%; z-index: 4; }
+html body .hotspot-sketch { left: 27.4%; top: 48%; width: 11%; height: 10.4%; }
+html body .hotspot-notebook { left: 43.2%; top: 50%; width: 13.2%; height: 9.6%; z-index: 4; }
+html body .hotspot-glass { left: 59.6%; top: 46.2%; width: 7%; height: 12.8%; z-index: 4; }
+html body .hotspot-kit { left: 61%; top: 23.6%; width: 10.4%; height: 14.2%; }
+html body .hotspot-phone { left: 68.8%; top: 40.4%; width: 4.4%; height: 12.6%; z-index: 5; }
+html body .hotspot-plant { left: 74%; top: 32.4%; width: 5%; height: 12.2%; z-index: 4; }
 
 html.is-zooming .hotspot,
 html.is-zooming .hotspot:hover,
@@ -2809,6 +2827,7 @@ html.is-zooming .hotspot:focus-visible,
   box-shadow: none !important;
   border-color: transparent !important;
   background: transparent !important;
+  animation: none !important;
 }
 
 html.is-zooming .hotspot::before,
@@ -2828,8 +2847,8 @@ html.has-motion .hotspot-screen.is-hinting::after {
   content: "";
   position: absolute;
   inset: -7px;
-  border: 2px solid #E8590C;
-  border-radius: 4px;
+  border: 1.5px solid rgba(232, 89, 12, 0.8);
+  border-radius: 16px;
   animation: spot-pulse 1.5s ease-out 2;
   pointer-events: none;
 }
@@ -2842,9 +2861,9 @@ html.has-motion .hotspot-screen.is-hinting::after {
 
 .select-box {
   z-index: 60;
-  border: 2px solid #E8590C;
-  border-radius: 2px;
-  box-shadow: 0 0 0 1px rgba(255, 253, 251, 0.95);
+  border: 1.5px solid rgba(232, 89, 12, 0.9);
+  border-radius: 16px;
+  box-shadow: none;
 }
 
 .select-size {
@@ -3532,7 +3551,7 @@ html.is-path-snap .path-ep {
 
 html.is-path-snap .path-art {
   justify-self: start;
-  width: min(46vw, 28vh, 210px);
+  width: min(78vw, 44vh, 300px);
   margin: 0;
 }
 

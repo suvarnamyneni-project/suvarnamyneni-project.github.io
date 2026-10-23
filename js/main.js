@@ -298,7 +298,9 @@ function initZoom() {
         height / (imageHeight * screen.h / 100)
       ) * 1.04,
       screens,
+      copyTop: copy.getBoundingClientRect().top - hero.getBoundingClientRect().top,
       copyBottom: copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top,
+      copyLeft: copy.getBoundingClientRect().left - hero.getBoundingClientRect().left,
       pillTop: pill.getBoundingClientRect().top - hero.getBoundingClientRect().top,
     };
 
@@ -355,20 +357,31 @@ function initZoom() {
     const mobile = isMobile();
     const eased = smoothstep(0, 1, amount);
     const target = mobile ? Math.min(metrics.scaleToFill, 1.45) : metrics.scaleToFill;
-    /* The painting covers the hero from the top. Keep the headline in the
-       painted sky when there is room, keep the outer objects inside the
-       frame, and keep the keyboard, notebook and magnifier above the pill. */
+    /* The painting stays full-bleed from the top. Scale it so the laptop
+       screen sits below the headline, then slide it left if the paper plane
+       crosses the type. The keyboard stays above the scroll pill. */
     const copyBottom = metrics.copyBottom;
-    const skyLine = SKY_CLEAR / 100;
-    const skyScale = (copyBottom + 12) / (metrics.imageHeight * skyLine);
-    const objectSpan = (DESK_RIGHT - DESK_LEFT) / 100;
-    const fitScale = metrics.width / (metrics.imageWidth * objectSpan);
+    const skyLine = 0.208;
+    const skyScale = (copyBottom + 18) / (metrics.imageHeight * skyLine);
     const pillTop = metrics.pillTop;
-    const deskScale = (pillTop - 8) / (metrics.imageHeight * (DESK_BOTTOM / 100));
-    const restScale = Math.max(1, Math.min(skyScale, fitScale, deskScale));
+    const deskScale = (pillTop - 8) / (metrics.imageHeight * 0.45);
+    const restScale = Math.max(1, Math.min(skyScale, deskScale));
     const scale = restScale + (target - restScale) * eased;
-    const restX = (metrics.width - metrics.imageWidth * restScale) / 2;
+    const iw = metrics.imageWidth * restScale;
+    const ih = metrics.imageHeight * restScale;
+    let restX = (metrics.width - iw) / 2;
     const restY = 0;
+    const planeRight = restX + iw * 0.312;
+    const planeTop = ih * 0.15;
+    const planeBottom = ih * 0.208;
+    const hitsCopy = planeBottom > metrics.copyTop + 6
+      && planeTop < metrics.copyBottom - 4
+      && planeRight > metrics.copyLeft + 8;
+    if (hitsCopy) restX -= planeRight - metrics.copyLeft + 12;
+    const screenLeft = restX + iw * (Math.min(SCREEN_CORNERS[0].x, SCREEN_CORNERS[3].x) / 100);
+    const screenRight = restX + iw * (Math.max(SCREEN_CORNERS[1].x, SCREEN_CORNERS[2].x) / 100);
+    if (screenLeft < 16) restX += 16 - screenLeft;
+    if (screenRight > metrics.width - 16) restX -= screenRight - (metrics.width - 16);
     const zoomX = metrics.width / 2 - metrics.screenX * target;
     const zoomY = metrics.height / 2 - metrics.screenY * target;
     let x = restX + (zoomX - restX) * eased;
@@ -495,11 +508,36 @@ function initZoom() {
   }
 }
 
+function fitStackSky() {
+  if (!document.documentElement.classList.contains("is-stack")) return;
+  const shift = document.querySelector(".scene-shift");
+  const copy = document.querySelector(".hero-copy");
+  const screen = document.querySelector(".hotspot-screen");
+  const hero = document.querySelector(".hero-stage");
+  if (!shift || !copy || !screen || !hero) return;
+  shift.style.transform = "none";
+  const heroTop = hero.getBoundingClientRect().top;
+  const screenTop = screen.getBoundingClientRect().top - heroTop;
+  const copyBottom = copy.getBoundingClientRect().bottom - heroTop;
+  if (screenTop < 40) return;
+  const needed = (copyBottom + 20) / screenTop;
+  const scale = Math.max(1.25, Math.min(needed, 2.4));
+  shift.style.transformOrigin = "48% 0";
+  shift.style.transform = `scale(${scale.toFixed(3)})`;
+}
+
 initLenis();
 if (window.mountRound2) window.mountRound2();
 initReveals();
 initTilt();
 initNavState();
+let resizeSky = 0;
+fitStackSky();
+window.addEventListener("resize", () => {
+  if (resizeSky) cancelAnimationFrame(resizeSky);
+  resizeSky = requestAnimationFrame(fitStackSky);
+});
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStackSky);
 
 if (!reduceMotion && document.documentElement.classList.contains("has-zoom")) {
   initZoom();
