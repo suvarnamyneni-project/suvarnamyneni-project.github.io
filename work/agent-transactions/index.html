@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deal Desk back office — Suvarna Myneni</title>
+  <meta name="description" content="A nine-month proposal for a transaction back office: one workspace, explicit roles, and a clickable spec rather than measured results.">
+  <link rel="canonical" href="https://suvarnamyneni-project.github.io/work/agent-transactions/">
+  <meta name="theme-color" content="#FDF0E2">
+  <meta property="og:title" content="Deal Desk — One workspace from intake to correction">
+  <meta property="og:description" content="A nine-month proposal for a transaction back office: one workspace, explicit roles, and a clickable spec rather than measured results.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://suvarnamyneni-project.github.io/work/agent-transactions/">
+  <meta property="og:image" content="https://suvarnamyneni-project.github.io/assets/case/agent-transactions/roles.webp">
+  <link rel="icon" href="../../assets/favicon.png" type="image/png">
+  <link rel="preload" href="../../assets/fonts/general-sans-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face { font-family: "General Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/general-sans-600.woff2") format("woff2"); }
+    @font-face { font-family: Switzer; font-style: normal; font-weight: 400; font-display: swap; src: url("../../assets/fonts/switzer-400.woff2") format("woff2"); }
+    @font-face { font-family: Switzer; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/switzer-600.woff2") format("woff2"); }
+    :root { --ink: #2b3236; --muted: #41484c; --accent: #a34728; --paper: #fdf0e2; --display: "General Sans", Switzer, sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #fdf0e2; color: #2b3236; font-family: Switzer, "Segoe UI", sans-serif; font-size: 1.0625rem; line-height: 1.5; }
+    img { max-width: 100%; display: block; }
+    h1, h2, p { margin: 0; }
+    a { color: inherit; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .skip-link { position: absolute; left: 16px; top: -48px; }
+    html .site-header { position: fixed; z-index: 20; inset: 16px 22px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0; background: none; pointer-events: none; color: #2b3236; }
+    html .site-header > * { pointer-events: auto; }
+    .brand-chip, .site-nav { display: flex; align-items: center; border-radius: 999px; text-decoration: none; color: #2b3236; background: rgba(255,251,247,.86); border: 1px solid rgba(255,255,255,.7); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 8px 28px rgba(150,90,70,.12); }
+    html .brand-chip { flex-direction: row; align-items: center; gap: 10px; padding: 5px 16px 5px 5px; }
+    .brand-copy { display: flex; flex-direction: column; line-height: 1.15; }
+    .brand-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .brand-name { font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: 14.5px; }
+    .brand-role { display: none; }
+    .brand-back { font-size: 12px; font-weight: 600; color: #b2512c; }
+    .site-nav { position: relative; width: max-content; gap: 2px; padding: 5px; }
+    .nav-menu { display: flex; align-items: center; gap: 2px; }
+    .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 14px/normal Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
+    .nav-contact, .nav-toggle { display: none; }
+    @media (max-width: 759px) {
+      html .site-header { left: 12px; right: 12px; top: 12px; }
+      .brand-last, .nav-menu { display: none; }
+      .brand-back { display: block; }
+      .nav-contact, .nav-toggle { display: inline-flex; align-items: center; padding: 7px 12px; }
+    }
+  </style>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/effects.css">
+  <link rel="stylesheet" href="../../css/round4.css">
+  <link rel="stylesheet" href="../../css/case.css">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var stack = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+      root.classList.toggle("is-stack", stack || reduce);
+      if (!reduce) root.classList.add("has-motion");
+      root.classList.add("ready");
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#story">Skip to the story</a>
+  <header class="site-header">
+    <a class="brand-chip" href="/#work" data-caption="Back to all work">
+      <img class="brand-avatar" src="../../assets/avatar-96.webp" width="36" height="36" alt="" decoding="async">
+      <span class="brand-copy">
+        <b class="brand-name">Suvarna <span class="brand-last">Myneni</span></b>
+        <small class="brand-role">AI-Native UX Designer</small>
+        <small class="brand-back">← Back to all work</small>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <div id="nav-menu" class="nav-menu">
+        <a href="/#work">Work</a>
+        <a href="/#path">Path</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </div>
+      <a class="nav-contact" href="/#contact">Contact</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+    </nav>
+  </header>
+  <div class="nav-backdrop" hidden></div>
+
+  <main class="case" id="story">
+    <nav class="case-rail" aria-label="On this page">
+      <div class="case-rail-list">
+        <span class="case-rail-mark" aria-hidden="true"></span>
+        <ol>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#challenge">Challenge</a></li>
+          <li><a href="#design">Design</a></li>
+          <li><a href="#requirements">Requirements</a></li>
+          <li><a href="#reflection">Reflection</a></li>
+        </ol>
+      </div>
+      <div class="case-rail-progress" aria-hidden="true"><span class="case-rail-fill"></span></div>
+    </nav>
+    <header class="case-hero wrap case-reveal" id="introduction">
+      <p class="case-eyebrow">Deal Desk · Transaction back office · Designed proposal</p>
+      <h1>One workspace from intake to correction</h1>
+      <p class="case-lede">A proposed back office that carries a deal from intake to a post-close correction, and stays honest about where every number came from. This is a clickable specification, not a shipped platform with measured results.</p>
+      <ul class="case-tags" aria-label="Work">
+        <li>Discovery</li>
+        <li>Information architecture</li>
+        <li>Alert system</li>
+        <li>Interaction spec</li>
+        <li>Prototype</li>
+      </ul>
+    </header>
+    <figure class="case-frame wrap case-reveal">
+      <img src="../../assets/case/agent-transactions/roles.webp" width="905" height="811" alt="Roles and permissions capability matrix comparing the existing system, the agent-facing app and the new back office." fetchpriority="high" decoding="async">
+      <figcaption>Roles and permissions matrix. The source marks this, and the information architecture map, as real project artifacts. It marks other imagery, research write-ups and quantitative targets as placeholders, so those are not repeated here.</figcaption>
+    </figure>
+    <section class="story-map wrap case-reveal" aria-labelledby="story-map-heading">
+      <h2 class="story-title" id="story-map-heading">One record, clear roles</h2>
+      <p class="story-dek">Five systems, the permission model, and a proposed desk.</p>
+      <div class="story-board">
+        <svg class="story-svg" viewBox="0 0 360 640" aria-hidden="true">
+          <defs><mask id="story-draw" maskUnits="userSpaceOnUse"><path class="route-mask" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/></mask></defs>
+          <path class="route-grey" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <path class="route-rust" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <g class="story-plane" transform="translate(32 78)"><g transform="translate(-16 -16) scale(0.5)"><path d="M6 34 L58 8 L36 58 L28 36 Z" fill="#F6C7B0" stroke="#2B3236" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 36 L58 8" fill="none" stroke="#A34728" stroke-width="2"/></g></g>
+        </svg>
+        <article class="act-card" data-act="0">
+          <a class="act-name" href="#challenge-heading"><span class="act-copy"><span class="act-kicker">Act 1</span> The challenge</span></a>
+          <ol>
+            <li><a class="beat" href="#challenge-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Five systems, one deal</span></a></li>
+            <li><a class="beat" href="#challenge-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Authority lives in gaps</span></a></li>
+            <li><a class="beat" href="#challenge-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">No single source</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="1">
+          <a class="act-name" href="#matrix-heading"><span class="act-copy"><span class="act-kicker">Act 2</span> The constraints</span></a>
+          <ol>
+            <li><a class="beat" href="#matrix-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Five distinct roles</span></a></li>
+            <li><a class="beat" href="#matrix-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Approval stays with broker</span></a></li>
+            <li><a class="beat" href="#matrix-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">History survives changes</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="2">
+          <a class="act-name" href="#design-heading"><span class="act-copy"><span class="act-kicker">Act 3</span> The proposal</span></a>
+          <ol>
+            <li><a class="beat is-key" href="#design-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Twelve-tab workspace</span></a></li>
+            <li><a class="beat" href="#design-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Alerts resolve inline</span></a></li>
+            <li><a class="beat" href="#reflection-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Not measured yet</span></a></li>
+          </ol>
+        </article>
+      </div>
+    </section>
+    <dl class="case-meta wrap case-reveal">
+      <div><dt>Role</dt><dd>UI/UX designer, end to end: discovery, information architecture, the alert system, the interaction spec, and a clickable high-fidelity prototype that stood in for the requirements document.</dd></div>
+      <div><dt>Team</dt><dd>Project Owner, Business Analyst, Developer, and me.</dd></div>
+      <div><dt>Time and tools</dt><dd><span class="case-count" data-count="9" style="--digits: 1">9</span> months · Figma, a React prototype, a written interaction spec · Internal desktop web</dd></div>
+    </dl>
+    <section class="case-block wrap case-reveal" aria-labelledby="scope-heading">
+      <p class="case-eyebrow">What this page keeps</p>
+      <h2 id="scope-heading">Evidence, a designed proposal, and assumptions kept separate.</h2>
+      <p class="case-copy">The source says what is evidence-supported: the role and permission model, the capability comparison across systems, the entity and state architecture, and the action set a file can undergo. The workspace, alert system, inline resolution, derived financials and the correction flow are a designed proposal. Usability testing at scale, adoption and any quantitative performance claim are not validated. The source also says its research write-ups and quantitative targets are example evidence, so they are left off this page.</p>
+      <div class="case-band">
+        <p><span class="case-count" data-count="12" style="--digits: 2">12</span> workspace tabs in the proposal.</p>
+        <p><span class="case-count" data-count="12" style="--digits: 2">12</span> designed alert types in the catalogue.</p>
+        <p><span class="case-count" data-count="6" style="--digits: 1">6</span> named demo scenarios, <span class="case-count" data-count="2" style="--digits: 1">2</span> viewing modes.</p>
+      </div>
+    </section>
+    <section class="case-block wrap case-reveal" id="challenge" aria-labelledby="challenge-heading">
+      <p class="case-eyebrow">The challenge</p>
+      <h2 id="challenge-heading">One deal, five systems, no single source of truth.</h2>
+      <p class="case-copy">Deal Desk, in this case study, is an internal workspace for the transaction analysts who close real-estate deals: they verify numbers, resolve conflicts between systems, issue the Disbursement Authorization that tells a title company who gets paid, and reconcile the money when it arrives.</p>
+      <p class="case-copy">Before it, that job sat across a task queue, a transaction management system, a vendor and finance system of record, settlement statements and email. The same file also passes through an agent-facing app. Each system owns a slice. None owns the deal. Coordinators, admins and analysts carry the state by hand.</p>
+      <p class="case-copy">The fragmentation is also about authority. An agent can create a file and upload documents but cannot approve a disbursement. A transaction coordinator prepares almost everything and owns almost no approval. A team lead sees the file and acts on little of it. A broker mostly reviews, and holds the approvals the deal cannot close without. When those distinctions live in five systems, work waits in the gaps.</p>
+      <p class="case-copy">In scope: intake, checklists, document review, commission and CDA handling, disbursement, settlement reconciliation, corrections and audit history. The agent-facing app and the existing transaction system were mapped as sources and destinations, not redesigned here. Accounting ledgers, payment execution and e-sign engines are out of scope. The workspace hands off to them and records the result.</p>
+    </section>
+    <section class="case-block wrap case-reveal" aria-labelledby="lifecycle-heading">
+      <p class="case-eyebrow">The lifecycle</p>
+      <h2 id="lifecycle-heading">States a file can enter, and who may move it.</h2>
+      <p class="case-copy">This comes from the action set in the requirements artifact.</p>
+      <ul class="case-themes">
+        <li><b>Create and intake</b> Deal data arrives from the agent-facing app and the transaction system. Every field carries its source. Agent, TC, admin.</li>
+        <li><b>Documents and checklist</b> Uploads sit against checklist items, each with a status and comments. Agent, TC, admin.</li>
+        <li><b>Compliance</b> Mandatory for some roles, optional for others, review-only for the broker. Outcomes land back on the checklist item. TC and admin submit; broker reviews.</li>
+        <li><b>Commission and CDA</b> Line items, splits, fees and deductions are derived, and editable in one explicit edit mode. Requesting the CDA or DA is separate from approving it. Agent, TC and admin edit; broker approves.</li>
+        <li><b>E-sign</b> Signature documents are states: requested, out for signature, executed. Agent, TC.</li>
+        <li><b>After close</b> A post-close submission reopens only the affected step. A change after payment creates a versioned correction, not an edit of history. TC and admin; broker review. Cancel, reopen and escalate are their own states.</li>
+      </ul>
+    </section>
+    <section class="case-block wrap case-reveal" id="design" aria-labelledby="design-heading">
+      <p class="case-eyebrow">Designed behaviour</p>
+      <h2 id="design-heading">Six areas, described as the prototype behaves.</h2>
+      <p class="case-copy">The source says these comparisons describe the designed behaviour of the prototype, not a measured before-and-after.</p>
+      <ul class="case-themes">
+        <li><b>Data entry</b> Agents used to retype the same details. In the prototype, fields sync in and each one shows its source system.</li>
+        <li><b>Financial figures</b> Commission, fees and deductions were calculated in spreadsheets. In the prototype, every figure is derived, with the formula printed under it.</li>
+        <li><b>Approvals</b> Managers used to sign off line by line over email. Blocking rules run continuously, and only true exceptions surface as alerts.</li>
+        <li><b>Documents</b> DAs and closing documents were uploaded by hand. The prototype generates them and pushes revisions, with status.</li>
+        <li><b>Corrections</b> A change creates a versioned correction record and reopens the affected step.</li>
+        <li><b>Audit trail</b> Instead of reconstructing a trail from inboxes, the prototype captures a field-level change log as it happens, colour-coded by source.</li>
+      </ul>
+      <p class="case-copy">Alerts are meant to be resolved inline, beside the record they refer to. Derived fields are read-only, with the derivation printed underneath. Corrections are new versioned records, not silent edits. Two viewing modes were designed: a guided walkthrough for stakeholders, and an unassisted view.</p>
+      <p class="case-copy">Named demo scenarios in the prototype include 777 Validation Lane, 888 Testing Lane, 890 Sea Lane, 567 / 678 Creek &amp; River Lane, and 999 Validation Lane. Each one carries a specific hard case: critical alerts, a dual-side deal, an external referral, negative overflow, or a DA that failed to sync.</p>
+    </section>
+    <section class="case-block wrap case-reveal" id="requirements" aria-labelledby="matrix-heading">
+      <p class="case-eyebrow">Requirements I can defend</p>
+      <h2 id="matrix-heading">Five roles. Four permission levels. Approval is not preparation.</h2>
+      <p class="case-copy">With the business analyst, the capability matrix maps every action a file can undergo across agent, admin, transaction coordinator, team lead and broker, marked required, optional, review-only or not permitted. A second view compares the same capability across the current system, the agent-facing app and the new back office.</p>
+      <ol class="case-list">
+        <li><span class="case-num">01</span><div><h3>Five distinct roles</h3><p>The workspace decides what to show from role plus deal state. Evidenced by the artifact.</p></div></li>
+        <li><span class="case-num">02</span><div><h3>Four levels per action</h3><p>Required, optional, review-only, not permitted. Review-only is why so much of the workspace is read-only, with one edit mode behind a pencil.</p></div></li>
+        <li><span class="case-num">03</span><div><h3>Approval is separate</h3><p>Requesting a CDA and approving it are different actions. Approval controls are absent, not disabled, for everyone except the broker.</p></div></li>
+        <li><span class="case-num">04</span><div><h3>Capabilities carry over</h3><p>Each capability was compared across the three systems so an existing role did not quietly lose something it could already do.</p></div></li>
+        <li><span class="case-num">05</span><div><h3>Cancel, reopen, escalate</h3><p>These are states, not deletions. History has to survive all three.</p></div></li>
+      </ol>
+      <p class="case-copy">Two bets are marked unvalidated in the source. Alerts are the primary surface on the assumption that most analyst time goes to exceptions. Frequency per alert type is unmeasured. Twelve tabs are treated as acceptable if the rail carries the state. That tradeoff needs task-based usability testing before it can be called settled.</p>
+    </section>
+    <section class="case-block wrap case-reveal" id="reflection" aria-labelledby="reflection-heading">
+      <p class="case-eyebrow">Reflection</p>
+      <h2 id="reflection-heading">One decision hub per object.</h2>
+      <p class="case-copy">The hardest part of an internal finance tool, as the case study puts it, is not layout. It is deciding where a decision is allowed to be made, and making that place obvious. Revisions moved toward one decision hub per object, with everything else as reference.</p>
+      <div class="case-steps">
+        <article><h3>Scenarios as data</h3><p>Replace address-based scenario branching with declarative scenario definitions, so a new edge case is data rather than code.</p></article>
+        <article><h3>A shared store</h3><p>Decompose the workspace by tab on a shared store, and let the workflow rail subscribe to rule state.</p></article>
+        <article><h3>Test the alerts</h3><p>Watch analysts under time pressure. The failure to look for is proceeding past an alert that should have been resolved. Design the manager view earlier: portfolio triage turned out to be a first-class need.</p></article>
+      </div>
+      <p class="case-copy">The prototype was built in React, TypeScript, Vite, Tailwind CSS and shadcn/ui.</p>
+    </section>
+    <section class="case-next wrap case-reveal" aria-labelledby="next-project-heading">
+      <p class="case-eyebrow">Next project</p>
+      <h2 id="next-project-heading" class="sr-only">Next project</h2>
+      <a href="/work/amazon-fresh/">Amazon Fresh</a>
+      <p class="case-copy" style="margin-top: 0">Revitalizing Amazon Fresh into a recipe-guided grocery shopping service, providing seamless and guided shopping experiences for customers.</p>
+    </section>
+    <footer class="case-foot wrap case-reveal">
+      <a href="/#work">← Back to all work</a>
+      <a href="mailto:suvarnamyneni@gmail.com">suvarnamyneni@gmail.com</a>
+    </footer>
+  </main>
+
+<div class="cursor" id="cursor" hidden aria-hidden="true">
+    <div class="cursor-sprite">
+      <svg viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M6 3 L22 14 L13 15.5 L10.5 24 Z" fill="#FFFDFB" stroke="#2B3236" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <p class="cursor-bubble"></p>
+  </div>
+  <script src="../../js/case.js"></script>
+  <script>
+    (function () {
+      var chip = document.querySelector(".brand-chip");
+      if (chip) chip.setAttribute("href", "/#work");
+      var stack = document.documentElement.classList.contains("is-stack");
+      var sources = stack
+        ? ["../../js/effects.js"]
+        : ["../../js/vendor/lenis.min.js", "../../js/effects.js"];
+      var index = 0;
+      function next() {
+        if (index >= sources.length) {
+          if (window.initCaseScroll) window.initCaseScroll();
+          return;
+        }
+        var script = document.createElement("script");
+        script.src = sources[index++];
+        script.onload = next;
+        script.onerror = next;
+        document.body.appendChild(script);
+      }
+      next();
+    })();
+  </script>
+</body>
+</html>
