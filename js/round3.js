@@ -191,62 +191,6 @@
     });
   }
 
-  function initSprint() {
-    const button = document.querySelector(".sprint-load");
-    const board = document.getElementById("sprint-board");
-    const status = document.getElementById("sprint-status");
-    if (!button || !board || !status) return;
-    const names = ["Screen", "Type", "Button", "Icon"];
-    let built = false;
-    let stack = null;
-
-    function announce(text) {
-      status.textContent = text;
-    }
-
-    function reset() {
-      board.hidden = true;
-      board.replaceChildren();
-      button.setAttribute("aria-expanded", "false");
-      built = false;
-      stack = null;
-      announce("");
-    }
-
-    function build() {
-      const tray = document.createElement("div");
-      tray.className = "sprint-tray";
-      stack = document.createElement("div");
-      stack.className = "sprint-stack";
-      stack.setAttribute("role", "group");
-      stack.setAttribute("aria-label", "Stack");
-      names.forEach((name) => {
-        const piece = document.createElement("button");
-        piece.type = "button";
-        piece.className = "piece";
-        piece.textContent = name;
-        piece.addEventListener("click", () => {
-          if (!stack || piece.classList.contains("is-stacked")) return;
-          piece.classList.add("is-stacked");
-          stack.appendChild(piece);
-          const done = stack.querySelectorAll(".piece").length >= names.length;
-          announce(done ? "Stacked." : `${name} stacked.`);
-        });
-        tray.appendChild(piece);
-      });
-      board.append(tray, stack);
-      board.hidden = false;
-      button.setAttribute("aria-expanded", "true");
-      built = true;
-      announce("Tap each piece to stack it.");
-    }
-
-    button.addEventListener("click", () => {
-      if (built) reset();
-      else build();
-    });
-  }
-
   function initAlsoMore() {
     const button = document.querySelector(".view-more");
     const panel = document.getElementById("also-more");
@@ -1722,7 +1666,6 @@
     initPortrait,
     initFacts,
     initChips,
-    initSprint,
     initAlsoMore,
     initKudos,
     initSky,

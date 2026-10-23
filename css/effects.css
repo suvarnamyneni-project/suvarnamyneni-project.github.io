@@ -373,6 +373,10 @@ html.has-motion .unfold-plane .project {
   transform: scale(1.38) rotate(-10deg);
 }
 
+.cursor.is-seed .cursor-sprite {
+  transform: scale(1.32) rotate(-12deg);
+}
+
 .cursor.is-down .cursor-sprite {
   transform: scale(0.82, 0.62) rotate(-10deg);
 }
@@ -1361,9 +1365,7 @@ html.has-motion #about.is-live .portrait-art {
   color: #fff;
 }
 
-.sprint-load,
-.hire-close,
-.piece {
+.hire-close {
   min-height: 44px;
   border: 0;
   border-radius: 999px;
@@ -1374,58 +1376,16 @@ html.has-motion #about.is-live .portrait-art {
   padding: 0 18px;
 }
 
-.sprint-load:hover,
-.sprint-load:focus-visible,
 .hire-close:hover,
-.hire-close:focus-visible,
-.piece:hover,
-.piece:focus-visible {
+.hire-close:focus-visible {
   background: #1a4ec4;
 }
 
-.sprint-note,
-.sprint-status,
 .sling-help,
 .sling-status {
   margin: 8px 0 0;
   color: var(--muted);
   font-size: 0.92rem;
-}
-
-.sprint-board:not([hidden]) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 132px;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.sprint-tray,
-.sprint-stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-content: flex-start;
-  min-height: 96px;
-}
-
-.sprint-stack {
-  flex-direction: column;
-  padding: 10px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
-}
-
-.piece {
-  background: #fff;
-  color: var(--navy);
-  border: 1px solid rgba(11, 31, 58, 0.14);
-  border-radius: 14px;
-}
-
-.piece.is-stacked {
-  background: #1a4ec4;
-  border-color: #1a4ec4;
-  color: #fff;
 }
 
 #kudos-mount[hidden] {
@@ -1871,11 +1831,9 @@ html.has-motion .copy-email,
 html.has-motion .contact-links a,
 html.has-motion .case-link,
 html.has-motion .tl-rail button,
-html.has-motion .sprint-load,
 html.has-motion .hire-close,
 html.has-motion .chip,
 html.has-motion .float-tag,
-html.has-motion .piece,
 html.has-motion .sling-plane,
 html.has-motion .hire-links a,
 html.has-motion .kudo,
@@ -1891,8 +1849,6 @@ html.has-motion .case-link:hover,
 html.has-motion .case-link:focus-visible,
 html.has-motion .tl-rail button:hover,
 html.has-motion .tl-rail button:focus-visible,
-html.has-motion .sprint-load:hover,
-html.has-motion .sprint-load:focus-visible,
 html.has-motion .hire-close:hover,
 html.has-motion .hire-close:focus-visible,
 html.has-motion .chip:hover,
@@ -1909,10 +1865,8 @@ html.has-motion .copy-email:active,
 html.has-motion .contact-links a:active,
 html.has-motion .case-link:active,
 html.has-motion .tl-rail button:active,
-html.has-motion .sprint-load:active,
 html.has-motion .hire-close:active,
 html.has-motion .chip:active,
-html.has-motion .piece:active,
 html.has-motion .sling-plane:active,
 html.has-motion .hire-links a:active,
 html.has-motion .fact-card:active {
@@ -2005,8 +1959,7 @@ html.has-motion .nav-menu a:not([hidden]) {
 
 @media (max-width: 800px) {
   .fact-cards,
-  .contact-layout,
-  .sprint-board:not([hidden]) {
+  .contact-layout {
     grid-template-columns: 1fr;
   }
 

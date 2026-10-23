@@ -654,8 +654,10 @@
     if (!motion || !canvas) return;
 
     const context = canvas.getContext("2d");
+    const cursor = document.getElementById("cursor");
+    const phone = window.matchMedia("(max-width: 900px)");
     const seeds = [];
-    const count = 9;
+    const obstacles = [];
     let width = 0;
     let height = 0;
     let gustX = 0;
@@ -663,6 +665,9 @@
     let last = null;
     let running = true;
     let onScreen = true;
+    let compact = phone.matches;
+    let nearSeed = false;
+    let obstacleFrame = 0;
 
     function resize() {
       const rect = canvas.getBoundingClientRect();
@@ -674,33 +679,172 @@
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function resetSeed(seed, scatter) {
-      seed.x = Math.random() * width;
-      seed.y = Math.random() * height;
-      seed.vx = 0;
-      seed.vy = 0;
+    function readObstacles() {
+      const canvasRect = canvas.getBoundingClientRect();
+      const specs = [
+        [".hero-copy h1", 24],
+        [".hero-sub", 24],
+        [".site-nav", 12],
+        [".brand-chip", 12],
+        [".scroll-pill", 12],
+      ];
+      obstacles.length = 0;
+      specs.forEach(([selector, pad]) => {
+        document.querySelectorAll(selector).forEach((el) => {
+          if (el.closest("[hidden]")) return;
+          const rect = el.getBoundingClientRect();
+          if (rect.width < 2 || rect.height < 2) return;
+          obstacles.push({
+            l: rect.left - canvasRect.left - pad,
+            t: rect.top - canvasRect.top - pad,
+            r: rect.right - canvasRect.left + pad,
+            b: rect.bottom - canvasRect.top + pad,
+          });
+        });
+      });
+    }
+
+    function bodyOf(seed) {
+      const h = seed.height;
+      return {
+        l: seed.x - h * 0.4,
+        t: seed.y - h * 0.55,
+        r: seed.x + h * 0.4,
+        b: seed.y + h * 0.5,
+      };
+    }
+
+    function pressure(box) {
+      let fade = 1;
+      let x = 0;
+      let y = 0;
+      obstacles.forEach((zone) => {
+        const dxOut = Math.max(zone.l - box.r, box.l - zone.r, 0);
+        const dyOut = Math.max(zone.t - box.b, box.t - zone.b, 0);
+        const dist = dxOut === 0 && dyOut === 0 ? 0 : Math.hypot(dxOut, dyOut);
+        if (dist === 0) fade = 0;
+        else if (dist < 10) fade = Math.min(fade, dist / 10);
+        if (dist >= 10) return;
+        const cx = (box.l + box.r) * 0.5 - (zone.l + zone.r) * 0.5;
+        const cy = (box.t + box.b) * 0.5 - (zone.t + zone.b) * 0.5;
+        const len = Math.hypot(cx, cy);
+        const px = len < 0.5 ? 1 : cx / len;
+        const py = len < 0.5 ? -0.25 : cy / len;
+        x += px * 1.35;
+        y += py * 1.35;
+      });
+      return { fade, x, y };
+    }
+
+    function blocked(seed) {
+      const box = bodyOf(seed);
+      return obstacles.some((zone) => box.r > zone.l && box.l < zone.r && box.b > zone.t && box.t < zone.b);
+    }
+
+    function seedHeight() {
+      return compact ? 11 + Math.random() * 4 : 14 + Math.random() * 6;
+    }
+
+    function resetSeed(seed) {
       seed.phase = Math.random() * Math.PI * 2;
-      seed.size = 3.2 + Math.random() * 3.4;
-      seed.spin = (Math.random() - 0.5) * 0.4;
-      if (scatter) {
-        seed.x = Math.random() * width;
-        seed.y = Math.random() * height;
+      seed.height = seedHeight();
+      seed.filaments = 6 + Math.floor(Math.random() * 5);
+      seed.flare = Array.from({ length: seed.filaments }, () => Math.random() * 0.08);
+      seed.drift = 0.12 + Math.random() * 0.08;
+      seed.heading = Math.random() * Math.PI * 2;
+      seed.gustX = 0;
+      seed.gustY = 0;
+      let placed = false;
+      for (let attempt = 0; attempt < 16; attempt += 1) {
+        seed.x = 28 + Math.random() * Math.max(1, width - 56);
+        seed.y = 28 + Math.random() * Math.max(1, height - 56);
+        if (!blocked(seed)) {
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) {
+        seed.x = Math.random() < 0.5 ? width * 0.08 : width * 0.92;
+        seed.y = height * 0.16;
       }
     }
 
     function layout() {
       resize();
-      if (!seeds.length) {
-        for (let i = 0; i < count; i += 1) {
-          const seed = {};
-          resetSeed(seed, false);
-          seeds.push(seed);
-        }
+      readObstacles();
+      const next = phone.matches;
+      const crossed = next !== compact;
+      compact = next;
+      if (crossed) seeds.forEach((seed) => { seed.height = seedHeight(); });
+      const want = compact ? 4 : 6;
+      while (seeds.length > want) seeds.pop();
+      while (seeds.length < want) {
+        const seed = {};
+        resetSeed(seed);
+        seeds.push(seed);
       }
+    }
+
+    function drawSeed(seed, alpha, near) {
+      const h = seed.height;
+      const hub = -h * 0.18;
+      const seedY = h * 0.38;
+      const filamentLen = h * 0.34;
+      const sway = Math.sin(time * 0.55 + seed.phase) * 0.18;
+      context.save();
+      context.translate(seed.x, seed.y);
+      context.rotate(sway);
+      context.globalAlpha = alpha;
+
+      const glowR = h * 0.5;
+      const peak = near ? 0.78 : 0.42;
+      const glow = context.createRadialGradient(0, hub, 0, 0, hub, glowR);
+      glow.addColorStop(0, `rgba(255, 252, 247, ${peak})`);
+      glow.addColorStop(0.55, `rgba(255, 250, 242, ${peak * 0.35})`);
+      glow.addColorStop(1, "rgba(255, 250, 242, 0)");
+      context.fillStyle = glow;
+      context.beginPath();
+      context.arc(0, hub, glowR, 0, Math.PI * 2);
+      context.fill();
+
+      context.strokeStyle = "rgba(255, 252, 248, 0.94)";
+      context.lineWidth = Math.max(1, h * 0.065);
+      context.lineCap = "round";
+      for (let i = 0; i < seed.filaments; i += 1) {
+        const t = seed.filaments === 1 ? 0.5 : i / (seed.filaments - 1);
+        const ang = -Math.PI * 0.92 + Math.PI * 0.84 * t;
+        const len = filamentLen * (1 + seed.flare[i]);
+        const tipX = Math.cos(ang) * len;
+        const tipY = hub + Math.sin(ang) * len;
+        const bend = Math.sin(ang + seed.phase) * h * 0.035;
+        context.beginPath();
+        context.moveTo(0, hub);
+        context.quadraticCurveTo(tipX * 0.55 + bend, hub + (tipY - hub) * 0.55, tipX, tipY);
+        context.stroke();
+      }
+
+      context.beginPath();
+      context.arc(0, hub, Math.max(0.9, h * 0.04), 0, Math.PI * 2);
+      context.fillStyle = "rgba(255, 252, 247, 0.96)";
+      context.fill();
+
+      context.beginPath();
+      context.moveTo(0, hub + 1);
+      context.quadraticCurveTo(h * 0.05, h * 0.08, 0, seedY - h * 0.08);
+      context.strokeStyle = "rgba(92, 64, 48, 0.78)";
+      context.lineWidth = Math.max(0.9, h * 0.05);
+      context.stroke();
+
+      context.beginPath();
+      context.ellipse(0, seedY, Math.max(1.1, h * 0.055), Math.max(1.8, h * 0.1), 0.25, 0, Math.PI * 2);
+      context.fillStyle = "rgba(48, 32, 24, 0.94)";
+      context.fill();
+      context.restore();
     }
 
     layout();
     window.addEventListener("resize", layout);
+    if (typeof phone.addEventListener === "function") phone.addEventListener("change", layout);
     if ("ResizeObserver" in window) {
       const observer = new ResizeObserver(() => layout());
       observer.observe(canvas);
@@ -729,7 +873,6 @@
 
     let time = 0;
     let pointer = null;
-    let caught = -1;
     const skillNode = document.getElementById("seed-skill");
     window.addEventListener("pointermove", (event) => {
       const rect = canvas.getBoundingClientRect();
@@ -742,11 +885,18 @@
       seedFrame = requestAnimationFrame(frame);
     }
 
+    function clearNear() {
+      if (!nearSeed) return;
+      nearSeed = false;
+      if (cursor) cursor.classList.remove("is-seed");
+    }
+
     const heroStage = document.querySelector(".hero-stage");
     if (heroStage && "IntersectionObserver" in window) {
       const watch = new IntersectionObserver((entries) => {
         onScreen = entries.some((entry) => entry.isIntersecting);
         if (onScreen) startSeeds();
+        else clearNear();
       });
       watch.observe(heroStage);
     }
@@ -757,49 +907,67 @@
       seedFrame = requestAnimationFrame(frame);
       if (root.classList.contains("is-zooming") && window.deskZoom > 0.82) return;
       time += 0.016;
+      if (obstacleFrame % 15 === 0) readObstacles();
+      obstacleFrame += 1;
       context.clearRect(0, 0, width, height);
       gustX *= 0.92;
       gustY *= 0.92;
       const slow = !pointer || pointer.v < 18;
       let nextCaught = -1;
-      seeds.forEach((seed, index) => {
-        const homeX = seed.vx + Math.sin(time * 0.7 + seed.phase) * 0.18;
-        const homeY = seed.vy + Math.cos(time * 0.55 + seed.phase) * 0.12;
-        seed.vx = (seed.vx + gustX * 0.04) * 0.96;
-        seed.vy = (seed.vy + gustY * 0.04) * 0.96;
-        if (pointer && slow) {
+      let best = 34 * 34;
+      if (pointer && slow) {
+        seeds.forEach((seed, index) => {
           const dx = pointer.x - seed.x;
           const dy = pointer.y - seed.y;
-          if (dx * dx + dy * dy < 34 * 34) nextCaught = index;
-        }
-        if (nextCaught === index && pointer) {
+          const dist = dx * dx + dy * dy;
+          if (dist < best) {
+            best = dist;
+            nextCaught = index;
+          }
+        });
+      }
+      let anyNear = false;
+      seeds.forEach((seed, index) => {
+        const caught = nextCaught === index && pointer;
+        if (caught) {
           seed.x += (pointer.x - seed.x) * 0.18;
           seed.y += (pointer.y - 18 - seed.y) * 0.18;
         } else {
-          seed.x += homeX;
-          seed.y += homeY;
+          seed.heading += Math.sin(time * 0.15 + seed.phase) * 0.003;
+          seed.gustX = (seed.gustX + gustX * 0.04) * 0.96;
+          seed.gustY = (seed.gustY + gustY * 0.04) * 0.96;
+          let vx = Math.cos(seed.heading) * seed.drift + seed.gustX;
+          let vy = Math.sin(seed.heading) * seed.drift * 0.72 + seed.gustY;
+          const push = pressure(bodyOf(seed));
+          if (push.fade === 0) {
+            vx += push.x * 1.6;
+            vy += push.y * 1.6;
+          } else if (push.fade < 1) {
+            vx += push.x;
+            vy += push.y;
+          }
+          seed.x += vx;
+          seed.y += vy;
         }
-        if (seed.x < -20) seed.x = width + 20;
-        if (seed.x > width + 20) seed.x = -20;
-        if (seed.y < -20) seed.y = height + 20;
-        if (seed.y > height + 20) seed.y = -20;
-        context.save();
-        context.translate(seed.x, seed.y);
-        context.rotate(Math.sin(time + seed.phase) * 0.4);
-        context.beginPath();
-        context.moveTo(0, 8);
-        context.quadraticCurveTo(1.4, 1, 0, -2);
-        context.strokeStyle = "#5c4a3a";
-        context.lineWidth = 1.15;
-        context.stroke();
-        context.beginPath();
-        context.ellipse(0, -4, seed.size * 0.7, seed.size * 0.42, -0.5, 0, Math.PI * 2);
-        context.fillStyle = "#fff8ef";
-        context.fill();
-        context.strokeStyle = "#a34728";
-        context.stroke();
-        context.restore();
+        const margin = seed.height + 8;
+        if (seed.x < -margin) seed.x = width + margin;
+        if (seed.x > width + margin) seed.x = -margin;
+        if (seed.y < -margin) seed.y = height + margin;
+        if (seed.y > height + margin) seed.y = -margin;
+        let near = false;
+        if (pointer) {
+          const dx = pointer.x - seed.x;
+          const dy = pointer.y - seed.y;
+          near = dx * dx + dy * dy < 70 * 70;
+          if (near) anyNear = true;
+        }
+        const fade = pressure(bodyOf(seed)).fade;
+        if (fade > 0.02) drawSeed(seed, fade, near);
       });
+      if (cursor && anyNear !== nearSeed) {
+        nearSeed = anyNear;
+        cursor.classList.toggle("is-seed", anyNear);
+      }
       if (skillNode) {
         const show = nextCaught > -1 && api.skills.length && pointer;
         skillNode.hidden = !show;
@@ -809,7 +977,6 @@
           skillNode.style.top = `${pointer.y - 28}px`;
         }
       }
-      caught = nextCaught;
     }
     startSeeds();
   }
