@@ -362,36 +362,34 @@ body:not(.is-home) .brand-role {
 }
 
 .hero-copy {
-  left: max(24px, 3vw);
-  right: max(24px, 3vw);
+  left: 0;
+  right: 0;
   transform: none;
   width: auto;
-  top: calc(env(safe-area-inset-top) + 68px);
+  top: calc(10vh + 6px);
   display: block;
-  text-align: left;
+  text-align: center;
+  padding: 0 5vw;
   pointer-events: none;
+  z-index: 5;
 }
 
 .hero-copy h1 {
-  max-width: 22em;
-  margin: 0;
-  font-size: clamp(1.25rem, 1.7vw, 1.7rem);
+  max-width: 14em;
+  margin: 0 auto;
+  font-family: "General Sans", Switzer, sans-serif;
+  font-size: clamp(34px, 4.3vw, 64px);
   font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
   text-wrap: balance;
-  color: var(--ink);
+  color: #2b3236;
   text-shadow: none;
 }
 
 .hero-copy h1,
-.hero-copy h1 .word,
-.h1-break {
+.hero-copy h1 .word {
   text-decoration: none;
-}
-
-.h1-break {
-  display: block;
 }
 
 .hero-sub,
@@ -405,13 +403,18 @@ body:not(.is-home) .brand-role {
   left: auto;
   right: auto;
   bottom: auto;
-  margin: 0.35rem 0 0;
-  max-width: 46rem;
-  font-size: 0.9rem;
+  margin: 14px auto 0;
+  max-width: 800px;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  font-size: clamp(15px, 1.15vw, 17px);
   font-weight: 400;
-  line-height: 1.35;
-  color: var(--muted);
+  line-height: 1.5;
+  color: #41484c;
   text-shadow: none;
+  text-wrap: balance;
 }
 
 .hero-sub strong {
@@ -438,18 +441,21 @@ html.has-motion.ready .hero-copy h1 .word {
 }
 
 .scroll-pill {
-  bottom: calc(8px + env(safe-area-inset-bottom));
-  background: rgba(255, 251, 247, 0.86);
+  bottom: 20px;
+  z-index: 6;
+  background: rgba(255, 251, 247, 0.38);
   color: var(--ink);
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 28px rgba(150, 90, 70, 0.12);
   -webkit-backdrop-filter: blur(16px) saturate(1.5);
   backdrop-filter: blur(16px) saturate(1.5);
   font-weight: 500;
-  gap: 12px;
-  padding: 6px 22px;
-  font-size: 0.86rem;
-  min-width: min(520px, calc(100% - 48px));
+  gap: 8px;
+  padding: 8px 14px 8px 12px;
+  font-size: 13px;
+  min-width: 0;
+  width: max-content;
+  max-width: calc(100% - 32px);
   justify-content: center;
 }
 
@@ -487,62 +493,63 @@ html.is-stack #unfold {
   display: none;
 }
 
-/* Phone and coarse pointer: the bio is a cream glass card with dark type. */
+/* Phone: centred type on the sky, same sizes as the measured reference. */
 @media (max-width: 900px) {
   html.is-stack .hero-copy {
     pointer-events: auto;
   }
 
+  html.is-stack .scene-shift {
+    transform: none;
+    transform-origin: 50% 0;
+  }
+
   .hero-copy {
-    left: 12px;
-    right: 12px;
+    left: 0;
+    right: 0;
     width: auto;
-    top: calc(env(safe-area-inset-top) + 58px);
-    text-align: left;
+    top: 10vh;
+    padding: 0 20px;
+    text-align: center;
   }
 
   html .hero-copy h1 {
-    max-width: none;
-    font-size: clamp(0.94rem, 3.9vw, 1.08rem);
+    max-width: 14em;
+    margin: 0 auto;
+    font-size: 33px;
     line-height: 1.02;
+    letter-spacing: -0.035em;
   }
 
-  html.is-stack .hero-copy h1 {
-    margin: 0;
-  }
-
-  html.is-stack .hero-sub {
+  html.is-stack .hero-sub,
+  html .hero-sub {
     position: static;
     left: auto;
     right: auto;
     bottom: auto;
-    margin: 0.2rem 0 0;
-    max-width: none;
-    width: 100%;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 10px;
-    line-height: 1.18;
+    margin: 14px auto 0;
+    max-width: 800px;
+    width: auto;
+    padding: 0;
+    border-radius: 0;
+    font-size: 14.5px;
+    line-height: 1.5;
     text-wrap: balance;
-    background: rgba(253, 240, 226, 0.94);
-    color: #2b3236;
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 10px 28px rgba(80, 40, 20, 0.12);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    backdrop-filter: blur(16px) saturate(1.4);
+    background: none;
+    color: #41484c;
+    border: 0;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     text-shadow: none;
   }
 
   html.is-stack .hero-sub strong {
     color: #2b3236;
   }
-}
 
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  @media (max-width: 900px) {
-    html.is-stack .hero-sub {
-      background: #fdf0e2;
-    }
+  .scroll-pill {
+    bottom: 70px;
   }
 }
 
@@ -2398,9 +2405,11 @@ html.is-night .brand-chip {
 
 @media (max-width: 900px) {
   html .hero-copy h1 {
-    max-width: none;
-    font-size: clamp(0.94rem, 3.9vw, 1.08rem);
+    max-width: 14em;
+    margin: 0 auto;
+    font-size: 33px;
     line-height: 1.02;
+    letter-spacing: -0.035em;
   }
 
   .desk-grid {
@@ -2478,9 +2487,10 @@ html.is-night .brand-chip {
   .kudo-note blockquote { font-size: 14px; }
 
   .scroll-pill {
+    bottom: 70px;
     gap: 8px;
-    padding: 7px 14px;
-    font-size: 12.5px;
+    padding: 8px 14px 8px 12px;
+    font-size: 13px;
     line-height: 1.2;
     width: max-content;
     min-width: 0;
@@ -2622,12 +2632,13 @@ html.is-night .brand-chip {
   }
 
   .hero-copy {
-    left: 12px;
-    right: 12px;
-    top: calc(env(safe-area-inset-top) + 58px);
+    left: 0;
+    right: 0;
+    top: 10vh;
+    padding: 0 20px;
     width: auto;
     transform: none;
-    text-align: left;
+    text-align: center;
   }
 
   .target {
@@ -2648,7 +2659,9 @@ html.is-night .brand-chip {
   }
 
   .hero-copy {
-    top: calc(env(safe-area-inset-top) + 54px);
+    top: 10vh;
+    padding: 0 20px;
+    text-align: center;
   }
 }
 
@@ -2691,6 +2704,7 @@ html.is-stack .timeline li {
   html.has-motion .desk-card .art-slot,
   .project:hover .thumb,
   .project:hover .go,
+  .hotspot,
   .path-art img,
   .cloud,
   .petal,
@@ -2751,51 +2765,41 @@ html.is-stack .timeline li {
 .hotspot {
   box-sizing: border-box;
   pointer-events: auto;
-  border: 2px solid #E8590C;
-  border-radius: 4px;
-  background: rgba(232, 89, 12, 0.16);
-  box-shadow: 0 0 0 1px rgba(255, 253, 251, 0.95);
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  box-shadow: none;
 }
 
-html.has-spots .hotspot:hover {
+html.has-spots .hotspot:hover,
+html.has-spots .hotspot:focus-visible {
   outline: none;
 }
 
-html.has-spots .hotspot:focus-visible {
-  outline: 2px solid #E8590C;
-  outline-offset: 3px;
+html body .hotspot-plane { left: 46.6%; top: 45%; width: 9%; height: 10.2%; }
+html body .hotspot-screen { left: 44.2%; top: 52%; width: 15.4%; height: 11.2%; z-index: 5; }
+html body .hotspot-laptop { left: 43%; top: 62.6%; width: 17.8%; height: 5.2%; }
+html body .hotspot-keys { left: 43.6%; top: 67.4%; width: 16.4%; height: 4.8%; z-index: 5; }
+html body .hotspot-coffee { left: 28%; top: 61%; width: 8.8%; height: 15%; z-index: 4; }
+html body .hotspot-sketch { left: 30.5%; top: 73.5%; width: 11.5%; height: 9%; }
+html body .hotspot-notebook { left: 43.5%; top: 71.5%; width: 15%; height: 8.5%; z-index: 4; }
+html body .hotspot-glass { left: 58.6%; top: 57%; width: 12%; height: 15.5%; z-index: 4; }
+html body .hotspot-kit { left: 66%; top: 70%; width: 8.5%; height: 9%; }
+html body .hotspot-phone { left: 71%; top: 58.5%; width: 6%; height: 12.5%; z-index: 5; }
+html body .hotspot-plant { left: 75.5%; top: 56.5%; width: 6.5%; height: 13%; z-index: 4; }
+@media (max-width: 600px) {
+  html body .hotspot-plane { left: 8%; top: 52%; width: 14%; height: 8%; }
+  html body .hotspot-screen { left: 34%; top: 55%; width: 32%; height: 12%; }
+  html body .hotspot-laptop { left: 32%; top: 66.5%; width: 36%; height: 5%; }
+  html body .hotspot-keys { left: 28%; top: 71%; width: 44%; height: 4.5%; }
+  html body .hotspot-coffee { left: 7%; top: 63%; width: 15%; height: 13%; }
+  html body .hotspot-sketch { left: 10%; top: 75%; width: 18%; height: 9%; }
+  html body .hotspot-notebook { left: 34%; top: 75%; width: 28%; height: 8%; }
+  html body .hotspot-glass { left: 58%; top: 60%; width: 16%; height: 13%; }
+  html body .hotspot-kit { left: 68%; top: 72%; width: 14%; height: 9%; }
+  html body .hotspot-phone { left: 74%; top: 61%; width: 9%; height: 11%; }
+  html body .hotspot-plant { left: 82%; top: 58%; width: 12%; height: 13%; }
 }
-
-html.is-stack .hotspot::before {
-    content: attr(data-label);
-    position: absolute;
-    z-index: 2;
-    left: 4px;
-    top: 4px;
-    max-width: calc(100% - 8px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 2px 6px;
-    border-radius: 999px;
-    background: #fffdfb;
-    color: #2b3236;
-    border: 1px solid #E8590C;
-    font: 600 11px/1.2 Switzer, sans-serif;
-    white-space: nowrap;
-    pointer-events: none;
-}
-
-html body .hotspot-plane { left: 23%; top: 14%; width: 9.2%; height: 7.6%; }
-html body .hotspot-screen { left: 42.24%; top: 19.44%; width: 15.18%; height: 17.23%; z-index: 5; }
-html body .hotspot-laptop { left: 37.6%; top: 36%; width: 22%; height: 5.4%; }
-html body .hotspot-keys { left: 38.4%; top: 41.2%; width: 19.6%; height: 6.6%; z-index: 5; }
-html body .hotspot-coffee { left: 30%; top: 33.4%; width: 6.8%; height: 10.4%; z-index: 4; }
-html body .hotspot-sketch { left: 26%; top: 46.2%; width: 13.6%; height: 13.2%; }
-html body .hotspot-notebook { left: 41.6%; top: 48.4%; width: 16.4%; height: 12.8%; z-index: 4; }
-html body .hotspot-glass { left: 58.2%; top: 44%; width: 9.4%; height: 17%; z-index: 4; }
-html body .hotspot-kit { left: 59.2%; top: 22.4%; width: 14.2%; height: 19%; }
-html body .hotspot-phone { left: 68%; top: 38.8%; width: 6%; height: 16%; z-index: 5; }
-html body .hotspot-plant { left: 71.6%; top: 30%; width: 7.6%; height: 16.4%; z-index: 4; }
 
 html.is-zooming .hotspot,
 html.is-zooming .hotspot:hover,
@@ -2809,6 +2813,7 @@ html.is-zooming .hotspot:focus-visible,
   box-shadow: none !important;
   border-color: transparent !important;
   background: transparent !important;
+  animation: none !important;
 }
 
 html.is-zooming .hotspot::before,
@@ -2828,8 +2833,8 @@ html.has-motion .hotspot-screen.is-hinting::after {
   content: "";
   position: absolute;
   inset: -7px;
-  border: 2px solid #E8590C;
-  border-radius: 4px;
+  border: 1.5px solid rgba(232, 89, 12, 0.8);
+  border-radius: 16px;
   animation: spot-pulse 1.5s ease-out 2;
   pointer-events: none;
 }
@@ -2842,9 +2847,10 @@ html.has-motion .hotspot-screen.is-hinting::after {
 
 .select-box {
   z-index: 60;
-  border: 2px solid #E8590C;
-  border-radius: 2px;
-  box-shadow: 0 0 0 1px rgba(255, 253, 251, 0.95);
+  border: 1.5px solid rgba(232, 89, 12, 0.78);
+  border-radius: 16px;
+  background: rgba(232, 89, 12, 0.12);
+  box-shadow: none;
 }
 
 .select-size {
@@ -2852,12 +2858,7 @@ html.has-motion .hotspot-screen.is-hinting::after {
 }
 
 .select-box i {
-  box-sizing: border-box;
-  width: 10px;
-  height: 10px;
-  background: #fffdfb;
-  border: 2px solid #E8590C;
-  border-radius: 1px;
+  display: none;
 }
 
 .spot-card {
@@ -2930,7 +2931,7 @@ html.has-motion .hotspot-screen.is-hinting::after {
   position: absolute;
   z-index: 6;
   left: 50%;
-  bottom: calc(64px + env(safe-area-inset-bottom));
+  bottom: calc(122px + env(safe-area-inset-bottom));
   transform: translateX(-50%);
   margin: 0;
   padding: 7px 12px;
@@ -2946,11 +2947,16 @@ html.has-motion .hotspot-screen.is-hinting::after {
 
 @media (min-width: 901px) {
   .hover-hint {
-    left: 50%;
-    right: auto;
-    top: auto;
-    bottom: calc(72px + env(safe-area-inset-bottom));
-    transform: translateX(-50%);
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .hover-hint,
+  .hover-hint.is-done {
+    display: block;
+    animation: none;
+    opacity: 1;
   }
 }
 
@@ -2967,6 +2973,15 @@ html.has-motion .hover-hint {
   0%,
   68% { opacity: 1; }
   100% { opacity: 0; }
+}
+
+@media (max-width: 900px) {
+  html.has-motion .hover-hint,
+  html.is-stack .hover-hint,
+  .hover-hint.is-done {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 .desk-fx,
@@ -3018,10 +3033,10 @@ html.has-motion .hover-hint {
 
 .screen-glow {
   position: absolute;
-  left: 42.24%;
-  top: 19.44%;
-  width: 15.18%;
-  height: 17.23%;
+  left: 44.2%;
+  top: 52%;
+  width: 15.4%;
+  height: 11.2%;
   border-radius: 8px;
   background: radial-gradient(ellipse at center, rgba(255, 244, 214, 0.95), rgba(255, 196, 120, 0.2) 68%, transparent 76%);
   opacity: 0;
@@ -3532,7 +3547,7 @@ html.is-path-snap .path-ep {
 
 html.is-path-snap .path-art {
   justify-self: start;
-  width: min(46vw, 28vh, 210px);
+  width: min(78vw, 44vh, 300px);
   margin: 0;
 }
 

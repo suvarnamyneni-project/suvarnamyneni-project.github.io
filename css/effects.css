@@ -215,17 +215,30 @@ html.has-motion.is-zooming .scene-bob {
   border-radius: 16px;
 }
 
-.hotspot-plane { left: 23%; top: 14%; width: 9.2%; height: 7.6%; }
-.hotspot-screen { left: 42.24%; top: 19.44%; width: 15.18%; height: 17.23%; }
-.hotspot-laptop { left: 37.6%; top: 36%; width: 22%; height: 5.4%; }
-.hotspot-keys { left: 38.4%; top: 41.2%; width: 19.6%; height: 6.6%; }
-.hotspot-coffee { left: 30%; top: 33.4%; width: 6.8%; height: 10.4%; }
-.hotspot-sketch { left: 26%; top: 46.2%; width: 13.6%; height: 13.2%; }
-.hotspot-notebook { left: 41.6%; top: 48.4%; width: 16.4%; height: 12.8%; }
-.hotspot-glass { left: 58.2%; top: 44%; width: 9.4%; height: 17%; }
-.hotspot-kit { left: 59.2%; top: 22.4%; width: 14.2%; height: 19%; }
-.hotspot-phone { left: 68%; top: 38.8%; width: 6%; height: 16%; }
-.hotspot-plant { left: 71.6%; top: 30%; width: 7.6%; height: 16.4%; }
+.hotspot-plane { left: 46.6%; top: 45%; width: 9%; height: 10.2%; }
+.hotspot-screen { left: 44.2%; top: 52%; width: 15.4%; height: 11.2%; }
+.hotspot-laptop { left: 43%; top: 62.6%; width: 17.8%; height: 5.2%; }
+.hotspot-keys { left: 43.6%; top: 67.4%; width: 16.4%; height: 4.8%; }
+.hotspot-coffee { left: 28%; top: 61%; width: 8.8%; height: 15%; }
+.hotspot-sketch { left: 30.5%; top: 73.5%; width: 11.5%; height: 9%; }
+.hotspot-notebook { left: 43.5%; top: 71.5%; width: 15%; height: 8.5%; }
+.hotspot-glass { left: 58.6%; top: 57%; width: 12%; height: 15.5%; }
+.hotspot-kit { left: 66%; top: 70%; width: 8.5%; height: 9%; }
+.hotspot-phone { left: 71%; top: 58.5%; width: 6%; height: 12.5%; }
+.hotspot-plant { left: 75.5%; top: 56.5%; width: 6.5%; height: 13%; }
+@media (max-width: 600px) {
+  .hotspot-plane { left: 8%; top: 52%; width: 14%; height: 8%; }
+  .hotspot-screen { left: 34%; top: 55%; width: 32%; height: 12%; }
+  .hotspot-laptop { left: 32%; top: 66.5%; width: 36%; height: 5%; }
+  .hotspot-keys { left: 28%; top: 71%; width: 44%; height: 4.5%; }
+  .hotspot-coffee { left: 7%; top: 63%; width: 15%; height: 13%; }
+  .hotspot-sketch { left: 10%; top: 75%; width: 18%; height: 9%; }
+  .hotspot-notebook { left: 34%; top: 75%; width: 28%; height: 8%; }
+  .hotspot-glass { left: 58%; top: 60%; width: 16%; height: 13%; }
+  .hotspot-kit { left: 68%; top: 72%; width: 14%; height: 9%; }
+  .hotspot-phone { left: 74%; top: 61%; width: 9%; height: 11%; }
+  .hotspot-plant { left: 82%; top: 58%; width: 12%; height: 13%; }
+}
 
 .plane-icon {
   transform: rotate(-8deg);

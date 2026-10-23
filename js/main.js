@@ -1,20 +1,17 @@
 /**
- * Display glass on assets/art/hero, as percentages of the painting.
- * Corners run clockwise from the top left and follow the painted perspective.
- * At rest the painting fills the hero from the top. Scale stops before the
- * keyboard, notebook and magnifier drop under the scroll pill.
+ * Laptop screen on the wide hero painting, as percentages of the image.
+ * Corners run clockwise from the top left. At rest the painting fills the
+ * hero from the top, so the open sky stays above the type.
  */
-const DESK_LEFT = 23.0;
-const DESK_RIGHT = 79.2;
-const DESK_BOTTOM = 61.6;
-const SKY_CLEAR = 14;
 const SCREEN_CORNERS = [
-  { x: 42.5, y: 19.44 },
-  { x: 57.42, y: 20.51 },
-  { x: 57.11, y: 36.67 },
-  { x: 42.24, y: 35.05 },
+  { x: 44.4, y: 52.1 },
+  { x: 59.4, y: 52.4 },
+  { x: 59.2, y: 63.0 },
+  { x: 44.2, y: 62.8 },
 ];
-const LAPTOP_SCREEN = { x: 42.5, y: 20.51, w: 14.61, h: 14.54 };
+const LAPTOP_SCREEN = { x: 44.2, y: 52.0, w: 15.4, h: 11.2 };
+const SCREEN_TOP_WIDE = 0.52;
+const SCREEN_TOP_STACK = 0.55;
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";
@@ -298,7 +295,9 @@ function initZoom() {
         height / (imageHeight * screen.h / 100)
       ) * 1.04,
       screens,
+      copyTop: copy.getBoundingClientRect().top - hero.getBoundingClientRect().top,
       copyBottom: copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top,
+      copyLeft: copy.getBoundingClientRect().left - hero.getBoundingClientRect().left,
       pillTop: pill.getBoundingClientRect().top - hero.getBoundingClientRect().top,
     };
 
@@ -355,19 +354,16 @@ function initZoom() {
     const mobile = isMobile();
     const eased = smoothstep(0, 1, amount);
     const target = mobile ? Math.min(metrics.scaleToFill, 1.45) : metrics.scaleToFill;
-    /* The painting covers the hero from the top. Keep the headline in the
-       painted sky when there is room, keep the outer objects inside the
-       frame, and keep the keyboard, notebook and magnifier above the pill. */
+    /* The painting stays full-bleed from the top and centred. Scale from
+       the top so the laptop screen starts just under the copy. */
     const copyBottom = metrics.copyBottom;
-    const skyLine = SKY_CLEAR / 100;
-    const skyScale = (copyBottom + 12) / (metrics.imageHeight * skyLine);
-    const objectSpan = (DESK_RIGHT - DESK_LEFT) / 100;
-    const fitScale = metrics.width / (metrics.imageWidth * objectSpan);
-    const pillTop = metrics.pillTop;
-    const deskScale = (pillTop - 8) / (metrics.imageHeight * (DESK_BOTTOM / 100));
-    const restScale = Math.max(1, Math.min(skyScale, fitScale, deskScale));
+    const skyLine = SCREEN_TOP_WIDE;
+    const gap = Math.max(10, metrics.height * 0.02);
+    const skyScale = (copyBottom + gap) / (metrics.imageHeight * skyLine);
+    const restScale = Math.max(1, skyScale);
     const scale = restScale + (target - restScale) * eased;
-    const restX = (metrics.width - metrics.imageWidth * restScale) / 2;
+    const iw = metrics.imageWidth * restScale;
+    const restX = (metrics.width - iw) / 2;
     const restY = 0;
     const zoomX = metrics.width / 2 - metrics.screenX * target;
     const zoomY = metrics.height / 2 - metrics.screenY * target;
@@ -495,11 +491,46 @@ function initZoom() {
   }
 }
 
+function fitStackSky() {
+  if (!document.documentElement.classList.contains("is-stack")) return;
+  const shift = document.querySelector(".scene-shift");
+  const copy = document.querySelector(".hero-copy");
+  const img = document.querySelector(".scene img");
+  const hero = document.querySelector(".hero-stage");
+  if (!shift || !copy || !img || !hero) return;
+  shift.style.transform = "none";
+  const heroRect = hero.getBoundingClientRect();
+  const elW = img.offsetWidth || heroRect.width;
+  const elH = img.offsetHeight || heroRect.height;
+  const nw = img.naturalWidth || 2400;
+  const nh = img.naturalHeight || 1350;
+  const cover = Math.max(elW / nw, elH / nh);
+  const drawH = nh * cover;
+  const narrow = window.matchMedia("(max-width: 600px)").matches;
+  const screenLine = narrow ? SCREEN_TOP_STACK : SCREEN_TOP_WIDE;
+  const screenTop = (elH - drawH) / 2 + drawH * screenLine;
+  const copyBottom = copy.getBoundingClientRect().bottom - heroRect.top;
+  if (screenTop < 40) return;
+  const gap = Math.max(10, heroRect.height * 0.02);
+  const needed = (copyBottom + gap) / screenTop;
+  const scale = Math.max(1, Math.min(needed, 1.8));
+  shift.style.transformOrigin = "50% 0";
+  shift.style.transform = `scale(${scale.toFixed(3)})`;
+  if (window.placeHeroSpots) window.placeHeroSpots();
+}
+
 initLenis();
 if (window.mountRound2) window.mountRound2();
 initReveals();
 initTilt();
 initNavState();
+let resizeSky = 0;
+fitStackSky();
+window.addEventListener("resize", () => {
+  if (resizeSky) cancelAnimationFrame(resizeSky);
+  resizeSky = requestAnimationFrame(fitStackSky);
+});
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStackSky);
 
 if (!reduceMotion && document.documentElement.classList.contains("has-zoom")) {
   initZoom();
