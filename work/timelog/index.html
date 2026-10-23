@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timelog Tool — Suvarna Myneni</title>
+  <meta name="description" content="A revamped Timelog UI for productive and non-productive hours, with associate edits and a manager export.">
+  <link rel="canonical" href="https://suvarnamyneni-project.github.io/work/timelog/">
+  <meta name="theme-color" content="#FDF0E2">
+  <meta property="og:title" content="Timelog — One place for a team's hours">
+  <meta property="og:description" content="A revamped Timelog UI for productive and non-productive hours, with associate edits and a manager export.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://suvarnamyneni-project.github.io/work/timelog/">
+  <meta property="og:image" content="https://suvarnamyneni-project.github.io/assets/case/timelog/home.webp">
+  <link rel="icon" href="../../assets/favicon.png" type="image/png">
+  <link rel="preload" href="../../assets/fonts/general-sans-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face { font-family: "General Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/general-sans-600.woff2") format("woff2"); }
+    @font-face { font-family: Switzer; font-style: normal; font-weight: 400; font-display: swap; src: url("../../assets/fonts/switzer-400.woff2") format("woff2"); }
+    @font-face { font-family: Switzer; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/switzer-600.woff2") format("woff2"); }
+    :root { --ink: #2b3236; --muted: #41484c; --accent: #a34728; --paper: #fdf0e2; --display: "General Sans", Switzer, sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #fdf0e2; color: #2b3236; font-family: Switzer, "Segoe UI", sans-serif; font-size: 1.0625rem; line-height: 1.5; }
+    img { max-width: 100%; display: block; }
+    h1, h2, p { margin: 0; }
+    a { color: inherit; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .skip-link { position: absolute; left: 16px; top: -48px; }
+    html .site-header { position: fixed; z-index: 20; inset: 16px 22px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0; background: none; pointer-events: none; color: #2b3236; }
+    html .site-header > * { pointer-events: auto; }
+    .brand-chip, .site-nav { display: flex; align-items: center; border-radius: 999px; text-decoration: none; color: #2b3236; background: rgba(255,251,247,.86); border: 1px solid rgba(255,255,255,.7); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 8px 28px rgba(150,90,70,.12); }
+    html .brand-chip { flex-direction: row; align-items: center; gap: 10px; padding: 5px 16px 5px 5px; }
+    .brand-copy { display: flex; flex-direction: column; line-height: 1.15; }
+    .brand-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .brand-name { font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: 14.5px; }
+    .brand-role { display: none; }
+    .brand-back { font-size: 12px; font-weight: 600; color: #b2512c; }
+    .site-nav { position: relative; width: max-content; gap: 2px; padding: 5px; }
+    .nav-menu { display: flex; align-items: center; gap: 2px; }
+    .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 14px/normal Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
+    .nav-contact, .nav-toggle { display: none; }
+    @media (max-width: 759px) {
+      html .site-header { left: 12px; right: 12px; top: 12px; }
+      .brand-last, .nav-menu { display: none; }
+      .brand-back { display: block; }
+      .nav-contact, .nav-toggle { display: inline-flex; align-items: center; padding: 7px 12px; }
+    }
+  </style>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/effects.css">
+  <link rel="stylesheet" href="../../css/round4.css">
+  <link rel="stylesheet" href="../../css/case.css">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var stack = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+      root.classList.toggle("is-stack", stack || reduce);
+      if (!reduce) root.classList.add("has-motion");
+      root.classList.add("ready");
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#story">Skip to the story</a>
+  <header class="site-header">
+    <a class="brand-chip" href="/#work" data-caption="Back to all work">
+      <img class="brand-avatar" src="../../assets/avatar-96.webp" width="36" height="36" alt="" decoding="async">
+      <span class="brand-copy">
+        <b class="brand-name">Suvarna <span class="brand-last">Myneni</span></b>
+        <small class="brand-role">AI-Native UX Designer</small>
+        <small class="brand-back">← Back to all work</small>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <div id="nav-menu" class="nav-menu">
+        <a href="/#work">Work</a>
+        <a href="/#path">Path</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </div>
+      <a class="nav-contact" href="/#contact">Contact</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+    </nav>
+  </header>
+  <div class="nav-backdrop" hidden></div>
+
+  <main class="case" id="story">
+    <nav class="case-rail" aria-label="On this page">
+      <div class="case-rail-list">
+        <span class="case-rail-mark" aria-hidden="true"></span>
+        <ol>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#change">What changed</a></li>
+          <li><a href="#associate">Associate</a></li>
+          <li><a href="#manager">Manager</a></li>
+        </ol>
+      </div>
+      <div class="case-rail-progress" aria-hidden="true"><span class="case-rail-fill"></span></div>
+    </nav>
+    <header class="case-hero wrap case-reveal" id="introduction">
+      <p class="case-eyebrow">Timelog · Internal time tracking</p>
+      <h1>One place for a team's hours</h1>
+      <p class="case-lede">A revamped Timelog UI for productive and non-productive hours, so managers are not collating the data by hand.</p>
+      <ul class="case-tags" aria-label="Work">
+        <li>Login</li>
+        <li>Associate view</li>
+        <li>Manager view</li>
+        <li>Export</li>
+      </ul>
+    </header>
+    <figure class="case-frame wrap case-reveal">
+      <img src="../../assets/case/timelog/home.webp" width="1600" height="719" alt="Timelog home: choose a category and subcategory, then start or stop the timer." fetchpriority="high" decoding="async">
+      <figcaption>Home. Select a category and subcategory. Once time is started, the details sit on the right. Stop ends the entry.</figcaption>
+    </figure>
+    <section class="story-map wrap case-reveal" aria-labelledby="story-map-heading">
+      <h2 class="story-title" id="story-map-heading">One click for hours</h2>
+      <p class="story-dek">Manual collation, associate ownership, and a manager export.</p>
+      <div class="story-board">
+        <svg class="story-svg" viewBox="0 0 360 640" aria-hidden="true">
+          <defs><mask id="story-draw" maskUnits="userSpaceOnUse"><path class="route-mask" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/></mask></defs>
+          <path class="route-grey" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <path class="route-rust" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <g class="story-plane" transform="translate(32 78)"><g transform="translate(-16 -16) scale(0.5)"><path d="M6 34 L58 8 L36 58 L28 36 Z" fill="#F6C7B0" stroke="#2B3236" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 36 L58 8" fill="none" stroke="#A34728" stroke-width="2"/></g></g>
+        </svg>
+        <article class="act-card" data-act="0">
+          <a class="act-name" href="#before-heading"><span class="act-copy"><span class="act-kicker">Act 1</span> The old way</span></a>
+          <ol>
+            <li><a class="beat" href="#before-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Manual hour collation</span></a></li>
+            <li><a class="beat" href="#before-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Manual registration</span></a></li>
+            <li><a class="beat" href="#before-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Excel for managers</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="1">
+          <a class="act-name" href="#change-heading"><span class="act-copy"><span class="act-kicker">Act 2</span> The revamp</span></a>
+          <ol>
+            <li><a class="beat" href="#change-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Conclave single password</span></a></li>
+            <li><a class="beat" href="#change-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Default user access</span></a></li>
+            <li><a class="beat" href="#associate-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Associates edit hours</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="2">
+          <a class="act-name" href="#home-heading"><span class="act-copy"><span class="act-kicker">Act 3</span> The views</span></a>
+          <ol>
+            <li><a class="beat is-key" href="#home-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Start and stop time</span></a></li>
+            <li><a class="beat" href="#associate-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Manager approves edits</span></a></li>
+            <li><a class="beat" href="#manager-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">One-click team export</span></a></li>
+          </ol>
+        </article>
+      </div>
+    </section>
+    <section class="case-block wrap case-reveal" aria-labelledby="before-heading">
+      <p class="case-eyebrow">Before</p>
+      <h2 id="before-heading">Hours were recorded, then collated by hand.</h2>
+      <p class="case-copy">A working day has productive and non-productive hours. Timelog is a structured way to register both. It removes the manual effort of collating data, and gives a team manager one-click access to the team's complete non-Sherlock time data.</p>
+      <p class="case-copy">The earlier shape of the work, as the case study lists it: manual registration for access, associates recording non-productive time, and managers downloading a full dump to filter in Excel.</p>
+    </section>
+    <section class="case-block wrap case-reveal" id="change" aria-labelledby="change-heading">
+      <p class="case-eyebrow">What changed</p>
+      <h2 id="change-heading">One password, default access, edits that need a manager.</h2>
+      <ul class="case-themes">
+        <li><b>Revamped UI</b> More intuitive and responsive, aimed at navigation and usability issues in the earlier version.</li>
+        <li><b>Download center</b> Managers filter and export to an Excel file.</li>
+        <li><b>Password</b> Authentication uses Conclave login credentials, so internal tools share a single password.</li>
+        <li><b>Access</b> Manual registration is replaced with default access for all Conclave users.</li>
+        <li><b>Ownership</b> Associates can edit their own data. A manager still has to approve the change.</li>
+      </ul>
+    </section>
+    <section class="case-block wrap case-reveal" aria-labelledby="login-heading">
+      <p class="case-eyebrow">Login</p>
+      <h2 id="login-heading">Amazon alias and password.</h2>
+      <p class="case-copy">People log in with their Amazon alias and password.</p>
+      <figure class="case-frame">
+        <img src="../../assets/case/timelog/login.webp" width="1600" height="725" alt="Timelog login screen." loading="lazy" decoding="async">
+        <figcaption>Login.</figcaption>
+      </figure>
+    </section>
+    <section class="case-block wrap case-reveal" id="associate" aria-labelledby="home-heading">
+      <p class="case-eyebrow">Associate view</p>
+      <h2 id="home-heading">Start the clock. Stop ends it.</h2>
+      <p class="case-copy" id="associate-heading">History lets associates view and edit timelog data. An edit has to be approved by the manager. If the manager rejects or updates it, the associate sees that change listed here.</p>
+      <div class="case-gallery">
+        <figure class="case-shot">
+          <img src="../../assets/case/timelog/history-associate.webp" width="1497" height="923" alt="Associate history, where edits are submitted for manager approval." loading="lazy" decoding="async">
+          <figcaption>Associate history.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/timelog/edit.webp" width="760" height="731" alt="Edit-time popup for a previous timelog entry." loading="lazy" decoding="async">
+          <figcaption>Edit time. People can change data they already submitted.</figcaption>
+        </figure>
+      </div>
+    </section>
+    <section class="case-block wrap case-reveal" id="manager" aria-labelledby="manager-heading">
+      <p class="case-eyebrow">Manager view</p>
+      <h2 id="manager-heading">Download a person, or the whole team.</h2>
+      <p class="case-copy">Cache is where a manager downloads timelog reports, for one person or the team. History is where they view and edit associates' logs, and where associate edits wait for a response. Rejecting an entry can include a reason.</p>
+      <div class="case-gallery">
+        <figure class="case-shot">
+          <img src="../../assets/case/timelog/cache.webp" width="1207" height="778" alt="Manager cache for downloading team timelog reports." loading="lazy" decoding="async">
+          <figcaption>Cache.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/timelog/history-manager.webp" width="1504" height="914" alt="Manager history of associate timelogs and pending edits." loading="lazy" decoding="async">
+          <figcaption>Manager history.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/timelog/reject.webp" width="763" height="659" alt="Reject-time popup where a manager can give a reason." loading="lazy" decoding="async">
+          <figcaption>Reject, with an optional reason.</figcaption>
+        </figure>
+      </div>
+    </section>
+    <section class="case-next wrap case-reveal" aria-labelledby="next-project-heading">
+      <p class="case-eyebrow">Next project</p>
+      <h2 id="next-project-heading" class="sr-only">Next project</h2>
+      <a href="/work/data-central/">Data Central</a>
+      <p class="case-copy" style="margin-top: 0">A collaborative design process with leadership, users, researchers, designers and cross-functional teams to gather data and drive product vision.</p>
+    </section>
+    <footer class="case-foot wrap case-reveal">
+      <a href="/#work">← Back to all work</a>
+      <a href="mailto:suvarnamyneni@gmail.com">suvarnamyneni@gmail.com</a>
+    </footer>
+  </main>
+
+<div class="cursor" id="cursor" hidden aria-hidden="true">
+    <div class="cursor-sprite">
+      <svg viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M6 3 L22 14 L13 15.5 L10.5 24 Z" fill="#FFFDFB" stroke="#2B3236" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <p class="cursor-bubble"></p>
+  </div>
+  <script src="../../js/case.js"></script>
+  <script>
+    (function () {
+      var chip = document.querySelector(".brand-chip");
+      if (chip) chip.setAttribute("href", "/#work");
+      var stack = document.documentElement.classList.contains("is-stack");
+      var sources = stack
+        ? ["../../js/effects.js"]
+        : ["../../js/vendor/lenis.min.js", "../../js/effects.js"];
+      var index = 0;
+      function next() {
+        if (index >= sources.length) {
+          if (window.initCaseScroll) window.initCaseScroll();
+          return;
+        }
+        var script = document.createElement("script");
+        script.src = sources[index++];
+        script.onload = next;
+        script.onerror = next;
+        document.body.appendChild(script);
+      }
+      next();
+    })();
+  </script>
+</body>
+</html>
