@@ -1,0 +1,383 @@
+/* Case study pages. Warm paper, glass, and the same type as the home desk.
+   Layout is its own: a long reading column, wide frames, and a next-project close. */
+
+.case {
+  padding: 132px 0 48px;
+}
+
+.case-eyebrow {
+  margin: 0 0 14px;
+  color: #b2512c;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.case-hero h1 {
+  max-width: 11em;
+  font-size: clamp(2.7rem, 5.2vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+.case-lede {
+  max-width: 38rem;
+  margin-top: 22px;
+  color: var(--muted);
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.5;
+}
+
+.case-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-tags li {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 251, 247, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.case-frame {
+  margin: 48px auto 0;
+}
+
+.case-frame img,
+.case-shot img {
+  width: 100%;
+  height: auto;
+  border-radius: 22px;
+  background: #fffdfb;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 24px 50px -28px rgba(120, 70, 50, 0.45);
+}
+
+.case-frame figcaption,
+.case-shot figcaption,
+.case-note {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.case-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 28px;
+  margin: 42px auto 0;
+  padding: 22px 0 0;
+  border-top: 1px solid rgba(43, 50, 54, 0.12);
+}
+
+.case-meta div {
+  min-width: 0;
+}
+
+.case-meta dt {
+  margin: 0 0 6px;
+  color: #b2512c;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.case-meta dd {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.case-block {
+  margin-top: 96px;
+}
+
+.case-block h2 {
+  max-width: 16em;
+  font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.case-copy {
+  max-width: 40rem;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.case-copy + .case-copy {
+  margin-top: 14px;
+}
+
+.case-ask {
+  max-width: 36rem;
+  margin: 28px 0 0;
+  padding-left: 18px;
+  border-left: 2px solid #b2512c;
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 2vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+
+.case-steps,
+.case-split,
+.case-pair {
+  display: grid;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 0;
+  list-style: none;
+}
+
+.case-steps {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.case-steps li,
+.case-steps article,
+.case-split article,
+.case-pair article,
+.case-quote {
+  padding: 22px;
+  border-radius: 22px;
+  background: rgba(255, 251, 247, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 14px 30px -20px rgba(120, 70, 50, 0.35);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  backdrop-filter: blur(16px) saturate(1.5);
+}
+
+.case-num {
+  display: block;
+  margin-bottom: 10px;
+  color: #b2512c;
+  font-family: var(--display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.case-steps h3,
+.case-split h3,
+.case-pair h3,
+.case-list h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.case-steps p,
+.case-split p,
+.case-pair p,
+.case-list p {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.case-split {
+  grid-template-columns: 1fr 1fr;
+}
+
+.case-split img,
+.case-shot img {
+  margin-top: 16px;
+}
+
+.case-band {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.case-band p {
+  margin: 0;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 251, 247, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.case-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-chips li {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #fffdfb;
+  border: 1px solid rgba(43, 50, 54, 0.12);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.case-list {
+  display: grid;
+  gap: 18px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-list li {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(0, 1fr);
+  gap: 8px 16px;
+}
+
+.case-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 22px;
+}
+
+.case-gallery .case-shot:first-child,
+.case-wide {
+  grid-column: 1 / -1;
+}
+
+.case-quote {
+  max-width: 44rem;
+  margin-top: 28px;
+}
+
+.case-quote p {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+
+.case-themes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-themes li {
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 251, 247, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
+.case-themes b {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--display);
+}
+
+.case-next {
+  display: grid;
+  gap: 10px;
+  margin-top: 110px;
+  padding-top: 36px;
+  border-top: 1px solid rgba(43, 50, 54, 0.12);
+}
+
+.case-next a {
+  width: max-content;
+  max-width: 100%;
+  color: inherit;
+  font-family: var(--display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  text-decoration: none;
+}
+
+.case-next a:hover,
+.case-next a:focus-visible {
+  color: #b2512c;
+}
+
+.case-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 48px;
+  padding: 28px 0 72px;
+  color: var(--muted);
+}
+
+.case-foot a {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.case-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.case-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 800px) {
+  .case {
+    padding-top: 112px;
+  }
+
+  .case-meta,
+  .case-steps,
+  .case-split,
+  .case-band,
+  .case-gallery,
+  .case-themes {
+    grid-template-columns: 1fr;
+  }
+
+  .case-block {
+    margin-top: 72px;
+  }
+
+  .case-list li {
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+  }
+
+  .case-foot {
+    padding-bottom: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
