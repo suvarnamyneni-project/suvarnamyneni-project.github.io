@@ -1,17 +1,22 @@
 /**
- * Laptop screen on the wide hero painting, as percentages of the image.
- * Corners run clockwise from the top left. At rest the painting fills the
- * hero from the top, so the open sky stays above the type.
+ * Laptop glass, clockwise from the top left, as percentages of each painting.
+ * The wide shot is 16:9. The phone shot is 9:16. The work panel is mapped
+ * onto this quad and rides the same rendered image box as the painting.
  */
-const SCREEN_CORNERS = [
-  { x: 44.4, y: 52.1 },
-  { x: 59.4, y: 52.4 },
-  { x: 59.2, y: 63.0 },
-  { x: 44.2, y: 62.8 },
+const SCREEN_WIDE = [
+  { x: 45.4, y: 46.2 },
+  { x: 60.8, y: 46.6 },
+  { x: 61.2, y: 58.6 },
+  { x: 45.0, y: 58.2 },
 ];
-const LAPTOP_SCREEN = { x: 44.2, y: 52.0, w: 15.4, h: 11.2 };
-const SCREEN_TOP_WIDE = 0.52;
-const SCREEN_TOP_STACK = 0.55;
+const SCREEN_STACK = [
+  { x: 33.0, y: 55.2 },
+  { x: 67.0, y: 55.4 },
+  { x: 67.5, y: 64.2 },
+  { x: 32.5, y: 64.0 },
+];
+const SCREEN_TOP_WIDE = 0.462;
+const SCREEN_TOP_STACK = 0.552;
 
 const ZOOM_SCREENS = { desktop: 1.35, mobile: 0.85 };
 const MOBILE_QUERY = "(max-width: 759px)";
@@ -280,20 +285,24 @@ function initZoom() {
       imageWidth = height * imageAspect;
     }
 
-    const screen = LAPTOP_SCREEN;
+    const corners = heroImg.naturalHeight > heroImg.naturalWidth ? SCREEN_STACK : SCREEN_WIDE;
+    const xs = corners.map((corner) => imageWidth * corner.x / 100);
+    const ys = corners.map((corner) => imageHeight * corner.y / 100);
+    const screenLeft = Math.min(...xs);
+    const screenTop = Math.min(...ys);
+    const screenW = Math.max(...xs) - screenLeft;
+    const screenH = Math.max(...ys) - screenTop;
     metrics = {
       width,
       height,
       imageWidth,
       imageHeight,
-      baseX: (width - imageWidth) / 2,
-      baseY: (height - imageHeight) / 2,
-      screenX: imageWidth * (screen.x + screen.w / 2) / 100,
-      screenY: imageHeight * (screen.y + screen.h / 2) / 100,
-      scaleToFill: Math.max(
-        width / (imageWidth * screen.w / 100),
-        height / (imageHeight * screen.h / 100)
-      ) * 1.04,
+      corners,
+      screenX: screenLeft + screenW / 2,
+      screenY: screenTop + screenH / 2,
+      screenW,
+      screenH,
+      scaleToFit: Math.min(width / screenW, height / screenH),
       screens,
       copyTop: copy.getBoundingClientRect().top - hero.getBoundingClientRect().top,
       copyBottom: copy.getBoundingClientRect().bottom - hero.getBoundingClientRect().top,
@@ -305,23 +314,25 @@ function initZoom() {
     scene.style.height = `${imageHeight}px`;
   }
 
-  function screenQuad(x, y, scale) {
-    return SCREEN_CORNERS.map((corner) => ({
-      x: x + metrics.imageWidth * scale * (corner.x / 100),
-      y: y + metrics.imageHeight * scale * (corner.y / 100),
-    }));
+  function renderedImageBox() {
+    const rect = heroImg.getBoundingClientRect();
+    const heroRect = hero.getBoundingClientRect();
+    const nw = heroImg.naturalWidth || rect.width || 1;
+    const nh = heroImg.naturalHeight || rect.height || 1;
+    const cover = Math.max(rect.width / nw, rect.height / nh);
+    const drawW = nw * cover;
+    const drawH = nh * cover;
+    return {
+      x: rect.left + (rect.width - drawW) / 2 - heroRect.left,
+      y: rect.top + (rect.height - drawH) / 2 - heroRect.top,
+      w: drawW,
+      h: drawH,
+    };
   }
 
-  function applyUnfold(amount, x, y, scale, workTop) {
+  function applyUnfold(amount, quad, workTop) {
     if (!plane || !metrics) return;
-    if (amount < 0.08) {
-      plane.style.opacity = "0";
-      plane.style.visibility = "hidden";
-      return;
-    }
     if (!plane.childElementCount) buildUnfold();
-    const reveal = smoothstep(0.1, 0.28, amount);
-    const quad = screenQuad(x, y, scale);
     const planeW = plane.offsetWidth || metrics.width;
     const planeH = plane.offsetHeight || metrics.height;
     plane.style.transform = matrix3dFromQuad(planeW, planeH, quad);
@@ -334,12 +345,11 @@ function initZoom() {
       plane.style.visibility = "hidden";
       return;
     }
-    if (amount > 0.94 && work) {
-      handoff = smoothstep(metrics.height * 0.7, metrics.height * 0.95, workTop);
+    if (amount > 0.9 && work) {
+      handoff = smoothstep(metrics.height * 0.72, metrics.height * 0.98, workTop);
     }
-    const opacity = reveal * handoff;
-    plane.style.opacity = opacity.toFixed(3);
-    plane.style.visibility = opacity < 0.02 ? "hidden" : "visible";
+    plane.style.opacity = handoff.toFixed(3);
+    plane.style.visibility = handoff < 0.02 ? "hidden" : "visible";
   }
 
   function applyZoom(amount) {
@@ -352,29 +362,19 @@ function initZoom() {
     hero.classList.toggle("is-unfolding", amount > 0.22);
 
     const mobile = isMobile();
-    const eased = smoothstep(0, 1, amount);
-    const target = mobile ? Math.min(metrics.scaleToFill, 1.45) : metrics.scaleToFill;
-    /* The painting stays full-bleed from the top and centred. Scale from
-       the top so the laptop screen starts just under the copy. */
-    const copyBottom = metrics.copyBottom;
-    const skyLine = SCREEN_TOP_WIDE;
-    const gap = Math.max(10, metrics.height * 0.02);
-    const skyScale = (copyBottom + gap) / (metrics.imageHeight * skyLine);
-    const restScale = Math.max(1, skyScale);
-    const scale = restScale + (target - restScale) * eased;
-    const iw = metrics.imageWidth * restScale;
-    const restX = (metrics.width - iw) / 2;
-    const restY = 0;
-    const zoomX = metrics.width / 2 - metrics.screenX * target;
-    const zoomY = metrics.height / 2 - metrics.screenY * target;
-    let x = restX + (zoomX - restX) * eased;
-    let y = restY + (zoomY - restY) * eased;
-    const minX = metrics.width - metrics.imageWidth * scale;
-    const minY = metrics.height - metrics.imageHeight * scale;
-    x = Math.min(0, Math.max(minX, x));
-    y = Math.min(restY, Math.max(minY, y));
-
-    scene.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
+    const z = clamp01(amount);
+    const eased = 0.5 - Math.cos(Math.PI * z) / 2;
+    /* Scale around the screen centre, from a centred full-bleed rest
+       position, until the glass covers the viewport. */
+    const S = mobile ? Math.min(metrics.scaleToFit, 1.45) : metrics.scaleToFit;
+    const sc = Math.pow(Math.max(S, 1), eased);
+    const restX = (metrics.width - metrics.imageWidth) / 2;
+    const cx = metrics.screenX;
+    const cy = metrics.screenY;
+    const tx = restX + (metrics.width / 2 - (restX + cx)) * eased;
+    const ty = (metrics.height / 2 - cy) * eased;
+    scene.style.transformOrigin = `${cx.toFixed(2)}px ${cy.toFixed(2)}px`;
+    scene.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) scale(${sc.toFixed(4)})`;
 
     if (amount < 0.02) {
       copy.style.opacity = "";
@@ -390,9 +390,27 @@ function initZoom() {
       pill.style.pointerEvents = pillFade < 0.15 ? "none" : "";
     }
 
-    const sceneFade = 1 - smoothstep(0.78, 1, amount);
+    const sceneFade = 1 - smoothstep(0.82, 1, amount);
     scene.style.opacity = String(sceneFade);
-    applyUnfold(amount, x, y, scale, workTop);
+    const box = renderedImageBox();
+    const mapped = metrics.corners.map((corner) => ({
+      x: box.x + box.w * corner.x / 100,
+      y: box.y + box.h * corner.y / 100,
+    }));
+    const full = [
+      { x: 0, y: 0 },
+      { x: metrics.width, y: 0 },
+      { x: metrics.width, y: metrics.height },
+      { x: 0, y: metrics.height },
+    ];
+    /* The glass stays inside the window. Near the end the panel eases from
+       that glass to the viewport, so the settled page keeps its margins. */
+    const settle = smoothstep(0.84, 1, z);
+    const quad = mapped.map((point, index) => ({
+      x: point.x + (full[index].x - point.x) * settle,
+      y: point.y + (full[index].y - point.y) * settle,
+    }));
+    applyUnfold(amount, quad, workTop);
     if (work) settleCards(workTop, metrics.height);
 
     zoomLight = mobile ? amount > 0.5 : amount > 0.74;

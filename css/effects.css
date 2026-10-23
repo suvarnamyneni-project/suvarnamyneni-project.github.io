@@ -151,6 +151,10 @@ html.has-motion .scene-bob {
   will-change: transform;
 }
 
+html.has-zoom .scene-bob {
+  animation: none;
+}
+
 html.is-stack .scene-bob {
   animation: none;
   will-change: auto;
@@ -216,7 +220,7 @@ html.has-motion.is-zooming .scene-bob {
 }
 
 .hotspot-plane { left: 46.6%; top: 45%; width: 9%; height: 10.2%; }
-.hotspot-screen { left: 44.2%; top: 52%; width: 15.4%; height: 11.2%; }
+.hotspot-screen { left: 45%; top: 46.2%; width: 16.2%; height: 12.4%; }
 .hotspot-laptop { left: 43%; top: 62.6%; width: 17.8%; height: 5.2%; }
 .hotspot-keys { left: 43.6%; top: 67.4%; width: 16.4%; height: 4.8%; }
 .hotspot-coffee { left: 28%; top: 61%; width: 8.8%; height: 15%; }
@@ -228,7 +232,7 @@ html.has-motion.is-zooming .scene-bob {
 .hotspot-plant { left: 75.5%; top: 56.5%; width: 6.5%; height: 13%; }
 @media (max-width: 600px) {
   .hotspot-plane { left: 8%; top: 52%; width: 14%; height: 8%; }
-  .hotspot-screen { left: 34%; top: 55%; width: 32%; height: 12%; }
+  .hotspot-screen { left: 32.5%; top: 55.2%; width: 35%; height: 9%; }
   .hotspot-laptop { left: 32%; top: 66.5%; width: 36%; height: 5%; }
   .hotspot-keys { left: 28%; top: 71%; width: 44%; height: 4.5%; }
   .hotspot-coffee { left: 7%; top: 63%; width: 15%; height: 13%; }
