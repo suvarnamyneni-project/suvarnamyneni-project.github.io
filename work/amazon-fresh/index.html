@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Amazon Fresh — Suvarna Myneni</title>
+  <meta name="description" content="Shop by Recipe for Amazon Fresh in India: curated recipes, the ingredients, and same-day delivery, from a survey of 48 people.">
+  <link rel="canonical" href="https://suvarnamyneni-project.github.io/work/amazon-fresh/">
+  <meta name="theme-color" content="#FDF0E2">
+  <meta property="og:title" content="Amazon Fresh — Shop for the recipe, not the missing ingredient">
+  <meta property="og:description" content="Shop by Recipe for Amazon Fresh in India: curated recipes, the ingredients, and same-day delivery, from a survey of 48 people.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://suvarnamyneni-project.github.io/work/amazon-fresh/">
+  <meta property="og:image" content="https://suvarnamyneni-project.github.io/assets/case/amazon-fresh/home.webp">
+  <link rel="icon" href="../../assets/favicon.png" type="image/png">
+  <link rel="preload" href="../../assets/fonts/general-sans-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../../assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin>
+  <style>
+    @font-face { font-family: "General Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/general-sans-600.woff2") format("woff2"); }
+    @font-face { font-family: Switzer; font-style: normal; font-weight: 400; font-display: swap; src: url("../../assets/fonts/switzer-400.woff2") format("woff2"); }
+    @font-face { font-family: Switzer; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/switzer-600.woff2") format("woff2"); }
+    :root { --ink: #2b3236; --muted: #41484c; --accent: #a34728; --paper: #fdf0e2; --display: "General Sans", Switzer, sans-serif; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #fdf0e2; color: #2b3236; font-family: Switzer, "Segoe UI", sans-serif; font-size: 1.0625rem; line-height: 1.5; }
+    img { max-width: 100%; display: block; }
+    h1, h2, p { margin: 0; }
+    a { color: inherit; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    .skip-link { position: absolute; left: 16px; top: -48px; }
+    html .site-header { position: fixed; z-index: 20; inset: 16px 22px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0; background: none; pointer-events: none; color: #2b3236; }
+    html .site-header > * { pointer-events: auto; }
+    .brand-chip, .site-nav { display: flex; align-items: center; border-radius: 999px; text-decoration: none; color: #2b3236; background: rgba(255,251,247,.86); border: 1px solid rgba(255,255,255,.7); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 8px 28px rgba(150,90,70,.12); }
+    html .brand-chip { flex-direction: row; align-items: center; gap: 10px; padding: 5px 16px 5px 5px; }
+    .brand-copy { display: flex; flex-direction: column; line-height: 1.15; }
+    .brand-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .brand-name { font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: 14.5px; }
+    .brand-role { display: none; }
+    .brand-back { font-size: 12px; font-weight: 600; color: #b2512c; }
+    .site-nav { position: relative; width: max-content; gap: 2px; padding: 5px; }
+    .nav-menu { display: flex; align-items: center; gap: 2px; }
+    .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 14px/normal Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
+    .nav-contact, .nav-toggle { display: none; }
+    @media (max-width: 759px) {
+      html .site-header { left: 12px; right: 12px; top: 12px; }
+      .brand-last, .nav-menu { display: none; }
+      .brand-back { display: block; }
+      .nav-contact, .nav-toggle { display: inline-flex; align-items: center; padding: 7px 12px; }
+    }
+  </style>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/effects.css">
+  <link rel="stylesheet" href="../../css/round4.css">
+  <link rel="stylesheet" href="../../css/case.css">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var stack = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+      root.classList.toggle("is-stack", stack || reduce);
+      if (!reduce) root.classList.add("has-motion");
+      root.classList.add("ready");
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#story">Skip to the story</a>
+  <header class="site-header">
+    <a class="brand-chip" href="/#work" data-caption="Back to all work">
+      <img class="brand-avatar" src="../../assets/avatar-96.webp" width="36" height="36" alt="" decoding="async">
+      <span class="brand-copy">
+        <b class="brand-name">Suvarna <span class="brand-last">Myneni</span></b>
+        <small class="brand-role">AI-Native UX Designer</small>
+        <small class="brand-back">← Back to all work</small>
+      </span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <div id="nav-menu" class="nav-menu">
+        <a href="/#work">Work</a>
+        <a href="/#path">Path</a>
+        <a href="/#about">About</a>
+        <a href="/#contact">Contact</a>
+      </div>
+      <a class="nav-contact" href="/#contact">Contact</a>
+      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
+    </nav>
+  </header>
+  <div class="nav-backdrop" hidden></div>
+
+  <main class="case" id="story">
+    <nav class="case-rail" aria-label="On this page">
+      <div class="case-rail-list">
+        <span class="case-rail-mark" aria-hidden="true"></span>
+        <ol>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#research">Research</a></li>
+          <li><a href="#design">Design</a></li>
+          <li><a href="#prototype">Prototype</a></li>
+          <li><a href="#whats-next">What's next</a></li>
+        </ol>
+      </div>
+      <div class="case-rail-progress" aria-hidden="true"><span class="case-rail-fill"></span></div>
+    </nav>
+    <header class="case-hero wrap case-reveal" id="introduction">
+      <p class="case-eyebrow">Amazon Fresh · Shop by Recipe · India</p>
+      <h1>Shop for the recipe, not the missing ingredient</h1>
+      <p class="case-lede">A feature for Amazon Fresh that pairs curated recipes with the ingredients, and same-day delivery, on one platform.</p>
+      <ul class="case-tags" aria-label="Work">
+        <li>Survey</li>
+        <li>Competitive research</li>
+        <li>Personas</li>
+        <li>Information architecture</li>
+        <li>Prototype</li>
+      </ul>
+    </header>
+    <figure class="case-frame wrap case-reveal">
+      <img src="../../assets/case/amazon-fresh/home.webp" width="691" height="582" alt="Amazon Fresh homepage concept with a Shop by Recipe entry." fetchpriority="high" decoding="async">
+      <figcaption>Amazon Fresh homepage concept from the case study. Shop by Recipe sits in the header, with “See how it works.”</figcaption>
+    </figure>
+    <section class="story-map wrap case-reveal" aria-labelledby="story-map-heading">
+      <h2 class="story-title" id="story-map-heading">Shop by recipe</h2>
+      <p class="story-dek">Missing ingredients, the survey, and a feature in Fresh.</p>
+      <div class="story-board">
+        <svg class="story-svg" viewBox="0 0 360 640" aria-hidden="true">
+          <defs><mask id="story-draw" maskUnits="userSpaceOnUse"><path class="route-mask" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/></mask></defs>
+          <path class="route-grey" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <path class="route-rust" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
+          <g class="story-plane" transform="translate(32 78)"><g transform="translate(-16 -16) scale(0.5)"><path d="M6 34 L58 8 L36 58 L28 36 Z" fill="#F6C7B0" stroke="#2B3236" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 36 L58 8" fill="none" stroke="#A34728" stroke-width="2"/></g></g>
+        </svg>
+        <article class="act-card" data-act="0">
+          <a class="act-name" href="#problem-heading"><span class="act-copy"><span class="act-kicker">Act 1</span> The problem</span></a>
+          <ol>
+            <li><a class="beat" href="#problem-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Missing one ingredient</span></a></li>
+            <li><a class="beat" href="#problem-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Same-day delivery</span></a></li>
+            <li><a class="beat" href="#compete-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">India grocery apps</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="1">
+          <a class="act-name" href="#survey-heading"><span class="act-copy"><span class="act-kicker">Act 2</span> The research</span></a>
+          <ol>
+            <li><a class="beat" href="#survey-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Survey of 48</span></a></li>
+            <li><a class="beat" href="#survey-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">95.8% want both</span></a></li>
+            <li><a class="beat" href="#personas-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Three user personas</span></a></li>
+          </ol>
+        </article>
+        <article class="act-card" data-act="2">
+          <a class="act-name" href="#feature-heading"><span class="act-copy"><span class="act-kicker">Act 3</span> The feature</span></a>
+          <ol>
+            <li><a class="beat is-key" href="#feature-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Shop by Recipe</span></a></li>
+            <li><a class="beat" href="#recipe-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Servings update quantities</span></a></li>
+            <li><a class="beat" href="#cart-heading"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Multiple recipes in cart</span></a></li>
+          </ol>
+        </article>
+      </div>
+    </section>
+    <section class="case-block wrap case-reveal" aria-labelledby="problem-heading">
+      <p class="case-eyebrow">Problem</p>
+      <h2 id="problem-heading">Recipes, ingredients, and delivery were three errands.</h2>
+      <p class="case-copy">Online grocery shopping was rising in India. The need the case study names, from research and personal experience, is one platform: curated recipes, the ingredients for them, and same-day delivery.</p>
+      <p class="case-copy">A common sentiment in the survey: when cooking an elaborate dish, people were often missing one or two ingredients, and had to make another trip.</p>
+    </section>
+    <section class="case-block wrap case-reveal" id="research" aria-labelledby="compete-heading">
+      <p class="case-eyebrow">Competitive research</p>
+      <h2 id="compete-heading">Fresh already had the 2-hour delivery.</h2>
+      <p class="case-copy">Among the grocery apps examined, Amazon Fresh was the only one with a 2-hour delivery service. BigBasket let people shop recipe ingredients, and fell short on timely delivery and the experience around it. That combination is why the case study treats Fresh as the place to build the feature.</p>
+      <figure class="case-frame">
+        <img src="../../assets/case/amazon-fresh/compare.webp" width="1600" height="603" alt="Comparison of grocery apps on recipe features and delivery time." loading="lazy" decoding="async">
+        <figcaption>Comparison of popular grocery apps on the recipe feature and delivery time.</figcaption>
+      </figure>
+    </section>
+    <section class="case-block wrap case-reveal" aria-labelledby="survey-heading">
+      <p class="case-eyebrow">Survey</p>
+      <h2 id="survey-heading"><span class="case-count" data-count="48" style="--digits: 2">48</span> people, 18 to 55.</h2>
+      <p class="case-copy">The survey included 48 people, ages 18 to 55: students, employees and homemakers who cook and buy groceries for themselves. Questions covered offline grocery shopping, features they would add, whether recipes are easy to find online, how often they lack an ingredient, and how likely they were to use a feature that did this with same-day delivery.</p>
+      <p class="case-copy">95.8% of participants preferred shopping recipe ingredients with 2-hour delivery.</p>
+      <figure class="case-frame">
+        <img src="../../assets/case/amazon-fresh/survey.webp" width="1600" height="603" alt="Survey findings from the Amazon Fresh recipe study." loading="lazy" decoding="async">
+        <figcaption>Survey material from the case study.</figcaption>
+      </figure>
+    </section>
+    <section class="case-block wrap case-reveal" aria-labelledby="personas-heading">
+      <p class="case-eyebrow">Personas and flow</p>
+      <h2 id="personas-heading">Three personas, then one path through Fresh.</h2>
+      <p class="case-copy">Three personas widened the scenarios the feature had to cover, between offline grocery shopping and the end user. The flow starts on the Amazon Fresh homepage, opens Shop by Recipe, then search, filters or featured recipes. A recipe page holds ingredients, directions and notes from expert chefs. People can change quantities, add or remove items, look at related recipes, add ingredients to the cart, and check out.</p>
+      <div class="case-gallery">
+        <figure class="case-shot">
+          <img src="../../assets/case/amazon-fresh/persona.webp" width="1100" height="619" alt="User personas for Shop by Recipe." loading="lazy" decoding="async">
+          <figcaption>Personas.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/amazon-fresh/flow.webp" width="1100" height="619" alt="User flow for Shop by Recipe on Amazon Fresh." loading="lazy" decoding="async">
+          <figcaption>User flow.</figcaption>
+        </figure>
+      </div>
+      <figure class="case-frame">
+        <img src="../../assets/case/amazon-fresh/ia.webp" width="1600" height="2077" alt="Information architecture for the Shop by Recipe feature." loading="lazy" decoding="async">
+        <figcaption>Information architecture. Wireframes moved from low-fidelity sketches into Figma, with several layouts for screens and components.</figcaption>
+      </figure>
+    </section>
+    <section class="case-block wrap case-reveal" id="design" aria-labelledby="feature-heading">
+      <p class="case-eyebrow">Shop by Recipe</p>
+      <h2 id="feature-heading">Veg or non-veg, time, chef, and a direct buy.</h2>
+      <p class="case-copy">Recipes are curated by top chefs for an Indian audience. The landing page has a veg/non-veg toggle, filters, time-duration indicators, the chef’s name, user ratings, and a way to buy ingredients without opening the recipe. “See how it works” in the header walks through the feature in pictures and text.</p>
+      <div class="case-gallery">
+        <figure class="case-shot">
+          <img src="../../assets/case/amazon-fresh/recipe-home.webp" width="691" height="582" alt="Shop by Recipe landing page." loading="lazy" decoding="async">
+          <figcaption>Shop by Recipe home.</figcaption>
+        </figure>
+        <figure class="case-shot">
+          <img src="../../assets/case/amazon-fresh/recipe.webp" width="691" height="582" alt="Recipe page with servings, ingredients and directions." loading="lazy" decoding="async">
+          <figcaption>Recipe page.</figcaption>
+        </figure>
+      </div>
+    </section>
+    <section class="case-block wrap case-reveal" aria-labelledby="recipe-heading">
+      <p class="case-eyebrow">Recipe page</p>
+      <h2 id="recipe-heading">Change the servings, and the quantities follow.</h2>
+      <p class="case-copy">The page opens with the title and a carousel. People can share the recipe or add it to a wishlist. A serving-size menu updates the quantities. Difficulty runs from Easy to Hard, and the time grows with it. Ingredients can go straight to the cart, or the shopper can skip to buying them. Directions are step by step. Verified users can add images, reviews and a rating.</p>
+      <p class="case-copy">Search returns recipes across categories. Filters cover category, cuisine, difficulty and customer rating.</p>
+    </section>
+    <section class="case-block wrap case-reveal" aria-labelledby="cart-heading">
+      <p class="case-eyebrow">Cart</p>
+      <h2 id="cart-heading">More than one recipe in the same list.</h2>
+      <p class="case-copy">The cart lists ingredients from the recipe page, with quantities people can change or delete. A newer behaviour shops ingredients for multiple recipes at once. The case study’s example shows two recipes in the list.</p>
+      <figure class="case-frame">
+        <img src="../../assets/case/amazon-fresh/cart.webp" width="1100" height="1071" alt="Cart holding ingredients from more than one recipe." loading="lazy" decoding="async">
+        <figcaption>Cart with ingredients gathered from recipes.</figcaption>
+      </figure>
+    </section>
+    <section class="case-block wrap case-reveal" id="prototype" aria-labelledby="proto-heading">
+      <p class="case-eyebrow">Prototype</p>
+      <h2 id="proto-heading">The feature was prototyped in Figma.</h2>
+      <p class="case-copy"><a href="https://www.figma.com/file/aXI1TkmcJYvi8EzhMkKt0Q/Suvarna--Amazon-Fresh?type=design&amp;node-id=0%3A1&amp;t=NeBRDgPrM9XOo9h5-1">View the prototype</a></p>
+    </section>
+    <section class="case-block wrap case-reveal" id="whats-next" aria-labelledby="next-heading">
+      <p class="case-eyebrow">Future scope</p>
+      <h2 id="next-heading">Ideas the case study leaves open.</h2>
+      <div class="case-steps">
+        <article><h3>Random recipe picker</h3><p>A spinning wheel for people who cannot decide.</p></article>
+        <article><h3>Voice assistant</h3><p>Step-by-step directions, including on HomePod, Google Home and Amazon Echo.</p></article>
+        <article><h3>Recipe collections</h3><p>Custom groups such as healthy recipes, kids’ recipes and desserts.</p></article>
+      </div>
+    </section>
+    <section class="case-next wrap case-reveal" aria-labelledby="next-project-heading">
+      <p class="case-eyebrow">Next project</p>
+      <h2 id="next-project-heading" class="sr-only">Next project</h2>
+      <a href="/work/timelog/">Timelog Tool</a>
+      <p class="case-copy" style="margin-top: 0">Timelog UI streamlines the tracking of productive and non-productive hours, removing manual data collation and giving team managers one-click access to their team's time data.</p>
+    </section>
+    <footer class="case-foot wrap case-reveal">
+      <a href="/#work">← Back to all work</a>
+      <a href="mailto:suvarnamyneni@gmail.com">suvarnamyneni@gmail.com</a>
+    </footer>
+  </main>
+
+<div class="cursor" id="cursor" hidden aria-hidden="true">
+    <div class="cursor-sprite">
+      <svg viewBox="0 0 28 28" aria-hidden="true">
+        <path d="M6 3 L22 14 L13 15.5 L10.5 24 Z" fill="#FFFDFB" stroke="#2B3236" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <p class="cursor-bubble"></p>
+  </div>
+  <script src="../../js/case.js"></script>
+  <script>
+    (function () {
+      var chip = document.querySelector(".brand-chip");
+      if (chip) chip.setAttribute("href", "/#work");
+      var stack = document.documentElement.classList.contains("is-stack");
+      var sources = stack
+        ? ["../../js/effects.js"]
+        : ["../../js/vendor/lenis.min.js", "../../js/effects.js"];
+      var index = 0;
+      function next() {
+        if (index >= sources.length) {
+          if (window.initCaseScroll) window.initCaseScroll();
+          return;
+        }
+        var script = document.createElement("script");
+        script.src = sources[index++];
+        script.onload = next;
+        script.onerror = next;
+        document.body.appendChild(script);
+      }
+      next();
+    })();
+  </script>
+</body>
+</html>
