@@ -377,11 +377,7 @@ html {
   scroll-padding-top: 128px;
 }
 
-#introduction,
-#discover,
-#design,
-#test,
-#whats-next {
+.case [id] {
   scroll-margin-top: 128px;
 }
 
@@ -663,11 +659,7 @@ html.has-case-motion .case-meta.is-in > div:nth-child(3) { transition-delay: 0.1
     scroll-padding-top: 132px;
   }
 
-  #introduction,
-  #discover,
-  #design,
-  #test,
-  #whats-next {
+  .case [id] {
     scroll-margin-top: 136px;
   }
 
@@ -1001,5 +993,103 @@ html.has-case-motion .beat.is-now .beat-mark {
 @media (max-width: 800px) {
   .story-map {
     margin-top: 56px;
+  }
+}
+
+.case-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-tools li {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: #2b3236;
+  color: #fdf0e2;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.case-viz {
+  margin-top: 22px;
+}
+
+.mix {
+  display: flex;
+  height: 16px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: rgba(43, 50, 54, 0.08);
+}
+
+.mix span:nth-child(1) { background: #a34728; }
+.mix span:nth-child(2) { background: #d4896a; }
+.mix span:nth-child(3) { background: #e7c2b0; }
+.mix span:nth-child(4) { background: #efe0d4; }
+
+.case-viz figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.case-table-wrap {
+  max-width: 100%;
+  margin-top: 22px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 18px;
+  border: 1px solid rgba(43, 50, 54, 0.1);
+  background: rgba(255, 251, 247, 0.62);
+}
+
+.case-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.case-table th,
+.case-table td {
+  padding: 11px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(43, 50, 54, 0.08);
+}
+
+.case-table th {
+  color: #b2512c;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.case-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.case-table caption {
+  caption-side: bottom;
+  padding: 12px 14px 14px;
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+@media (min-width: 801px) {
+  .case-steps.is-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .case-steps.is-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
