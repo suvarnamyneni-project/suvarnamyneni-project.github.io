@@ -1,0 +1,13 @@
+import{j as e}from"./jsx-runtime-D_zvdyIk.js";import{I as l}from"./IconButton-DiMNJank.js";import{c}from"./createLucideIcon--EHRR9k_.js";import{B as h}from"./Button-Cobx0n-P.js";import"./index-C9y0RuIT.js";import"./_commonjsHelpers-CqkleIqs.js";import"./cx-2dOUpm6k.js";/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const g=[["path",{d:"M4 12h16",key:"1lakjw"}],["path",{d:"M4 18h16",key:"19g7jn"}],["path",{d:"M4 6h16",key:"1o0s65"}]],f=c("menu",g);/**
+ * @license lucide-react v0.511.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const y=[["path",{d:"m21 21-4.34-4.34",key:"14j7rj"}],["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}]],v=c("search",y);function n({onMenu:r,search:d,onSearch:t,actions:p,account:u}){return e.jsxs("header",{className:"agnt-topbar",children:[r&&e.jsx(l,{"aria-label":"Open navigation",variant:"ghost",className:"agnt-menu-button",onClick:r,children:e.jsx(f,{size:18})}),t&&e.jsxs("label",{className:"agnt-search",children:[e.jsx(v,{size:15,"aria-hidden":"true"}),e.jsx("input",{value:d??"",onChange:m=>t(m.target.value),placeholder:"Search files, people, tasks","aria-label":"Search"})]}),e.jsx("span",{style:{flex:1}}),p,u]})}n.__docgenInfo={description:"",methods:[],displayName:"TopBar",props:{onMenu:{required:!1,tsType:{name:"signature",type:"function",raw:"() => void",signature:{arguments:[],return:{name:"void"}}},description:""},search:{required:!1,tsType:{name:"string"},description:""},onSearch:{required:!1,tsType:{name:"signature",type:"function",raw:"(value: string) => void",signature:{arguments:[{type:{name:"string"},name:"value"}],return:{name:"void"}}},description:""},actions:{required:!1,tsType:{name:"ReactNode"},description:""},account:{required:!1,tsType:{name:"ReactNode"},description:""}}};const b={title:"Components/TopBar",component:n,tags:["autodocs"],parameters:{docs:{description:{component:"Sticky top bar with search and an account slot. The menu button is for viewports under 1024px."}}}},a={render:()=>e.jsx(n,{onMenu:()=>{},search:"",onSearch:()=>{},account:e.jsx(h,{variant:"secondary",size:"sm",children:"Hannah Lindqvist"})})};var s,o,i;a.parameters={...a.parameters,docs:{...(s=a.parameters)==null?void 0:s.docs,source:{originalSource:`{
+  render: () => <TopBar onMenu={() => undefined} search="" onSearch={() => undefined} account={<Button variant="secondary" size="sm">Hannah Lindqvist</Button>} />
+}`,...(i=(o=a.parameters)==null?void 0:o.docs)==null?void 0:i.source}}};const q=["Bar"];export{a as Bar,q as __namedExportsOrder,b as default};

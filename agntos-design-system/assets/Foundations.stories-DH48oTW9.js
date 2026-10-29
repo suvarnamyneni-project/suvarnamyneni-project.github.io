@@ -1,0 +1,77 @@
+import{j as e}from"./jsx-runtime-D_zvdyIk.js";import{C as Y}from"./check-DkJ089qz.js";import{F as ee}from"./file-text-wNLo_bYf.js";import{S as ae}from"./shield-BDHadLnD.js";import"./createLucideIcon--EHRR9k_.js";import"./index-C9y0RuIT.js";import"./_commonjsHelpers-CqkleIqs.js";const re={light:{backdrop:"#e9e5dc",canvas:"#f7f5f0",surface:"#ffffff","surface-2":"#f3f1ec","surface-3":"#ebe8e1",line:"#e8e4db","line-strong":"#d8d3c7",fg:"#1b1f2a",muted:"#646976",subtle:"#9a9da6",ink:"#1e2a44","ink-hover":"#2b3b60","ink-fg":"#ffffff",hero:"#1e2a44","hero-fg":"#ffffff","hero-line":"#1e2a44",pill:"#1e2a44","pill-fg":"#ffffff",accent:"#4a6491","accent-soft":"#e7ecf5","accent-fg":"#ffffff",sky:"#3f63a8","sky-soft":"#e6edf8",sage:"#4f7a62","sage-soft":"#e4efe7",amber:"#a86d12","amber-soft":"#fbf0d9",clay:"#b4533c","clay-soft":"#f8e6e0",violet:"#6e56cf","violet-soft":"#eeeafb",ring:"#4a649159",scrim:"#12162052","shadow-color":"23 25 35"},pairs:["accent","sky","sage","amber","clay","violet"]},se={body:["10px","10.5px","11px","11.5px","12px","12.5px","13px","13.5px","14px","14.5px","15px","15.5px"],headline:["20px","21px","22px","24px","26px","27px","28px","30px","32px","34px","36px","38px","40px","42px","44px","48px","52px","56px","58px"]},te={scale:{0:"0px",1:"4px",2:"8px",3:"12px",4:"16px",5:"20px",6:"24px",7:"28px",8:"32px",10:"40px",12:"48px",16:"64px",20:"80px","0.5":"2px","1.5":"6px","2.5":"10px","3.5":"14px"}},ne={sm:"4px",md:"6px",control:"10px",lg:"12px",xl:"16px",card:"24px",panel:"28px",full:"9999px"},ie={base:0,raised:10,sticky:20,dropdown:60,overlay:70,modal:80,toast:90,tooltip:100},oe={xs:"480px",sm:"640px",md:"768px",lg:"1024px",xl:"1280px","2xl":"1360px","3xl":"1440px","4xl":"1536px","5xl":"1680px"},s={color:re,fontSize:se,space:te,radius:ne,zIndex:ie,breakpoint:oe},de=[{id:"fg on canvas",use:"Primary text",fg:"#1b1f2a",bg:"#f7f5f0",ratio:15.1,aa:!0,aaLarge:!0,aaa:!0},{id:"fg on surface",use:"Text on cards and fields",fg:"#1b1f2a",bg:"#ffffff",ratio:16.46,aa:!0,aaLarge:!0,aaa:!0},{id:"muted on canvas",use:"Secondary text",fg:"#646976",bg:"#f7f5f0",ratio:5.04,aa:!0,aaLarge:!0,aaa:!1},{id:"muted on surface",use:"Secondary text on cards",fg:"#646976",bg:"#ffffff",ratio:5.49,aa:!0,aaLarge:!0,aaa:!1},{id:"subtle on canvas",use:"Placeholder and tertiary text",fg:"#9a9da6",bg:"#f7f5f0",ratio:2.49,aa:!1,aaLarge:!1,aaa:!1},{id:"ink-fg on ink",use:"Primary button label",fg:"#ffffff",bg:"#1e2a44",ratio:14.29,aa:!0,aaLarge:!0,aaa:!0},{id:"accent-fg on accent",use:"Accent fill label",fg:"#ffffff",bg:"#4a6491",ratio:5.96,aa:!0,aaLarge:!0,aaa:!1},{id:"accent on canvas",use:"Links and accent text",fg:"#4a6491",bg:"#f7f5f0",ratio:5.47,aa:!0,aaLarge:!0,aaa:!1},{id:"sage on sage-soft",use:"Success badge",fg:"#4f7a62",bg:"#e4efe7",ratio:4.15,aa:!1,aaLarge:!0,aaa:!1},{id:"amber on amber-soft",use:"Waiting badge",fg:"#a86d12",bg:"#fbf0d9",ratio:3.82,aa:!1,aaLarge:!0,aaa:!1},{id:"clay on clay-soft",use:"Danger badge",fg:"#b4533c",bg:"#f8e6e0",ratio:4.1,aa:!1,aaLarge:!0,aaa:!1},{id:"sky on sky-soft",use:"Info badge",fg:"#3f63a8",bg:"#e6edf8",ratio:5.01,aa:!0,aaLarge:!0,aaa:!1},{id:"violet on violet-soft",use:"AI badge",fg:"#6e56cf",bg:"#eeeafb",ratio:4.57,aa:!0,aaLarge:!0,aaa:!1},{id:"accent on accent-soft",use:"Accent badge",fg:"#4a6491",bg:"#e7ecf5",ratio:5.03,aa:!0,aaLarge:!0,aaa:!1},{id:"hero-fg on hero",use:"Hero panel",fg:"#ffffff",bg:"#1e2a44",ratio:14.29,aa:!0,aaLarge:!0,aaa:!0},{id:"pill-fg on pill",use:"Pill",fg:"#ffffff",bg:"#1e2a44",ratio:14.29,aa:!0,aaLarge:!0,aaa:!0}],ce=[{id:"fg on canvas",use:"Primary text",fg:"#eceef2",bg:"#0d0f14",ratio:16.5,aa:!0,aaLarge:!0,aaa:!0},{id:"fg on surface",use:"Text on cards and fields",fg:"#eceef2",bg:"#14171e",ratio:15.44,aa:!0,aaLarge:!0,aaa:!0},{id:"muted on canvas",use:"Secondary text",fg:"#a1a6b3",bg:"#0d0f14",ratio:7.87,aa:!0,aaLarge:!0,aaa:!0},{id:"muted on surface",use:"Secondary text on cards",fg:"#a1a6b3",bg:"#14171e",ratio:7.36,aa:!0,aaLarge:!0,aaa:!0},{id:"subtle on canvas",use:"Placeholder and tertiary text",fg:"#6d7282",bg:"#0d0f14",ratio:4,aa:!1,aaLarge:!0,aaa:!1},{id:"ink-fg on ink",use:"Primary button label",fg:"#14171e",bg:"#ece9ff",ratio:15.09,aa:!0,aaLarge:!0,aaa:!0},{id:"accent-fg on accent",use:"Accent fill label",fg:"#0d0f14",bg:"#8ea6d6",ratio:7.83,aa:!0,aaLarge:!0,aaa:!0},{id:"accent on canvas",use:"Links and accent text",fg:"#8ea6d6",bg:"#0d0f14",ratio:7.83,aa:!0,aaLarge:!0,aaa:!0},{id:"sage on sage-soft",use:"Success badge",fg:"#8cc4a2",bg:"#162a20",ratio:7.6,aa:!0,aaLarge:!0,aaa:!0},{id:"amber on amber-soft",use:"Waiting badge",fg:"#e9b45c",bg:"#2e2413",ratio:8.09,aa:!0,aaLarge:!0,aaa:!0},{id:"clay on clay-soft",use:"Danger badge",fg:"#ee8f77",bg:"#351c16",ratio:6.64,aa:!0,aaLarge:!0,aaa:!1},{id:"sky on sky-soft",use:"Info badge",fg:"#8fb1ee",bg:"#18243a",ratio:7.17,aa:!0,aaLarge:!0,aaa:!0},{id:"violet on violet-soft",use:"AI badge",fg:"#ab9cff",bg:"#221d3d",ratio:6.81,aa:!0,aaLarge:!0,aaa:!1},{id:"accent on accent-soft",use:"Accent badge",fg:"#8ea6d6",bg:"#1d2638",ratio:6.18,aa:!0,aaLarge:!0,aaa:!1},{id:"hero-fg on hero",use:"Hero panel",fg:"#f4f2ff",bg:"#272063",ratio:12.89,aa:!0,aaLarge:!0,aaa:!0},{id:"pill-fg on pill",use:"Pill",fg:"#ffffff",bg:"#5a4acf",ratio:6.33,aa:!0,aaLarge:!0,aaa:!1}],le={light:de,dark:ce},m={width:132,border:"1px solid var(--line)",borderRadius:12,overflow:"hidden",background:"var(--surface)"};function fe(){const a=s.color.pairs;return e.jsxs("div",{style:{display:"grid",gap:20},children:[e.jsxs("p",{children:["Primitives switch with ",e.jsx("code",{children:"data-theme"}),". The six chromatic pairs are accent, sky, sage, amber, clay, and violet, each with a soft fill."]}),e.jsx("div",{style:{display:"flex",flexWrap:"wrap",gap:8},children:Object.entries(s.color.light).filter(([r])=>r!=="shadow-color").map(([r])=>e.jsxs("div",{style:m,children:[e.jsx("div",{style:{height:48,background:`var(--${r})`}}),e.jsx("div",{style:{padding:8,fontSize:12},children:r})]},r))}),e.jsx("div",{style:{display:"flex",gap:8,flexWrap:"wrap"},children:a.map(r=>e.jsxs("div",{style:{...m,width:180},children:[e.jsxs("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",height:48},children:[e.jsx("div",{style:{background:`var(--${r})`}}),e.jsx("div",{style:{background:`var(--${r}-soft)`}})]}),e.jsxs("div",{style:{padding:8,fontSize:12},children:[r," / ",r,"-soft"]})]},r))})]})}function pe(){return e.jsxs("div",{style:{display:"grid",gap:16},children:[e.jsxs("p",{className:"agnt-eyebrow",children:[e.jsxs("span",{className:"agnt-ping",children:[e.jsx("i",{}),e.jsx("b",{})]})," Demo workspace · synthetic data"]}),e.jsx("h2",{className:"agnt-display",style:{margin:0},children:"Welcome back."}),e.jsxs("p",{style:{margin:0,maxWidth:"42ch"},children:["Inter is the UI face. Inter Tight (",e.jsx("span",{className:"agnt-stat",style:{fontSize:22},children:"32px"}),") carries numbers. Cormorant Garamond carries display lines. Geist Mono carries file ids and the demo password."]}),e.jsx("div",{style:{display:"flex",flexWrap:"wrap",gap:8},children:s.fontSize.body.map(a=>e.jsxs("span",{style:{fontSize:a},children:["Body ",a]},a))}),e.jsx("div",{style:{display:"flex",flexWrap:"wrap",gap:12,alignItems:"baseline"},children:s.fontSize.headline.filter((a,r)=>r%2===0).map(a=>e.jsx("span",{style:{fontFamily:"var(--font-serif)",fontSize:a},children:a},a))})]})}function ge(){return e.jsxs("div",{style:{overflow:"auto"},children:[e.jsxs("table",{className:"agnt-table",children:[e.jsx("thead",{children:e.jsxs("tr",{children:[e.jsx("th",{children:"Theme"}),e.jsx("th",{children:"Pair"}),e.jsx("th",{children:"Ratio"}),e.jsx("th",{children:"AA"}),e.jsx("th",{children:"AA large"})]})}),e.jsx("tbody",{children:["light","dark"].flatMap(a=>le[a].map(r=>e.jsxs("tr",{children:[e.jsx("td",{children:a}),e.jsx("td",{children:r.id}),e.jsx("td",{className:"agnt-mono",children:r.ratio.toFixed(2)}),e.jsx("td",{children:r.aa?"Pass":"Fail"}),e.jsx("td",{children:r.aaLarge?"Pass":"Fail"})]},`${a}-${r.id}`)))})]}),e.jsx("p",{children:"Light-theme sage, amber, and clay on their soft fills pass AA for large text and sit just under 4.5:1 for small text. The system keeps the extracted colors and does not use those pairs for body copy. `--subtle` is placeholder text only."})]})}const je={title:"Foundations/Overview",component:fe,tags:["autodocs"],parameters:{docs:{description:{component:"Extracted from the deployed agntOS demo on 29 Oct 2026. Every color has a light and a dark value."}}}},t={},n={render:()=>e.jsx(pe,{})},i={render:()=>e.jsx("div",{style:{display:"grid",gap:6},children:Object.entries(s.space.scale).map(([a,r])=>e.jsxs("div",{style:{display:"flex",alignItems:"center",gap:8},children:[e.jsx("span",{style:{width:r,height:12,background:"var(--ink)"}}),e.jsxs("span",{className:"agnt-mono",style:{fontSize:12},children:[a," · ",r]})]},a))})},o={render:()=>e.jsx("div",{style:{display:"flex",gap:12,flexWrap:"wrap"},children:Object.entries(s.radius).map(([a,r])=>e.jsxs("div",{style:{width:96,height:64,borderRadius:r,background:"var(--surface-2)",border:"1px solid var(--line)",display:"grid",placeItems:"center",fontSize:12},children:[a,e.jsx("br",{}),r]},a))})},d={render:()=>e.jsx("div",{style:{display:"flex",gap:16,padding:12},children:["card","control","pop"].map(a=>e.jsx("div",{style:{width:140,height:88,borderRadius:16,background:"var(--surface)",boxShadow:`var(--shadow-${a})`,display:"grid",placeItems:"center"},children:a},a))})},c={render:()=>e.jsx("p",{children:"Durations: fast 150ms, base 250ms, slow 400ms, reveal 550ms. Standard ease is cubic-bezier(0.22, 1, 0.36, 1). Popovers use the out-expo curve. Reduced motion removes shimmer, spinners, and entrance animation."})},l={render:()=>e.jsxs("div",{style:{display:"flex",gap:16,alignItems:"center"},children:[e.jsx(Y,{size:14}),e.jsx(ee,{size:16}),e.jsx(ae,{size:20}),e.jsx("span",{children:"Lucide, stroke 2, at 14, 16, and 20px."})]})},f={render:()=>e.jsx("div",{style:{display:"grid",gridTemplateColumns:"repeat(12, 1fr)",gap:8},children:Array.from({length:12}).map((a,r)=>e.jsx("div",{style:{height:32,background:"var(--surface-3)",borderRadius:6}},r))})},p={render:()=>e.jsx("ul",{children:Object.entries(s.breakpoint).map(([a,r])=>e.jsxs("li",{children:[a,": ",r]},a))})},g={render:()=>e.jsx("ul",{children:Object.entries(s.zIndex).map(([a,r])=>e.jsxs("li",{children:[a,": ",r]},a))})},u={render:()=>e.jsx("button",{className:"agnt-btn agnt-btn-secondary",style:{boxShadow:"0 0 0 3px var(--ring)"},children:"3px ring"})},x={render:()=>e.jsx(ge,{})};var b,h,y;t.parameters={...t.parameters,docs:{...(b=t.parameters)==null?void 0:b.docs,source:{originalSource:"{}",...(y=(h=t.parameters)==null?void 0:h.docs)==null?void 0:y.source}}};var v,j,k;n.parameters={...n.parameters,docs:{...(v=n.parameters)==null?void 0:v.docs,source:{originalSource:`{
+  render: () => <TypeSpecimen />
+}`,...(k=(j=n.parameters)==null?void 0:j.docs)==null?void 0:k.source}}};var S,L,w;i.parameters={...i.parameters,docs:{...(S=i.parameters)==null?void 0:S.docs,source:{originalSource:`{
+  render: () => <div style={{
+    display: "grid",
+    gap: 6
+  }}>{Object.entries(source.space.scale).map(([step, value]) => <div key={step} style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 8
+    }}><span style={{
+        width: value,
+        height: 12,
+        background: "var(--ink)"
+      }} /><span className="agnt-mono" style={{
+        fontSize: 12
+      }}>{step} · {value}</span></div>)}</div>
+}`,...(w=(L=i.parameters)==null?void 0:L.docs)==null?void 0:w.source}}};var I,z,T;o.parameters={...o.parameters,docs:{...(I=o.parameters)==null?void 0:I.docs,source:{originalSource:`{
+  render: () => <div style={{
+    display: "flex",
+    gap: 12,
+    flexWrap: "wrap"
+  }}>{Object.entries(source.radius).map(([name, value]) => <div key={name} style={{
+      width: 96,
+      height: 64,
+      borderRadius: value,
+      background: "var(--surface-2)",
+      border: "1px solid var(--line)",
+      display: "grid",
+      placeItems: "center",
+      fontSize: 12
+    }}>{name}<br />{value}</div>)}</div>
+}`,...(T=(z=o.parameters)==null?void 0:z.docs)==null?void 0:T.source}}};var A,P,O;d.parameters={...d.parameters,docs:{...(A=d.parameters)==null?void 0:A.docs,source:{originalSource:`{
+  render: () => <div style={{
+    display: "flex",
+    gap: 16,
+    padding: 12
+  }}>{(["card", "control", "pop"] as const).map(name => <div key={name} style={{
+      width: 140,
+      height: 88,
+      borderRadius: 16,
+      background: "var(--surface)",
+      boxShadow: \`var(--shadow-\${name})\`,
+      display: "grid",
+      placeItems: "center"
+    }}>{name}</div>)}</div>
+}`,...(O=(P=d.parameters)==null?void 0:P.docs)==null?void 0:O.source}}};var R,C,F;c.parameters={...c.parameters,docs:{...(R=c.parameters)==null?void 0:R.docs,source:{originalSource:`{
+  render: () => <p>Durations: fast 150ms, base 250ms, slow 400ms, reveal 550ms. Standard ease is cubic-bezier(0.22, 1, 0.36, 1). Popovers use the out-expo curve. Reduced motion removes shimmer, spinners, and entrance animation.</p>
+}`,...(F=(C=c.parameters)==null?void 0:C.docs)==null?void 0:F.source}}};var N,W,$;l.parameters={...l.parameters,docs:{...(N=l.parameters)==null?void 0:N.docs,source:{originalSource:`{
+  render: () => <div style={{
+    display: "flex",
+    gap: 16,
+    alignItems: "center"
+  }}><Check size={14} /><FileText size={16} /><Shield size={20} /><span>Lucide, stroke 2, at 14, 16, and 20px.</span></div>
+}`,...($=(W=l.parameters)==null?void 0:W.docs)==null?void 0:$.source}}};var E,D,_;f.parameters={...f.parameters,docs:{...(E=f.parameters)==null?void 0:E.docs,source:{originalSource:`{
+  render: () => <div style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(12, 1fr)",
+    gap: 8
+  }}>{Array.from({
+      length: 12
+    }).map((_, index) => <div key={index} style={{
+      height: 32,
+      background: "var(--surface-3)",
+      borderRadius: 6
+    }} />)}</div>
+}`,...(_=(D=f.parameters)==null?void 0:D.docs)==null?void 0:_.source}}};var G,M,B;p.parameters={...p.parameters,docs:{...(G=p.parameters)==null?void 0:G.docs,source:{originalSource:`{
+  render: () => <ul>{Object.entries(source.breakpoint).map(([name, value]) => <li key={name}>{name}: {value}</li>)}</ul>
+}`,...(B=(M=p.parameters)==null?void 0:M.docs)==null?void 0:B.source}}};var H,Z,U;g.parameters={...g.parameters,docs:{...(H=g.parameters)==null?void 0:H.docs,source:{originalSource:`{
+  render: () => <ul>{Object.entries(source.zIndex).map(([name, value]) => <li key={name}>{name}: {value}</li>)}</ul>
+}`,...(U=(Z=g.parameters)==null?void 0:Z.docs)==null?void 0:U.source}}};var q,J,K;u.parameters={...u.parameters,docs:{...(q=u.parameters)==null?void 0:q.docs,source:{originalSource:`{
+  render: () => <button className="agnt-btn agnt-btn-secondary" style={{
+    boxShadow: "0 0 0 3px var(--ring)"
+  }}>3px ring</button>
+}`,...(K=(J=u.parameters)==null?void 0:J.docs)==null?void 0:K.source}}};var Q,V,X;x.parameters={...x.parameters,docs:{...(Q=x.parameters)==null?void 0:Q.docs,source:{originalSource:`{
+  render: () => <ContrastTable />
+}`,...(X=(V=x.parameters)==null?void 0:V.docs)==null?void 0:X.source}}};const ke=["Palette","Typography","Spacing","Radius","Elevation","Motion","Iconography","Grid","Breakpoints","ZIndex","Focus","Accessibility"];export{x as Accessibility,p as Breakpoints,d as Elevation,u as Focus,f as Grid,l as Iconography,c as Motion,t as Palette,o as Radius,i as Spacing,n as Typography,g as ZIndex,ke as __namedExportsOrder,je as default};

@@ -1,0 +1,6 @@
+import{j as a}from"./jsx-runtime-D_zvdyIk.js";import{e as u}from"./sample-DR75VmRb.js";import{A as c}from"./ApprovalQueueCard-DH6vh2qz.js";import"./Avatar-Dk8HUUX1.js";import"./cx-2dOUpm6k.js";import"./Card-Dt9-Z6yZ.js";function o(){return a.jsx("div",{style:{display:"grid",gap:12},children:u.map(e=>a.jsx(c,{name:e.name,count:e.count,oldest:e.oldest,people:e.people,tone:e.tone},e.id))})}const f={title:"Patterns/Approval queue",component:o,tags:["autodocs"],parameters:{docs:{description:{component:"Queues grouped by approval group, with a count and Oldest: N days."}}}},r={};o.__docgenInfo={description:"",methods:[],displayName:"Demo"};var p,t,s;o.parameters={...o.parameters,docs:{...(p=o.parameters)==null?void 0:p.docs,source:{originalSource:`function Demo() {
+  return <div style={{
+    display: "grid",
+    gap: 12
+  }}>{approvalGroups.map(group => <ApprovalQueueCard key={group.id} name={group.name} count={group.count} oldest={group.oldest} people={group.people} tone={group.tone} />)}</div>;
+}`,...(s=(t=o.parameters)==null?void 0:t.docs)==null?void 0:s.source}}};var n,m,d;r.parameters={...r.parameters,docs:{...(n=r.parameters)==null?void 0:n.docs,source:{originalSource:"{}",...(d=(m=r.parameters)==null?void 0:m.docs)==null?void 0:d.source}}};const j=["Demo","Example"];export{o as Demo,r as Example,j as __namedExportsOrder,f as default};

@@ -1,0 +1,9 @@
+import{j as a}from"./jsx-runtime-D_zvdyIk.js";import{r as x}from"./index-C9y0RuIT.js";import{D as h}from"./Table-Cvs1Tlt1.js";import{S as y}from"./Badge-u3Rjh3b-.js";import{t as b}from"./sample-DR75VmRb.js";import"./_commonjsHelpers-CqkleIqs.js";import"./Checkbox-C_dma0b1.js";import"./check-DkJ089qz.js";import"./createLucideIcon--EHRR9k_.js";import"./EmptyState-DhDg2ICN.js";import"./Skeleton-D8MvmxON.js";import"./Input-a_FceqyG.js";import"./cx-2dOUpm6k.js";function T({loading:g=!1,rows:f=b}){const[S,k]=x.useState([]);return a.jsx(h,{caption:"Ontario tasks",rows:f,loading:g,selectable:!0,selected:S,onSelectedChange:k,searchText:e=>`${e.title} ${e.file} ${e.status} ${e.actor}`,columns:[{key:"title",header:"Task",sortable:!0,sortValue:e=>e.urgency,render:e=>e.title},{key:"status",header:"Status",render:e=>a.jsx(y,{status:e.status})},{key:"actor",header:"Who acts",sortable:!0,sortValue:e=>e.actor,render:e=>e.actor}]})}const v={title:"Components/Table",component:T,tags:["autodocs"],parameters:{docs:{description:{component:"Sortable columns, a text filter, row selection, an empty state, and skeleton rows while loading."}}}},t={},r={args:{loading:!0}},s={args:{rows:[]}};var o,n,c;t.parameters={...t.parameters,docs:{...(o=t.parameters)==null?void 0:o.docs,source:{originalSource:"{}",...(c=(n=t.parameters)==null?void 0:n.docs)==null?void 0:c.source}}};var m,i,p;r.parameters={...r.parameters,docs:{...(m=r.parameters)==null?void 0:m.docs,source:{originalSource:`{
+  args: {
+    loading: true
+  }
+}`,...(p=(i=r.parameters)==null?void 0:i.docs)==null?void 0:p.source}}};var l,u,d;s.parameters={...s.parameters,docs:{...(l=s.parameters)==null?void 0:l.docs,source:{originalSource:`{
+  args: {
+    rows: []
+  }
+}`,...(d=(u=s.parameters)==null?void 0:u.docs)==null?void 0:d.source}}};const z=["Tasks","Loading","Empty"];export{s as Empty,r as Loading,t as Tasks,z as __namedExportsOrder,v as default};

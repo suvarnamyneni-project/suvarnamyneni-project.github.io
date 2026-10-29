@@ -1,0 +1,1 @@
+import{j as e}from"./jsx-runtime-D_zvdyIk.js";function r({label:i}){return i?e.jsx("div",{className:"agnt-divider",children:i}):e.jsx("hr",{className:"agnt-divider-plain"})}r.__docgenInfo={description:"",methods:[],displayName:"Divider",props:{label:{required:!1,tsType:{name:"string"},description:""}}};export{r as D};
