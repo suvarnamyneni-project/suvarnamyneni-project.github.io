@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="is-editorial">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -165,19 +165,12 @@
       var root = document.documentElement;
       var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       var stack = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
+      root.classList.add("is-editorial");
       root.classList.toggle("is-stack", stack || reduce);
-      root.classList.toggle("has-rail", !stack && !reduce);
-      if (reduce || stack) root.classList.add("is-path-snap");
+      root.classList.remove("has-zoom");
+      root.classList.toggle("has-rail", false);
       if (!reduce) root.classList.add("has-motion");
-      if (reduce || stack) {
-        root.classList.add("ready");
-        return;
-      }
-      var screens = 1.35;
-      root.classList.add("has-zoom");
-      root.style.setProperty("--vh", window.innerHeight + "px");
-      root.style.setProperty("--spacer", (screens + 1) * window.innerHeight + "px");
-      setTimeout(function () { root.classList.add("ready"); }, 1600);
+      root.classList.add("ready");
     })();
   </script>
 </head>
@@ -193,22 +186,33 @@
       </span>
     </a>
     <nav class="site-nav" aria-label="Primary">
-      <div id="nav-menu" class="nav-menu">
-        <a href="#work" data-caption="Selected work">Work</a>
-        <a href="#about" data-caption="About">About</a>
-        <a href="#path" data-caption="Experience">Experience</a>
-        <a href="#skills" data-caption="Skills">Skills</a>
-        <a href="assets/Suvarna-Myneni-Resume.pdf" download data-caption="Resume">Resume</a>
-        <a href="#contact" data-caption="Contact">Contact</a>
+      <div class="nav-menu nav-menu-bar">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#path">Experience</a>
+        <a href="#skills">Skills</a>
+        <a href="assets/Suvarna-Myneni-Resume.pdf" download>Resume</a>
+        <a href="#contact">Contact</a>
         <div class="mode-switch mode-switch-menu" role="group" aria-label="Portfolio">
           <a href="#top" aria-current="page">Interactive</a>
           <a href="https://motiveux.wixsite.com/my-site-3" rel="noopener" title="Classic portfolio on Wix">Classic</a>
         </div>
       </div>
-      <a class="nav-contact" href="#contact">Contact</a>
-      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">
-        Menu
-      </button>
+      <details class="nav-fold">
+        <summary class="nav-summary">Menu</summary>
+        <div class="nav-menu">
+          <a href="#work">Work</a>
+          <a href="#about">About</a>
+          <a href="#path">Experience</a>
+          <a href="#skills">Skills</a>
+          <a href="assets/Suvarna-Myneni-Resume.pdf" download>Resume</a>
+          <a href="#contact">Contact</a>
+          <div class="mode-switch mode-switch-menu" role="group" aria-label="Portfolio">
+            <a href="#top" aria-current="page">Interactive</a>
+            <a href="https://motiveux.wixsite.com/my-site-3" rel="noopener" title="Classic portfolio on Wix">Classic</a>
+          </div>
+        </div>
+      </details>
     </nav>
   </header>
   <div class="mode-switch mode-switch-dock" role="group" aria-label="Portfolio">
@@ -557,6 +561,58 @@
       </div>
     </section>
 
+    <section class="panel" id="about" aria-labelledby="about-heading">
+      <div class="wrap about-stage">
+        <div class="about-grid">
+          <div class="portrait">
+            <div class="portrait-art">
+              <picture class="about-illustration">
+                <source type="image/webp" srcset="assets/about-illustration-800.webp 800w, assets/about-illustration.webp 1024w" sizes="(max-width: 900px) 80vw, 420px">
+                <img src="assets/about-illustration-800.jpg" alt="Suvarna at a laptop on a pink desk, with stickers, a child, books and a note that says Progress not Perfection." width="800" height="800" loading="lazy" decoding="async">
+              </picture>
+            </div>
+            <div class="float-tags" role="group" aria-label="Fields">
+              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="1.8" y="3.2" width="12.4" height="9.2" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M1.8 6.2h12.4" stroke="currentColor" stroke-width="1.4"/><path d="M8 8v3.1M6.7 8.8c.3-.5.7-.8 1.3-.8.8 0 1.2.4 1.2.9s-.5.8-1.2.8-1.2.3-1.2.9.5.8 1.2.8c.5 0 1-.2 1.3-.7" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round"/></svg></span><span class="float-face">Fintech</span></span></span>
+              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.4 3.4h1.5l1.1 6.3h6.5l1.2-4.3H4.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="12.3" r="1.05" fill="currentColor"/><circle cx="11" cy="12.3" r="1.05" fill="currentColor"/></svg></span><span class="float-face">E-commerce</span></span></span>
+              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.6 7.2 8 2.8l5.4 4.4v5.1a.7.7 0 0 1-.7.7H3.3a.7.7 0 0 1-.7-.7V7.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 13V9.2h3V13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span><span class="float-face">Real Estate</span></span></span>
+              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 1.6 9.3 6.1 13.8 8 9.3 9.9 8 14.4 6.7 9.9 2.2 8 6.7 6.1z" fill="currentColor"/></svg></span><span class="float-face">AI Automation</span></span></span>
+              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="1.65" fill="currentColor"/><circle cx="12.3" cy="3.7" r="1.65" fill="currentColor"/><circle cx="12.3" cy="12.3" r="1.65" fill="currentColor"/><path d="M5.1 8h3.1M8.2 8 10.7 4.8M8.2 8l2.5 3.2" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/></svg></span><span class="float-face">Agentic AI</span></span></span>
+            </div>
+          </div>
+          <div class="about-copy">
+            <h2 id="about-heading">About</h2>
+            <p>I'm a Senior UX Designer at eXp Realty in Hyderabad, from February 2023 to the present. Before that I was a UX Designer at Amazon Development Centre India (August 2020–February 2023) and at ICICI Bank (October 2018–August 2020).</p>
+            <p>I lead work from customer research, journey mapping and service blueprints through to design systems and AI-powered workflows. A web app redesign at eXp raised daily active users 40% and cut task time 25%. I have mentored 5 junior designers.</p>
+            <p><a href="#skills">Skills and tools</a> are listed below, in the same groups as the resume.</p>
+          </div>
+        </div>
+        <ul class="fact-cards">
+          <li>
+            <button type="button" class="fact-card glass" data-count="8" data-suffix="+">
+              <span class="fact-num">8+</span>
+              <span class="fact-label">years designing products</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="fact-card fact-highlight glass">
+              <span class="fact-num">+40%</span>
+              <span class="fact-label">daily active users</span>
+              <span class="fact-num">−25%</span>
+              <span class="fact-label">task time, eXp</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="fact-card glass" data-count="3">
+              <span class="fact-num">3</span>
+              <span class="fact-label">PG Diploma, MCA, B.Sc</span>
+              <span class="fact-detail">Manipal, Osmania, Andhra</span>
+            </button>
+          </li>
+        </ul>
+        <div id="kudos-mount" hidden></div>
+      </div>
+    </section>
+
     <section class="panel" id="path" aria-labelledby="path-heading">
       <div class="path-pin">
         <div class="path-stick">
@@ -673,84 +729,39 @@
       </div>
     </section>
 
-    <section class="panel" id="about" aria-labelledby="about-heading">
-      <div class="wrap about-stage">
-        <div class="about-grid">
-          <div class="portrait">
-            <div class="portrait-art">
-              <picture class="about-illustration">
-                <source type="image/webp" srcset="assets/about-illustration-800.webp 800w, assets/about-illustration.webp 1024w" sizes="(max-width: 900px) 80vw, 420px">
-                <img src="assets/about-illustration-800.jpg" alt="Suvarna at a laptop on a pink desk, with stickers, a child, books and a note that says Progress not Perfection." width="800" height="800" loading="lazy" decoding="async">
-              </picture>
-            </div>
-            <div class="float-tags" role="group" aria-label="Fields">
-              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="1.8" y="3.2" width="12.4" height="9.2" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M1.8 6.2h12.4" stroke="currentColor" stroke-width="1.4"/><path d="M8 8v3.1M6.7 8.8c.3-.5.7-.8 1.3-.8.8 0 1.2.4 1.2.9s-.5.8-1.2.8-1.2.3-1.2.9.5.8 1.2.8c.5 0 1-.2 1.3-.7" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round"/></svg></span><span class="float-face">Fintech</span></span></span>
-              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.4 3.4h1.5l1.1 6.3h6.5l1.2-4.3H4.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6.5" cy="12.3" r="1.05" fill="currentColor"/><circle cx="11" cy="12.3" r="1.05" fill="currentColor"/></svg></span><span class="float-face">E-commerce</span></span></span>
-              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M2.6 7.2 8 2.8l5.4 4.4v5.1a.7.7 0 0 1-.7.7H3.3a.7.7 0 0 1-.7-.7V7.2z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 13V9.2h3V13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span><span class="float-face">Real Estate</span></span></span>
-              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 1.6 9.3 6.1 13.8 8 9.3 9.9 8 14.4 6.7 9.9 2.2 8 6.7 6.1z" fill="currentColor"/></svg></span><span class="float-face">AI Automation</span></span></span>
-              <span class="float-tag"><span class="tag-bob"><span class="tag-mark" aria-hidden="true"><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="1.65" fill="currentColor"/><circle cx="12.3" cy="3.7" r="1.65" fill="currentColor"/><circle cx="12.3" cy="12.3" r="1.65" fill="currentColor"/><path d="M5.1 8h3.1M8.2 8 10.7 4.8M8.2 8l2.5 3.2" fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round"/></svg></span><span class="float-face">Agentic AI</span></span></span>
-            </div>
-          </div>
-          <div class="about-copy">
-            <h2 id="about-heading">About</h2>
-            <p>I'm a Senior UX Designer at eXp Realty in Hyderabad, from February 2023 to the present. Before that I was a UX Designer at Amazon Development Centre India (August 2020–February 2023) and at ICICI Bank (October 2018–August 2020).</p>
-            <p>I lead work from customer research, journey mapping and service blueprints through to design systems and AI-powered workflows. A web app redesign at eXp raised daily active users 40% and cut task time 25%. I have mentored 5 junior designers.</p>
-            <p><a href="#skills">Skills and tools</a> are listed below, in the same groups as the resume.</p>
-          </div>
-        </div>
-        <ul class="fact-cards">
-          <li>
-            <button type="button" class="fact-card glass" data-count="8" data-suffix="+">
-              <span class="fact-num">8+</span>
-              <span class="fact-label">years designing products</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="fact-card fact-highlight glass">
-              <span class="fact-num">+40%</span>
-              <span class="fact-label">daily active users</span>
-              <span class="fact-num">−25%</span>
-              <span class="fact-label">task time, eXp</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="fact-card glass" data-count="3">
-              <span class="fact-num">3</span>
-              <span class="fact-label">PG Diploma, MCA, B.Sc</span>
-              <span class="fact-detail">Manipal, Osmania, Andhra</span>
-            </button>
-          </li>
-        </ul>
-        <div id="kudos-mount" hidden></div>
-      </div>
-    </section>
-
     <section class="panel" id="skills" aria-labelledby="skills-heading">
       <div class="wrap">
         <div class="section-head">
           <h2 id="skills-heading">Skills and tools</h2>
-          <p>Grouped as on the resume.</p>
         </div>
         <div class="skill-groups">
           <article>
-            <h3>Experience Design &amp; CX</h3>
-            <p>Customer journey mapping, service blueprinting, persona development, design thinking, experience strategy, design systems, accessibility (WCAG).</p>
+            <h3>Design</h3>
+            <ul>
+              <li>Product and UX design</li>
+              <li>AI and conversational UX</li>
+              <li>Design systems</li>
+              <li>Journey mapping and service blueprints</li>
+              <li>Research and usability testing</li>
+              <li>Accessibility (WCAG)</li>
+            </ul>
           </article>
           <article>
-            <h3>User Research</h3>
-            <p>Qualitative and quantitative research, stakeholder interviews, usability testing, heuristic evaluation, behavioural analysis.</p>
-          </article>
-          <article>
-            <h3>Design &amp; Prototyping</h3>
-            <p>Figma, Figma Make, FigJam, Sketch, Adobe XD, HTML/CSS, wireframing, interactive prototyping.</p>
-          </article>
-          <article>
-            <h3>AI &amp; Automation</h3>
-            <p>Cursor, Claude, Lovable, Stitch, ChatGPT, AI workflow automation, AI-assisted research synthesis, agent-driven prototyping.</p>
+            <h3>AI and prototyping</h3>
+            <ul>
+              <li>Figma</li>
+              <li>Cursor</li>
+              <li>Claude</li>
+              <li>Lovable</li>
+              <li>ChatGPT</li>
+            </ul>
           </article>
           <article>
             <h3>Collaboration</h3>
-            <p>Miro, Jira, Confluence, stakeholder management.</p>
+            <ul>
+              <li>Miro</li>
+              <li>Jira</li>
+            </ul>
           </article>
         </div>
       </div>

@@ -319,6 +319,13 @@
     const count = pathBoard.episodes.length;
     const next = Math.max(0, Math.min(count - 1, index));
     const progress = count === 1 ? 0 : next / (count - 1);
+    if (document.documentElement.classList.contains("is-editorial")) {
+      const episode = pathBoard.episodes[next];
+      if (!episode) return;
+      episode.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+      setPathActive(next, progress);
+      return;
+    }
     if (pathIsSnap()) {
       const episode = pathBoard.episodes[next];
       if (!episode) return;
@@ -1138,7 +1145,7 @@
       applyStackPath();
     }
 
-    if (!stack && window.ScrollTrigger && pathBoard) {
+    if (!stack && window.ScrollTrigger && pathBoard && !root.classList.contains("is-editorial")) {
       layoutPath();
       const steps = Math.max(1, pathBoard.episodes.length - 1);
       pathTrigger = window.ScrollTrigger.create({

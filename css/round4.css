@@ -3886,3 +3886,346 @@ html.has-rail #work > .wrap > .project.feature,
     font-size: clamp(1.85rem, 8.4vw, 2.35rem);
   }
 }
+
+/* The desk is one picture in the page. It does not pin, zoom, or cover later sections. */
+
+html.is-editorial {
+  scroll-padding-top: 76px;
+}
+
+html.is-editorial .site-header {
+  position: fixed !important;
+  inset: 0 0 auto 0 !important;
+  z-index: 40;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between;
+  flex-wrap: nowrap !important;
+  gap: 16px;
+  width: auto !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  margin: 0 !important;
+  padding: 0 22px !important;
+  background: #fdf0e2 !important;
+  border: 0 !important;
+  border-bottom: 1px solid rgba(43, 50, 54, 0.16) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  pointer-events: auto !important;
+}
+
+html.is-editorial .site-header .brand-chip,
+html.is-editorial .site-header .site-nav,
+html.is-editorial .site-header .nav-menu {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+}
+
+html.is-editorial .site-header .brand-chip {
+  padding: 0 !important;
+  gap: 10px;
+}
+
+html.is-editorial .brand-role,
+html.is-editorial .brand-back,
+html.is-editorial .nav-contact {
+  display: none !important;
+}
+
+html.is-editorial .recruiter {
+  padding-top: 88px !important;
+}
+
+html.is-editorial #top,
+html.is-editorial #desk,
+html.is-editorial #work,
+html.is-editorial #about,
+html.is-editorial #path,
+html.is-editorial #skills,
+html.is-editorial #contact {
+  scroll-margin-top: 76px;
+}
+
+html.is-editorial .nav-fold {
+  display: none;
+}
+
+html.is-editorial .nav-fold > .nav-summary {
+  display: none;
+  list-style: none;
+  cursor: pointer;
+}
+
+html.is-editorial .nav-fold > .nav-summary::-webkit-details-marker {
+  display: none;
+}
+
+html.is-editorial .nav-menu {
+  display: flex !important;
+  position: static !important;
+  flex-flow: row nowrap !important;
+  align-items: center;
+  width: auto !important;
+  min-width: 0;
+  padding: 0 !important;
+}
+
+html.is-editorial .nav-menu > a {
+  padding: 6px 10px !important;
+  white-space: nowrap;
+}
+
+html.is-editorial .nav-menu .mode-switch-menu {
+  display: flex !important;
+  margin-left: 8px;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(43, 50, 54, 0.18);
+}
+
+html.is-editorial .skill-groups {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 36px;
+}
+
+html.is-editorial .skill-groups ul {
+  margin: 0;
+  padding-left: 1.15em;
+}
+
+html.is-editorial .skill-groups li {
+  margin: 4px 0;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  html.is-editorial .nav-menu-bar {
+    display: none !important;
+  }
+
+  html.is-editorial .nav-fold {
+    display: block;
+  }
+
+  html.is-editorial .nav-fold > .nav-summary {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 14px;
+    border: 1px solid rgba(43, 50, 54, 0.22);
+    border-radius: 999px;
+    background: #fffdfb;
+    font: 600 14px/1 Switzer, sans-serif;
+  }
+
+  html.is-editorial .nav-fold:not([open]) .nav-menu {
+    display: none !important;
+  }
+
+  html.is-editorial .nav-fold[open] .nav-menu {
+    display: flex !important;
+    position: absolute !important;
+    right: 12px;
+    top: 60px;
+    flex-direction: column !important;
+    align-items: stretch;
+    width: min(240px, calc(100vw - 24px)) !important;
+    padding: 8px !important;
+    background: #fdf0e2 !important;
+    border: 1px solid rgba(43, 50, 54, 0.16) !important;
+    border-radius: 16px;
+    box-shadow: 0 12px 28px rgba(80, 40, 20, 0.12) !important;
+  }
+
+  html.is-editorial .nav-fold[open] .nav-menu > a {
+    min-height: 40px;
+    padding: 8px 10px !important;
+  }
+
+  html.is-editorial .nav-menu .mode-switch-menu {
+    flex-direction: column;
+    align-items: stretch;
+    margin: 8px 0 0;
+  }
+}
+
+@media (max-width: 700px) {
+  html.is-editorial .skill-groups {
+    grid-template-columns: 1fr;
+  }
+}
+
+html.is-editorial .hero-spacer,
+html.is-editorial .unfold,
+html.is-editorial .veil,
+html.is-editorial .seed-field,
+html.is-editorial .hover-hint,
+html.is-editorial .scroll-pill,
+html.is-editorial .mobile-top-fade,
+html.is-editorial .mode-switch-dock {
+  display: none !important;
+}
+
+html.is-editorial .nav-menu .mode-switch-menu {
+  display: flex;
+}
+
+html.is-editorial .hero-stage {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 0;
+  width: min(1120px, calc(100% - 40px));
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 auto 48px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #f6d7c6;
+}
+
+html.is-editorial .scene,
+html.is-editorial .scene-bob,
+html.is-editorial .scene-tilt,
+html.is-editorial .scene-shift,
+html.is-editorial .scene picture,
+html.is-editorial .scene img {
+  position: relative !important;
+  inset: auto !important;
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+  max-width: none;
+  transform: none !important;
+  animation: none !important;
+}
+
+html.is-editorial .scene img {
+  object-fit: cover;
+  object-position: center 78%;
+  aspect-ratio: 16 / 9;
+}
+
+html.is-editorial .hotspots {
+  position: absolute;
+  inset: 0;
+}
+
+html.is-editorial .hero-copy {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  width: auto !important;
+  padding: 16px 20px 20px;
+  transform: none !important;
+  pointer-events: auto;
+}
+
+html.is-editorial .hero-copy .hero-desk-title {
+  font-size: clamp(1.15rem, 2vw, 1.45rem) !important;
+  max-width: 28em;
+}
+
+html.is-editorial #path .path-pin,
+html.is-editorial #path .path-stick {
+  display: block !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 0 !important;
+}
+
+html.is-editorial #path .path-head,
+html.is-editorial #path .path-scrub {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: min(1120px, calc(100% - 40px));
+  height: auto !important;
+  margin: 0 auto;
+}
+
+html.is-editorial #path .path-track {
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(1120px, calc(100% - 40px)) !important;
+  height: auto !important;
+  margin: 12px auto 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  transform: none !important;
+}
+
+html.is-editorial #path .path-ep {
+  display: grid !important;
+  grid-template-columns: 120px minmax(0, 1fr) !important;
+  align-items: center;
+  gap: 24px;
+  flex: none !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 24px 0 !important;
+  overflow: visible !important;
+  border-top: 1px solid rgba(43, 50, 54, 0.14);
+  scroll-margin-top: 110px;
+}
+
+html.is-editorial #path .path-yr,
+html.is-editorial #path .path-art {
+  grid-column: 1;
+}
+
+html.is-editorial #path .path-copy {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+html.is-editorial #path .path-art,
+html.is-editorial #path .path-art img {
+  width: 120px !important;
+  height: 120px !important;
+  margin: 0 !important;
+  object-fit: contain;
+}
+
+html.is-editorial #path .path-yr {
+  position: static !important;
+  font-size: 1.25rem !important;
+  color: #b15e3e !important;
+  -webkit-text-stroke: 0 !important;
+}
+
+html.is-editorial #path .path-copy {
+  max-width: none !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+
+html.is-editorial #path .path-weave,
+html.is-editorial #path .path-plane {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  html.is-editorial #path .path-ep {
+    grid-template-columns: 1fr !important;
+  }
+
+  html.is-editorial #path .path-copy {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  html.is-editorial .scene img {
+    aspect-ratio: 4 / 5;
+    object-position: center 70%;
+  }
+}
