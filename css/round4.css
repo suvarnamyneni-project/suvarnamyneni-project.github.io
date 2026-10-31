@@ -1074,10 +1074,93 @@ html.has-rail .project-body > h3 + p {
 .project > .project-body > a.case-link::after,
 .desk-card > a.case-link::after,
 .more-card > a.case-link::after {
-  content: "";
+  content: none;
+}
+
+.project .project-body,
+.desk-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.project .case-link,
+.desk-card .case-link,
+.more-card .case-link {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  flex: 0 0 auto;
+  align-self: flex-start;
+}
+
+html.has-rail .rail-track {
+  align-items: stretch;
+}
+
+html.has-rail .rail-track .project {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  height: 100%;
+  max-height: none;
+  overflow: hidden;
+  z-index: 6;
+}
+
+.year-stamp {
+  display: none;
+}
+
+html.has-rail .rail-track .thumb,
+html.has-rail .project .thumb.art-slot {
+  position: relative;
+  flex: 1 1 auto;
+  aspect-ratio: auto;
+  min-height: 140px;
+  height: auto;
+  overflow: hidden;
+}
+
+html.has-rail .project .thumb img {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+html.has-rail .project-body {
+  flex: 0 0 auto;
+  overflow: visible;
+}
+
+html.has-rail .rail-route,
+html.has-rail .rail-plane {
+  z-index: 1;
+}
+
+html.is-stack .rail-track .project {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.project.rail-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  text-align: left;
+  place-items: unset;
+}
+
+.more-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  width: 100%;
+  text-align: left;
 }
 
 /* A transform on the anchor would become the overlay's containing block and
