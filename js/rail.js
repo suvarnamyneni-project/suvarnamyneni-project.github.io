@@ -457,7 +457,7 @@
 
   function mountRail() {
     const work = document.getElementById("work");
-    if (!work || work.querySelector(".rail-stage")) return;
+    if (!work || work.querySelector(".rail-stage") || work.dataset.layout === "editorial") return;
     const head = work.querySelector(".section-head");
     cards = [...work.querySelectorAll(".project")];
     const stage = document.createElement("div");
