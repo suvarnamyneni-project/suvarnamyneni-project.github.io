@@ -1,865 +1,545 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Deal Desk — Suvarna Myneni</title>
-  <meta name="description" content="How I designed eXp Realty’s Deal Desk: one AI-native transaction desk from submitted to paid, for agents and the staff who settle the deal.">
-  <link rel="canonical" href="https://suvarnamyneni-project.github.io/work/deal-desk/">
-  <meta name="theme-color" content="#FDF0E2">
-  <meta property="og:title" content="Deal Desk — One deal, one platform, one desk">
-  <meta property="og:description" content="A long-form case study of eXp Realty’s Transactions Re-imagined desk: research, the analyst flow, and the systems behind the screen.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://suvarnamyneni-project.github.io/work/deal-desk/">
-  <meta property="og:image" content="https://suvarnamyneni-project.github.io/assets/case/deal-desk/hero.webp">
-  <link rel="icon" href="../../assets/favicon.png" type="image/png">
-  <link rel="preload" href="../../assets/fonts/general-sans-600.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="../../assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin>
-  <style>
-    @font-face { font-family: "General Sans"; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/general-sans-600.woff2") format("woff2"); }
-    @font-face { font-family: Switzer; font-style: normal; font-weight: 400; font-display: swap; src: url("../../assets/fonts/switzer-400.woff2") format("woff2"); }
-    @font-face { font-family: Switzer; font-style: normal; font-weight: 600; font-display: swap; src: url("../../assets/fonts/switzer-600.woff2") format("woff2"); }
-    :root { --ink: #2b3236; --muted: #41484c; --accent: #a34728; --paper: #fdf0e2; --display: "General Sans", Switzer, sans-serif; }
-    *, *::before, *::after { box-sizing: border-box; }
-    body { margin: 0; background: #fdf0e2; color: #2b3236; font-family: Switzer, "Segoe UI", sans-serif; font-size: 1.0625rem; line-height: 1.5; }
-    img { max-width: 100%; display: block; }
-    h1, h2, p { margin: 0; }
-    a { color: inherit; }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-    .skip-link { position: absolute; left: 16px; top: -48px; }
-    html .site-header { position: fixed; z-index: 20; inset: 16px 22px auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0; background: none; pointer-events: none; color: #2b3236; }
-    html .site-header > * { pointer-events: auto; }
-    .brand-chip, .site-nav { display: flex; align-items: center; border-radius: 999px; text-decoration: none; color: #2b3236; background: rgba(255,251,247,.86); border: 1px solid rgba(255,255,255,.7); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 8px 28px rgba(150,90,70,.12); }
-    html .brand-chip { flex-direction: row; align-items: center; gap: 10px; padding: 5px 16px 5px 5px; }
-    .brand-copy { display: flex; flex-direction: column; line-height: 1.15; }
-    .brand-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
-    .brand-name { font-family: "General Sans", Switzer, sans-serif; font-weight: 600; font-size: 14.5px; }
-    .brand-role { display: none; }
-    .brand-back { font-size: 12px; font-weight: 600; color: #b2512c; }
-    .site-nav { position: relative; width: max-content; gap: 2px; padding: 5px; }
-    .nav-menu { display: flex; align-items: center; gap: 2px; }
-    .site-nav a, .nav-toggle { color: #2b3236; text-decoration: none; font: 500 14px/normal Switzer, sans-serif; padding: 7px 14px; border-radius: 999px; background: transparent; border: 0; }
-    .nav-contact, .nav-toggle { display: none; }
-    @media (max-width: 759px) {
-      html .site-header { left: 12px; right: 12px; top: 12px; }
-      .brand-last, .nav-menu { display: none; }
-      .brand-back { display: block; }
-      .nav-contact, .nav-toggle { display: inline-flex; align-items: center; padding: 7px 12px; }
-    }
-  </style>
-  <link rel="stylesheet" href="../../css/styles.css">
-  <link rel="stylesheet" href="../../css/effects.css">
-  <link rel="stylesheet" href="../../css/round4.css">
-  <link rel="stylesheet" href="../../css/case.css">
-  <script>
-    (function () {
-      var root = document.documentElement;
-      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      var stack = window.matchMedia("(max-width: 900px), (pointer: coarse)").matches;
-      root.classList.toggle("is-stack", stack || reduce);
-      if (!reduce) root.classList.add("has-motion");
-      root.classList.add("ready");
-    })();
-  </script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deal Desk — Case Study · Suvarna Myneni</title>
+<meta name="description" content="How I designed eXp Realty’s Deal Desk: one AI-native transaction desk from submitted to paid, for agents and the staff who settle the deal.">
+<link rel="canonical" href="https://suvarnamyneni-project.github.io/work/deal-desk/">
+<meta property="og:title" content="Deal Desk — One deal, one platform, one desk">
+<meta property="og:description" content="A long-form case study of eXp Realty’s Transactions Re-imagined desk: research, the analyst flow, and the systems behind the screen.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://suvarnamyneni-project.github.io/work/deal-desk/">
+<meta property="og:image" content="https://suvarnamyneni-project.github.io/assets/case/deal-desk/hero.webp">
+<link rel="icon" href="../../assets/favicon.png" type="image/png">
+<link rel="stylesheet" href="case-study.css">
+<style>
+  .table-scroll{overflow-x:auto}
+  .table-scroll table{min-width:680px}
+  caption{caption-side:bottom;text-align:left;font-size:14px;color:var(--muted);padding:10px 4px 0}
+  .cs-cover figcaption{font-size:14px;color:var(--muted);padding:12px 16px 16px}
+  .type-display{font-family:Georgia,"Iowan Old Style",Palatino,"Palatino Linotype",serif;font-size:40px;line-height:1.1;letter-spacing:-.02em}
+  .type-ui{font-size:15px}
+  .type-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+</style>
 </head>
 <body>
-  <a class="skip-link" href="#story">Skip to the story</a>
-  <header class="site-header">
-    <a class="brand-chip" href="/#work" data-caption="Back to all work">
-      <img class="brand-avatar" src="../../assets/avatar-96.webp" width="36" height="36" alt="" decoding="async">
-      <span class="brand-copy">
-        <b class="brand-name">Suvarna <span class="brand-last">Myneni</span></b>
-        <small class="brand-role">AI-Native UX Designer</small>
-        <small class="brand-back">← Back to all work</small>
-      </span>
-    </a>
-    <nav class="site-nav" aria-label="Primary">
-      <div id="nav-menu" class="nav-menu">
-        <a href="/#work">Work</a>
-        <a href="/#path">Path</a>
-        <a href="/#about">About</a>
-        <a href="/#contact">Contact</a>
-      </div>
-      <a class="nav-contact" href="/#contact">Contact</a>
-      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">Menu</button>
-    </nav>
-  </header>
-  <div class="nav-backdrop" hidden></div>
-
-  <main class="case" id="story">
-    <nav class="case-rail" aria-label="On this page">
-      <div class="case-rail-list">
-        <span class="case-rail-mark" aria-hidden="true"></span>
-        <ol>
-          <li><a href="#introduction">Introduction</a></li>
-          <li><a href="#problem">The problem</a></li>
-          <li><a href="#research">Research</a></li>
-          <li><a href="#desk">The desk</a></li>
-          <li><a href="#systems">Systems</a></li>
-          <li><a href="#ai">How I used AI</a></li>
-          <li><a href="#prototypes">Prototypes</a></li>
-          <li><a href="#outcomes">Outcomes</a></li>
-          <li><a href="#reflection">Reflection</a></li>
-        </ol>
-      </div>
-      <div class="case-rail-progress" aria-hidden="true"><span class="case-rail-fill"></span></div>
-    </nav>
-
-    <header class="case-hero wrap case-reveal" id="introduction">
-      <p class="case-eyebrow">eXp Realty · Deal Desk · 2025–2026</p>
-      <h1>One deal, one platform, one desk</h1>
-      <p class="case-lede">Deal Desk is eXp’s Transactions Re-imagined platform, the agntOS transaction desk. I led the staff and settlement experience so a deal can move from submitted to paid in one place, for agents and for every staff role in between, under US and Canadian rules.</p>
-      <ul class="case-tags" aria-label="Work">
-        <li>Journey mapping</li>
-        <li>UX design</li>
-        <li>AI in the product</li>
-        <li>Prototypes</li>
-      </ul>
-      <ul class="case-tools" aria-label="Tools">
-        <li>Grok</li>
-        <li>Claude</li>
-        <li>Cursor</li>
-        <li>GitHub</li>
-        <li>Lovable</li>
-        <li>Miro</li>
-      </ul>
-    </header>
-
-    <figure class="case-frame wrap case-reveal">
-      <img src="../../assets/case/deal-desk/hero.webp" width="1600" height="1011" alt="Transaction Analyst queue in the Deal Desk prototype, on a laptop. Deals show a stage, a next action, and a critical or asked-agent status. The people, addresses, and amounts are fictional demo data." fetchpriority="high" decoding="async">
-      <figcaption>The analyst queue in the prototype. Addresses, people, and dollar amounts on every screen in this study are fictional demo data. The work is designed and prototyped. Production results are still ahead.</figcaption>
-    </figure>
-
-    <section class="story-map wrap case-reveal" aria-labelledby="story-map-heading">
-      <h2 class="story-title" id="story-map-heading">One deal, one desk</h2>
-      <p class="story-dek">Too many tools, the map of the work, and a shared desk.</p>
-      <div class="story-board">
-        <svg class="story-svg" viewBox="0 0 360 640" aria-hidden="true">
-          <defs><mask id="story-draw" maskUnits="userSpaceOnUse"><path class="route-mask" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/></mask></defs>
-          <path class="route-grey" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
-          <path class="route-rust" d="M32 78 L78 148 L40 214 L82 300 L36 366 L80 432 L44 520 L84 586 L40 650"/>
-          <g class="story-plane" transform="translate(32 78)"><g transform="translate(-16 -16) scale(0.5)"><path d="M6 34 L58 8 L36 58 L28 36 Z" fill="#F6C7B0" stroke="#2B3236" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 36 L58 8" fill="none" stroke="#A34728" stroke-width="2"/></g></g>
-        </svg>
-        <article class="act-card" data-act="0">
-          <a class="act-name" href="#problem"><span class="act-copy"><span class="act-kicker">Act 1</span> The problem</span></a>
-          <ol>
-            <li><a class="beat" href="#problem"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Too many tools</span></a></li>
-            <li><a class="beat" href="#where"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Status stays invisible</span></a></li>
-            <li><a class="beat" href="#legacy"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Notes instead of data</span></a></li>
-          </ol>
-        </article>
-        <article class="act-card" data-act="1">
-          <a class="act-name" href="#research"><span class="act-copy"><span class="act-kicker">Act 2</span> The research</span></a>
-          <ol>
-            <li><a class="beat" href="#personas"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">19 personas mapped</span></a></li>
-            <li><a class="beat" href="#journeys"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">14 end-to-end journeys</span></a></li>
-            <li><a class="beat" href="#principles"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">System checks first</span></a></li>
-          </ol>
-        </article>
-        <article class="act-card" data-act="2">
-          <a class="act-name" href="#desk"><span class="act-copy"><span class="act-kicker">Act 3</span> The desk</span></a>
-          <ol>
-            <li><a class="beat is-key" href="#desk"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">One shared desk</span></a></li>
-            <li><a class="beat" href="#queue"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Oldest work first</span></a></li>
-            <li><a class="beat" href="#agent"><span class="beat-mark" aria-hidden="true"></span><span class="beat-label">Where is my deal</span></a></li>
-          </ol>
-        </article>
-      </div>
-    </section>
-
-    <dl class="case-meta wrap case-reveal">
-      <div>
-        <dt>My role</dt>
-        <dd>UX lead for staff and settlement. I extended an analyst prototype a teammate had started, and I owned the flows from the queue through disbursement.</dd>
-      </div>
-      <div>
-        <dt>Who I worked with</dt>
-        <dd>Product, engineering on the transaction and accounting services, operations, accounting, transaction and closing analysts, compliance, and production support.</dd>
-      </div>
-      <div>
-        <dt>When and where</dt>
-        <dd>2025–2026, still in prototype and demo. Web, for the US and Canada. Agents are meant to work inside the agent platform. Staff work Deal Desk and Task Center.</dd>
-      </div>
-    </dl>
-
-    <section class="case-block wrap case-reveal" id="problem" aria-labelledby="problem-heading">
-      <p class="case-eyebrow">The problem</p>
-      <h2 id="problem-heading">A paid deal lived in several systems, and in the notes between them.</h2>
-      <p class="case-copy">The program set out to deliver an AI-native transaction platform for the US and Canada, designed to replace TRX and SkySlope. In the work I watched, a Transaction Analyst still settled a deal by moving between Task Center, Deal Desk, document AI, and SkySlope. Fee details sat in free-text notes. Staff re-keyed them. After a file said settled, an accounting error could stay invisible to the person the agent calls.</p>
-      <p class="case-copy" id="legacy">Agents already felt that fragmentation. To move a file forward they filled fields that did not apply to the deal, sometimes with placeholder text, because the screen would not accept the document until the form was complete. MLS data did not always arrive with the file, so they typed it again. A rejected document did not ping them. Staff could not write to the agent inside the tool, so missing items went out as a hand-built email. Canada’s closing analysts were still sharing spreadsheets with finance.</p>
-      <p class="case-ask">How might a Transaction Analyst take one deal from submission to the accounting hand-off, with every number traceable and every error visible?</p>
-      <ul class="case-themes">
-        <li><b>Checking, then deciding</b> Most of the effort was comparing dates and amounts across a document and the deal. The judgment was the short part.</li>
-        <li><b>Handoffs that waited</b> Work passed from a coordinator to an analyst and got checked twice. The wait did not add a decision.</li>
-        <li id="where"><b>Where is my deal?</b> Status was hard to see, so agents asked support. The old payment question ran from the agent, to support, to the analyst, to accounting.</li>
-        <li><b>Exceptions were the job</b> Mismatches, a failed posting, and a changed close date were ordinary. Recovery was ad hoc.</li>
-        <li><b>Regions are different products</b> Canada uses a lawyer or conveyancer, firm and closed stages, and a closing analyst who settles after the analyst prepares. A label swap would have lied.</li>
-        <li><b>Alerts had lost their meaning</b> In the August 6, 2026 settlement demo, the group named 80 critical alerts blocking automatic disbursement authorizations.</li>
-      </ul>
-      <p class="case-copy">Status truth was the loudest theme in the staff idea marketplace I reviewed: 15 of 28 active tensions sat on this desk, and the hottest was a file approved in document AI that could still show the wrong status in SkySlope and Task Center. In that same August demo, an August launch in Arkansas was postponed because bugs and feature requests were still open, and stakeholders worried the new process would add screens. Leadership also priced the SkySlope document library and APIs at about $12,000 a year, about 1% of that vendor bill, and chose a phased interface: a new UI, with that library and those APIs kept as the backend for a time.</p>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/before-after.webp" width="1600" height="608" alt="Before and after diagram. Before, a deal waits between agent, coordinator, and analyst. After, the analyst owns the review, with coordination steps, guided alerts, and details revealed when needed." loading="lazy" decoding="async">
-        <figcaption>The handoff I proposed removing: coordinator steps move into the analyst role. The busier screen stays manageable with guided alerts and progressive disclosure.</figcaption>
-      </figure>
-    </section>
-
-    <section class="case-block wrap case-reveal" id="research" aria-labelledby="research-heading">
-      <p class="case-eyebrow">Research and discovery</p>
-      <h2 id="research-heading">I watched the settlement before I drew a screen.</h2>
-      <p class="case-copy">The material was already months deep: demos, war rooms, a 345-page program archive, and boards. My first job was to turn that into a map the team could decide from. I read 29 discovery documents, the settlement end-to-end demo from August 6, 2026, and about 22 war-room decodes from September 2026. I mapped journeys in Miro, sorted an affinity of staff and agent notes, and checked the staff idea marketplace.</p>
-      <ol class="case-steps is-2">
-        <li>
-          <span class="case-num">01</span>
-          <h3>Settlement, end to end</h3>
-          <p>The August 6 demo walked a sale through bonuses, concessions, coordinator fees, the check, dates, the accounting service, and mentor fees. I treated the open questions in that room as part of the design.</p>
-        </li>
-        <li>
-          <span class="case-num">02</span>
-          <h3>War rooms and a workshop</h3>
-          <p>On October 20, 2026 I attended the schema war room. The workshop I was invited to that night turned into a backend walkthrough, so the task-card questions on the agenda stayed open.</p>
-        </li>
-        <li>
-          <span class="case-num">03</span>
-          <h3>Two maps, on purpose</h3>
-          <p>One sheet is 14 numbered settlement journeys. Another is a to-be swimlane for every transaction type, from listing to cancel. I used both. They are related, and they are not the same document.</p>
-        </li>
-        <li>
-          <span class="case-num">04</span>
-          <h3>Agent feedback, US and Canada</h3>
-          <p>Kickoff notes and a home and inbox spec kept pulling the same way: one place, attention before a file list, and structured fields where notes used to be.</p>
-        </li>
-      </ol>
-    </section>
-
-    <section class="case-block wrap case-reveal" aria-labelledby="personas-heading">
-      <p class="case-eyebrow">Who touches a deal</p>
-      <h2 id="personas-heading"><span class="case-count" data-count="19" style="--digits: 2">19</span> personas, agents and staff.</h2>
-      <p class="case-copy" id="personas">Five agent personas and fourteen staff personas, from listing and buyer’s agents through compliance, the analyst, Canada’s closing analyst, production support, and post-close. I used the set as shared language with product and operations. A transaction coordinator is agent-hired, a payee on the file, and a different person from the Transaction Analyst. Systems count as actors too: document AI, SkySlope, Task Center, the accounting service, Oracle, and Enterprise, where mentor configuration lives. Of the 57 settlement steps, 20 are fully automated, and most failures sit in the hand-off between those actors.</p>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/personas.webp" width="1600" height="589" alt="Nineteen personas: five agent roles and fourteen staff roles, grouped as coordination and review, operations and oversight, and support and after close." loading="lazy" decoding="async">
-        <figcaption>The persona set. Role names are generalized. Every role that touches a deal, from submission to post-close.</figcaption>
-      </figure>
-    </section>
-
-    <section class="case-block wrap case-reveal" aria-labelledby="journeys-heading">
-      <p class="case-eyebrow">How a deal moves</p>
-      <h2 id="journeys-heading"><span class="case-count" data-count="14" style="--digits: 2">14</span> journeys, then a wider lifecycle.</h2>
-      <p class="case-copy" id="journeys">I led the journey map in Miro and flagged an open question on any step where the rule, the owner, or the source of truth was still unsettled. Those flags mattered as much as the happy path. A later check of the prototype against that sheet came out 7 covered, 6 partial, and 1 missing.</p>
-      <figure class="case-viz" aria-label="Journey coverage: 7 covered, 6 partial, 1 missing, out of 14.">
-        <div class="mix" aria-hidden="true">
-          <span style="flex:7"></span>
-          <span style="flex:6"></span>
-          <span style="flex:1"></span>
-        </div>
-        <figcaption>7 covered, 6 partial, 1 missing. Coverage of the 14 settlement journeys in the prototype, checked against the journey sheet.</figcaption>
-      </figure>
-      <div class="case-table-wrap">
-        <table class="case-table">
-          <caption>Each journey, and what the prototype still owed it when I checked the sheet.</caption>
-          <thead>
-            <tr>
-              <th scope="col">Journey</th>
-              <th scope="col">Status</th>
-              <th scope="col">What the check found</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>J1 Settlement docs arrive and a task is created</td>
-              <td>Partial</td>
-              <td>The queue shows extracted dates and the check. Agent upload, and a task created by that upload, are still missing.</td>
-            </tr>
-            <tr>
-              <td>J2 The analyst gets the deal ready</td>
-              <td>Covered</td>
-              <td>Financials cover bonuses, concessions, the advance, extended hand, the coordinator fee, and automatic fee lines.</td>
-            </tr>
-            <tr>
-              <td>J3 The analyst settles</td>
-              <td>Covered</td>
-              <td>Confirm the disbursement package, enter the check, match the dates, balance the money, then settle.</td>
-            </tr>
-            <tr>
-              <td>J4 Accounting after settle</td>
-              <td>Covered</td>
-              <td>The receivable, the payable, and the accounting timeline are there. The nightly bank match is not shown. Controls are only implied.</td>
-            </tr>
-            <tr>
-              <td>J5 Production support catches an error</td>
-              <td>Covered</td>
-              <td>Automatic error alerts, a support view, and retry. A payload viewer and an explicit escalate step are still thin.</td>
-            </tr>
-            <tr>
-              <td>J6 “I haven’t been paid”</td>
-              <td>Covered</td>
-              <td>An automatic flag, a support view, and “manually handled” with a reason. The agent-side contact and a time box on the alert are gaps.</td>
-            </tr>
-            <tr>
-              <td>J7 A mentee deal shows mentor fees</td>
-              <td>Covered</td>
-              <td>The mentor fee is in financials. The check still asks that the program fee and the percent are visible on the deal.</td>
-            </tr>
-            <tr>
-              <td>J8 Mentor fee under the minimum</td>
-              <td>Covered</td>
-              <td>A $250 minimum waives the fee and raises a non-blocking alert.</td>
-            </tr>
-            <tr>
-              <td>J9 Override the fee and graduate</td>
-              <td>Partial</td>
-              <td>The override request and the change log exist. An approver, and a graduated marker, are missing.</td>
-            </tr>
-            <tr>
-              <td>J10 Extracted value versus the deal</td>
-              <td>Partial</td>
-              <td>Review lets the analyst pick a value. Which source wins by default is still an open decision.</td>
-            </tr>
-            <tr>
-              <td>J11 Statement and check in one file</td>
-              <td>Missing</td>
-              <td>No split logic. Agent upload is out of scope in this prototype.</td>
-            </tr>
-            <tr>
-              <td>J12 Oldest first</td>
-              <td>Partial</td>
-              <td>Tabs and search exist. An explicit sort by oldest created time is not listed among the features.</td>
-            </tr>
-            <tr>
-              <td>J13 Fewer screens</td>
-              <td>Partial</td>
-              <td>One desk, a change log, and a workflow guide. Document AI inside the desk, and sync back to SkySlope, are not there yet.</td>
-            </tr>
-            <tr>
-              <td>J14 Canada’s closing analyst settles</td>
-              <td>Partial</td>
-              <td>Canada deals and a handoff to the closing analyst exist. The approve-everything flow is missing.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/journey-map.webp" width="1600" height="715" alt="Fourteen journeys in five phases: submit, review, settle, disburse, and after close. Steps with an open question are marked." loading="lazy" decoding="async">
-        <figcaption>Submit, review, settle, disburse, and after close. A marked step is one where a rule, an owner, or a data source was still open.</figcaption>
-      </figure>
-      <p class="case-copy">The to-be workflow map is wider than those 14 journeys. It swims a listing, a sale, a lease, four kinds of referral, a broker price opinion, ShowGo, and a catch-all for fees and installments, across the agent, the system, the analyst, a transactions manager, broker compliance, and the managing broker. Most of the lighter types are meant to auto-settle. The analyst handles the exception. Settlement itself has two phases: first the analyst settles from a Ready for Settlement queue, then an approved file can auto-settle, with an Unable to Settle queue when it cannot. A post-close correction is a single-file delta, routed to a correction analyst. A withdrawn sale can come back as a reactivated listing.</p>
-      <p class="case-copy">Across the settlement journeys I counted <span class="case-count" data-count="57" style="--digits: 2">57</span> steps. In the demo, 38 were live, 10 were in progress, 5 were proposed, and 4 were still an open decision.</p>
-      <figure class="case-viz" aria-label="Of 57 settlement steps, 38 were live in the demo, 10 were in progress, 5 were proposed, and 4 were an open decision.">
-        <div class="mix" aria-hidden="true">
-          <span style="flex:38"></span>
-          <span style="flex:10"></span>
-          <span style="flex:5"></span>
-          <span style="flex:4"></span>
-        </div>
-        <figcaption>38 live in the demo, 10 in progress, 5 proposed, 4 still an open decision.</figcaption>
-      </figure>
-    </section>
-
-    <section class="case-block wrap case-reveal" aria-labelledby="insights-heading">
-      <p class="case-eyebrow">What I took from it</p>
-      <h2 id="insights-heading">Six things the desk had to respect.</h2>
-      <ol class="case-list">
-        <li>
-          <span class="case-num">01</span>
-          <div>
-            <h3>The work is not in one place</h3>
-            <p>Analysts still left the desk for a check copy and for notes. A faster screen that sends them somewhere else is a slower process.</p>
-          </div>
-        </li>
-        <li>
-          <span class="case-num">02</span>
-          <div>
-            <h3>Notes were the hidden integration</h3>
-            <p>Advances, extended hand, and coordinator fees lived in SkySlope notes. The change log already recorded the review. The notes were a second, worse copy.</p>
-          </div>
-        </li>
-        <li>
-          <span class="case-num">03</span>
-          <div>
-            <h3>Settled hid the failure</h3>
-            <p>A variance or an accounting failure could happen after Settle while the analyst still saw a finished file. The unpaid-agent call starts there.</p>
-          </div>
-        </li>
-        <li>
-          <span class="case-num">04</span>
-          <div>
-            <h3>Money is provisional until it settles</h3>
-            <p>Commission and cap depend on close order. Anything shown before settlement has to say it is an estimate, including why the number might move.</p>
-          </div>
-        </li>
-        <li>
-          <span class="case-num">05</span>
-          <div>
-            <h3>One shell, two countries</h3>
-            <p>In Canada the analyst prepares and the closing analyst settles, and overrides want an approval. The US demo revised approvals so they fire on triggers, such as a company-commission change or a personal sale over the threshold.</p>
-          </div>
-        </li>
-        <li>
-          <span class="case-num">06</span>
-          <div>
-            <h3>Parallel lanes, one “who has the ball”</h3>
-            <p>The October workshop described agent, broker compliance, analyst, and trust accounting moving at once. A clear-to-settle set, including a W-9 when a referral is paid, can block the disbursement authorization even when another lane is done. The file can still settle with an open compliance item, then sit in a separate review bucket until a broker approval archives it.</p>
-          </div>
-        </li>
-      </ol>
-      <p class="case-copy" id="principles">With product and operations I held five principles: one desk, validate before you act, guide the fix, status always visible, and one design system for agent and staff. The rule on every AI and validation gate is the same. The system checks. A person decides.</p>
-    </section>
-
-    <section class="case-block wrap case-reveal" id="desk" aria-labelledby="desk-heading">
-      <p class="case-eyebrow">The Transaction Analyst desk</p>
-      <h2 id="desk-heading">From the queue to disbursed, on one file.</h2>
-      <p class="case-copy">I designed the spine from submit through disbursement, with the exception lane drawn at the same time as the happy path. Validation gates and document AI sit on the file. Legacy accounting and the document system stayed visible, because pretending they were gone would have made the status a lie.</p>
-      <p class="case-copy">Status names disagreed across the sources: Settle, Mark Disbursed, Disbursed, Settlement Complete, Closed (Paid). I built one lifecycle and an alias table so product, engineering, and operations could point at the same moment. On the staff side the states run from created, to ready for the disbursement authorization, sent, waiting on closing documents, documents received, settlement started, settled, and closed. Withdrawn and in correction stay on that same file.</p>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/flow.webp" width="1600" height="758" alt="Flow diagram of a deal from submit through review, settlement, disbursement, and the exception paths beside the happy path." loading="lazy" decoding="async">
-        <figcaption>The spine I designed against: submit, review, settle, disburse, with exceptions beside the happy path.</figcaption>
-      </figure>
-    </section>
-
-    <section class="case-block wrap case-reveal" aria-labelledby="queue">
-      <p class="case-eyebrow">Queue</p>
-      <h2 id="queue">Oldest work first, and the next action on the row.</h2>
-      <p class="case-copy">The queue is role-based: analyst, compliance, and operations each see their own work. Filters follow the lifecycle, including new from the agent, needs documents, needs action, ready for the disbursement authorization, and in settlement. A row carries status, stage, and the next action, so the analyst can see an aging file without opening it. The journey sheet still wanted an explicit oldest-first sort. I kept that as a gap, not as a feature I would claim was done.</p>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/queue.webp" width="1600" height="1114" alt="Analyst queue with filters for new files, documents, action, disbursement authorization, and settlement. Each row has a next action. Demo data." loading="lazy" decoding="async">
-        <figcaption>My queue. Critical files and files waiting on the agent are visible before anyone opens them.</figcaption>
-      </figure>
-      <p class="case-copy">Opening a file shows one header: the parties, the close date, the price, and the blockers that still lock Send. Tabs carry counts. Missing information sits in context, such as a coordinator who has not been named. The October schema session added a rule I folded in here: a staff task is an approval step, and it should appear when approval is what remains. Non-approval steps can be marked complete, not needed, or skipped with a comment. Approval is the step that cannot be skipped. A listing stays as the core workflow. A sale is an attempt that can be discarded and replaced if the offer falls through.</p>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/overview.webp" width="1600" height="1114" alt="Deal overview with the file header, open items that lock sending the disbursement authorization, and a what-is-happening timeline. Demo data." loading="lazy" decoding="async">
-        <figcaption>Deal overview. Send stays disabled until the open items are clear, and the screen says why.</figcaption>
-      </figure>
-      <div class="case-split">
-        <article>
-          <h3>Checklist before money</h3>
-          <p>Intake is documents first. The analyst can ask the agent for what is missing. That request shows up on the agent’s home as something that needs them. Marking the checklist complete moves the file toward compliance. Financials stay locked until that gate, or until the demo path says compliance can review in parallel.</p>
-          <img src="../../assets/case/deal-desk/ta-checklist.webp" width="762" height="565" alt="Checklist on a deal, with items to complete before the file is ready for compliance. Demo data." loading="lazy" decoding="async">
-        </article>
-        <article>
-          <h3>Compliance, then the analyst</h3>
-          <p>Compliance sees needs review, escalated, and approved. They can approve, send the file back to the agent or the analyst with a reason, or escalate. Settlement stays view-only for them. A send-back returns the file to analyst intake.</p>
-          <img src="../../assets/case/deal-desk/ta-compliance.webp" width="787" height="565" alt="Compliance queue filtered to files that need review. Demo data." loading="lazy" decoding="async">
-        </article>
-      </div>
-    </section>
-
-    <section class="case-block wrap case-reveal" aria-labelledby="alerts-heading">
-      <p class="case-eyebrow">Alerts and mismatches</p>
-      <h2 id="alerts-heading">Two sources, one decision. The analyst picks.</h2>
-      <p class="case-copy">Critical alerts explain the problem and point at the fix. A mismatch between the agent’s value and the extracted value opens a compare: who entered each number, when, and where in the document the extract came from. The analyst picks one. Commission recalculates from that choice. If they are not sure, they ask the agent. The choice stays visible and reversible, with a timestamp, because the audit trail is the point.</p>
-      <p class="case-copy">Which source wins by default is still open. I left that undecided in the interface instead of inventing a winner. Informational alerts never block. The mentor example is the clearest: under a $250 minimum the fee is waived, the math is shown, and the alert says it does not block Send.</p>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/alerts.webp" width="1600" height="628" alt="Critical alerts on a deal, with a sale-price mismatch and a seller-name mismatch, each offering a review. Demo data." loading="lazy" decoding="async">
-        <figcaption>Critical alerts name the consequence. A seller-name mismatch, for example, will be rejected at disbursement until the legal names match.</figcaption>
-      </figure>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/mismatch.webp" width="1600" height="1114" alt="Side-by-side compare of an agent-entered sale price and the price extracted from the contract, with the source page visible. The analyst chooses one value. Demo data." loading="lazy" decoding="async">
-        <figcaption>Review and choose. The extract cites the document, the page, and the section. The analyst uses a value. They do not retype it.</figcaption>
-      </figure>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/ta-mentor.webp" width="778" height="565" alt="Resolved mismatches, plus an informational mentor alert that says no action is required and that sending the disbursement authorization is not blocked. Demo data." loading="lazy" decoding="async">
-        <figcaption>Resolved choices stay on the file. The mentor minimum is informational: the fee is waived, and Send is allowed.</figcaption>
-      </figure>
-    </section>
-
-    <section class="case-block wrap case-reveal" aria-labelledby="money-heading">
-      <p class="case-eyebrow">Financials, disbursement, settlement</p>
-      <h2 id="money-heading">The gates fail closed, and they say how to open.</h2>
-      <p class="case-copy">Financials are prefilled from the agent desk and from extracts. The analyst edits what changed. Bonuses and concessions come from the contract. The advance, extended hand, and coordinator fee are structured lines, with a source on each one, because those used to live in notes. The August demo’s rules are on the file: a $100 fee on a non-preferred third-party advance, a $50 extended-hand fee, and the mentor percent pulled from the agent profile so nobody opens another system to see it. Multiple parties and team splits are supported. Ownership-percentage splits waited until operations confirmed the rule.</p>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/financials.webp" width="1600" height="1114" alt="Financials tab with sale price, commission, and line items that show where each value came from. Demo data." loading="lazy" decoding="async">
-        <figcaption>Financials. Prefilled, with provenance. The analyst edits the line that changed.</figcaption>
-      </figure>
-      <p class="case-copy">Send stays disabled until compliance has approved and the blockers are clear. Every Send control says why: waiting on compliance, N blockers still open, or the authorization was already sent. The package confirms payees, roles, amounts, and method, and it checks that payees total the expected funds. Expected funds come from financials. There is no second entry. A changed close date creates a revised version. A skip covers a file that does not need an authorization. Version history stays on the file.</p>
-      <div class="case-split">
-        <article>
-          <h3>The package</h3>
-          <p>Draft template, closing entity, expected funds, and a payee total that has to match.</p>
-          <img src="../../assets/case/deal-desk/disbursement.webp" width="1600" height="956" alt="Disbursement tab with the authorization package, expected funds, and payees. Demo data." loading="lazy" decoding="async">
-        </article>
-        <article>
-          <h3>Confirm, then wait for funds</h3>
-          <p>Confirming the package moves the file to sent. Settlement waits on the money. The message thread stays available.</p>
-          <img src="../../assets/case/deal-desk/ta-confirm.webp" width="776" height="565" alt="Confirm disbursement authorization, with payees, amounts, and payment methods, and a check that the total matches expected funds. Demo data." loading="lazy" decoding="async">
-        </article>
-      </div>
-      <p class="case-copy">Settlement adds the payment. A check read by document AI is tagged as extracted. A row the analyst types is tagged as entered by them. Dates have to match before settle unlocks. The balance has to match. In the demo, a $500 underpayment is the case that should keep the file from being called reconciled. I recommended that disbursed be allowed only at a zero variance, or at an approved write-off. An unsigned or unmatched document can be re-uploaded or overridden, and the override is visible.</p>
-      <div class="case-split">
-        <article>
-          <h3>Awaiting funds</h3>
-          <img src="../../assets/case/deal-desk/ta-settle.webp" width="776" height="565" alt="Settlement tab while the file is awaiting funds, with expected and actual amounts. Demo data." loading="lazy" decoding="async">
-        </article>
-        <article>
-          <h3>Mark disbursed</h3>
-          <img src="../../assets/case/deal-desk/ta-mark.webp" width="776" height="565" alt="Settlement ready to mark disbursed once funds are reconciled. Demo data." loading="lazy" decoding="async">
-        </article>
-      </div>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/settlement.webp" width="1600" height="1114" alt="Settlement screen with payments, a variance between expected and actual funds, and the steps from funds received to disbursed. Demo data." loading="lazy" decoding="async">
-        <figcaption>Settlement. Variance is shown live. Balanced is a state the file earns, not a label someone types.</figcaption>
-      </figure>
-      <p class="case-copy">Once disbursed, the file is read-only. Corrections go out as a post-close correction with a reason, a new version, and the history intact, because accounting has already been told. The analyst can report an issue, which flags a post-settlement error for production support and leaves the file locked. The task then leaves the active queue. Today that error flag is still a manual report. The proposal, from the demo, is an informational, time-boxed flag that support clears when they mark the error manually handled, visible to the support team so an agent is not the first monitor.</p>
-      <figure class="case-frame">
-        <img src="../../assets/case/deal-desk/ta-after.webp" width="788" height="565" alt="Analyst queue after a file has been disbursed, with the demo path set to disbursed and file complete. Demo data." loading="lazy" decoding="async">
-        <figcaption>Back on the queue. A disbursed file is complete for this pass. The next one is still the oldest that needs a person.</figcaption>
-      </figure>
-    </section>
-
-    <section class="case-block wrap case-reveal" aria-labelledby="agent-heading">
-      <p class="case-eyebrow">The agent side of the same desk</p>
-      <h2 id="agent-heading">The same timeline, and a home that leads with attention.</h2>
-      <p class="case-copy" id="agent">Agents were unhappy with SkySlope’s upload flow and with questions that did not apply. The agent desk lives inside the agent platform, on the same visual system as staff. Home leads with what needs them, then an estimated commission that says why it might change, and a timestamp for how fresh the numbers are. Inbox is one conversation per transaction, professional parties only. Submitting to the desk is one step. The deal page shows the same status timeline staff use, which is the answer to “where is my deal?”</p>
-      <p class="case-copy">Creating a deal can start from a document or from scratch. Document AI reads what it can, the agent reviews it, and then they submit. A missing-document notification has to land on the filtered checklist. That was a confirmed bug in the old path, and it is a requirement on this one. Wizard order stays fluid. Money-first and property-first are both real.</p>
-      <div class="case-split">
-        <article>
-          <h3>Home</h3>
-          <p>Attention first. Commission is labeled provisional. Submit to the desk is the action on the file that is ready.</p>
-          <img src="../../assets/case/deal-desk/agent-home.webp" width="1600" height="951" alt="Agent home with needs-your-attention, a provisional commission, and a submit-to-Deal-Desk action. Demo account and demo figures." loading="lazy" decoding="async">
-        </article>
-        <article>
-          <h3>The deal</h3>
-          <p>One status line from submitted, through the analyst checklist and compliance, to the disbursement authorization and settlement.</p>
-          <img src="../../assets/case/deal-desk/agent-deal.webp" width="1600" height="952" alt="Agent deal page with a status timeline from submitted to settlement disbursed, and the documents on the file. Demo data." loading="lazy" decoding="async">
-        </article>
-      </div>
-    </section>
-
-    <section class="case-block wrap case-reveal" id="systems" aria-labelledby="systems-heading">
-      <p class="case-eyebrow">System thinking</p>
-      <h2 id="systems-heading">The screen had to tell the truth about the systems behind it.</h2>
-      <p class="case-copy">Engineering owns the accounting service. I designed the controls a Transaction Analyst sees, including when a control has to wait, explain itself, or stay hidden. These are the rules I designed against, in plain language.</p>
-      <ol class="case-steps is-2">
-        <li>
-          <span class="case-num">01</span>
-          <h3>One transaction record</h3>
-          <p>The program’s rule is a single source of truth for price, commission, and dates. Accounting, commission, and Task Center read that record. They do not read the raw document or the legacy system as a second authority. Provenance chips exist because document AI, the agent, and staff all write, and trust is seeing who said what.</p>
-        </li>
-        <li>
-          <span class="case-num">02</span>
-          <h3>Where the rules live</h3>
-          <p>A decision document weighed two homes for settlement rules. Keep them in TRX for the first release, which is faster and keeps the current invoice path. Or build an accounting service with template-driven rules. The document argued that path could cut duplicated rules by more than 90%, and that it was too heavy for the first release. The recommendation was to stay on TRX for the MVP and design the accounting service in parallel. By the August demo, that service was creating receivables and payables and comparing line totals to the aggregate before anything went to Oracle. The interface had to stay honest about which system was in charge that week.</p>
-        </li>
-        <li>
-          <span class="case-num">03</span>
-          <h3>Variance stops the hand-off</h3>
-          <p>Variance is the gap between the actual total on a payable or receivable and the expected amount at settlement. If any record is off, the whole submission downstream is blocked, so a bad number cannot travel quietly. A tiny rounding remainder is treated as zero so a clean file is not blocked by how computers store decimals. A real shortfall is a failure, stored, and shown to production support.</p>
-        </li>
-        <li>
-          <span class="case-num">04</span>
-          <h3>Retry and restart are different</h3>
-          <p>If a middle step fails, and later steps depend on it, the run stops. Recovery is a restart from that point. If a last step fails, and nothing after it depends on it, retry touches only the failed records. A success response that omits data a later step needs counts as a failure. The desk’s job is to make those two actions look different, and to show a reference to the payload without showing the payload itself.</p>
-        </li>
-        <li>
-          <span class="case-num">05</span>
-          <h3>Migration had to be reversible</h3>
-          <p>An agent is flagged in Enterprise as using the new calculator instead of TRX. TRX ignores that agent’s incoming SkySlope transactions. The first release starts with a one-agent smoke test: their cap-period deals copy over, stay view-only in TRX, and raise the settlement task in the new tool. If settlement fails, the flag comes off, TRX goes back to edit, and the new tasks are deleted. Later waves use a file of beta agents, then residential states, commercial, and the referral division. A deal whose co-agent is not in the program stays out. Thousands of in-flight files, and about 19,800 pre-contracts, are part of the product, not a cleanup project for later.</p>
-        </li>
-        <li>
-          <span class="case-num">06</span>
-          <h3>Settled is append-only</h3>
-          <p>A disbursed file does not get edited in place. A correction is a new post-close record with a reason. The change log records who did what. Migration itself needs the same habit: who ran a conversion, when, what was skipped, and a business sign-off. Task Center stays a separate app, so a task deep-links back with the role and the transaction still attached.</p>
-        </li>
-      </ol>
-      <p class="case-copy">A few constraints shaped the UI more than any visual preference. Association forms cannot be blank templates we draft ourselves, because of how those forms are licensed, so a forms partner does the legal document and our AI checks the data. Document AI is asynchronous, on the order of 30 seconds, so the screen needs a real processing state. Canada’s accounting integration had a March 2027 constraint, so Canadian steps can be visible before that backend is finished. Document AI being down is a named risk: until it can read a check, the analyst still types the check from the checklist, and the field shows that a person entered it.</p>
-      <div class="case-table-wrap">
-        <table class="case-table">
-          <caption>Rules from the settlement demo and the accounting notes, and what I did with each on the desk.</caption>
-          <thead>
-            <tr>
-              <th scope="col">Rule</th>
-              <th scope="col">What the desk shows</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>$100 fee on a non-preferred third-party advance, and $50 on extended hand</td>
-              <td>Automatic fee lines, visible, not re-keyed from a note.</td>
-            </tr>
-            <tr>
-              <td>Mentor fee under $250</td>
-              <td>Waived, with the percent from the agent profile and an alert that does not block Send.</td>
-            </tr>
-            <tr>
-              <td>US approvals</td>
-              <td>Only on triggers, such as a company-commission change or a personal sale over the threshold. Canada still wants a review of the overrides.</td>
-            </tr>
-            <tr>
-              <td>Close dates</td>
-              <td>Scheduled and actual have to match, or Settle stays disabled. A changed date revises the authorization.</td>
-            </tr>
-            <tr>
-              <td>Variance other than zero</td>
-              <td>The accounting hand-off is blocked. The file shows the gap. Disbursed waits on a true balance or an approved write-off.</td>
-            </tr>
-            <tr>
-              <td>Unapproved, set by the analyst or by broker compliance</td>
-              <td>A hard block on sending the authorization, including a revised one.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="case-block wrap case-reveal" id="ai" aria-labelledby="ai-heading">
-      <p class="case-eyebrow">How I used AI</p>
-      <h2 id="ai-heading">Three places AI showed up: in the research, in the prototypes, and in the product.</h2>
-      <p class="case-copy">The tools and the product feature are different jobs. I used AI to read a large archive and to make clickable desks. The product uses AI to read a document and stop before the decision. I kept those jobs separate so a fast prototype could not quietly become a business rule.</p>
-      <ol class="case-steps">
-        <li>
-          <span class="case-num">01</span>
-          <h3>Grok, for the reading</h3>
-          <p>I used Grok to work through the program archive, the war-room notes, and the journey material, and to pull rules, conflicts, and open questions into a form I could design against. Every rule went back to the source before it reached a screen. Miro stayed the place the journeys and the ecosystem map lived: SkySlope into TRX, then the payment queue, then payables, plus the deep link from a SkySlope file into splits with the person’s role still attached.</p>
-        </li>
-        <li>
-          <span class="case-num">02</span>
-          <h3>Claude, Lovable, Cursor, GitHub</h3>
-          <p>Claude Design held the visual system and the long canvases. Agent, analyst, and compliance were each explored as a 105-page file, plus a seven-slide happy path from an agent submit to a disbursed file on the broker view. One deck filled in its own placeholder splits and fees. I treated those figures as stand-ins.</p>
-        </li>
-        <li>
-          <span class="case-num">03</span>
-          <h3>A clickable desk, the same day</h3>
-          <p>On October 5, 2026 I built the combined Agent and Staff prototype in Lovable: one shared state, a role switcher, and a path from a new purchase through intake, compliance, disbursement, and the broker pipeline. The same day I removed the coordinator as a switchable staff role, and I put a reason under every disabled Send control.</p>
-        </li>
-      </ol>
-      <p class="case-copy">I then wrote a Cursor brief to rebuild that mock as a local app a teammate could clone from GitHub and run: Agent and Transaction Analyst, queues, disbursement issues, settlement alerts, and retry and restart on the downstream accounting pipeline. Mock data only. No backend, and no secrets. The brief’s test was simple. A fresh clone installs, runs, and builds.</p>
-      <h3 id="product-ai" style="margin-top:28px">Inside the product, AI checks and a person decides</h3>
-      <p class="case-copy">Document AI classifies a file, pulls dates and amounts, and checks them against the deal. Compliance checks can flag a missing signature or initial and hold the file until the agent uploads a correction. The analyst sees both values and picks. Upload by the agent, full extraction on every file, and splitting a combined statement-and-check file are planned, not done. The long-term workflow map goes further: an AI reviewer comments and flags first, and auto-approves later. Auto-settle is phase two, when the clear-to-settle documents match and nothing is flagged. Phase one is still a person, with an SLA and an assignee on the task. Review starts on the first document, not on a finished package, because finance wants a new file visible for forecasting immediately.</p>
-      <ul class="case-themes">
-        <li><b>Read</b> The document is classified and the dates, amounts, and check details are extracted.</li>
-        <li><b>Check</b> Extracted values are compared with the deal. Missing signatures and missing conditional documents are flagged.</li>
-        <li><b>Choose</b> A person picks the value, asks the agent, or overrides with the override recorded. Settle stays locked until the checks that matter have passed.</li>
-      </ul>
-    </section>
-
-    <section class="case-block wrap case-reveal" id="prototypes" aria-labelledby="prototypes-heading">
-      <p class="case-eyebrow">Prototypes and iterations</p>
-      <h2 id="prototypes-heading">I checked the clickable desk against the journeys, then changed the gates.</h2>
-      <p class="case-copy">Two checks, on purpose. The journey sheet versus the feature list, in the table above. Then a pass over the Transaction Analyst desk against the demo, and a role-by-role pass over the combined prototype. They do not agree on every item. I logged the disagreement instead of picking a quiet winner.</p>
-      <div class="case-table-wrap">
-        <table class="case-table">
-          <caption>Role-by-role pass on the combined Agent and Staff prototype.</caption>
-          <thead>
-            <tr>
-              <th scope="col">Role</th>
-              <th scope="col">Result</th>
-              <th scope="col">What I found</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Agent</td>
-              <td>Fail</td>
-              <td>An agent could land in the staff interface on someone else’s deal. Agents now bounce from the staff queue back to their own deal.</td>
-            </tr>
-            <tr>
-              <td>Compliance</td>
-              <td>Partial</td>
-              <td>The view was right. Actions could be disabled with no reason. The reason is now inline.</td>
-            </tr>
-            <tr>
-              <td>Transaction Analyst</td>
-              <td>Mixed</td>
-              <td>The path works end to end. The controls were too loose, including a send that could proceed with an open underpayment.</td>
-            </tr>
-            <tr>
-              <td>Broker and operations</td>
-              <td>Fail</td>
-              <td>There was no distinct oversight screen. The pipeline view is the start of one.</td>
-            </tr>
-            <tr>
-              <td>Timeline</td>
-              <td>Pass</td>
-              <td>Status stayed in sync as the role changed.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="case-table-wrap">
-        <table class="case-table">
-          <caption>What changed in the prototype, and what is still a fix.</caption>
-          <thead>
-            <tr>
-              <th scope="col">Finding</th>
-              <th scope="col">Change</th>
-              <th scope="col">Where it stands</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>The coordinator is agent-hired, not staff</td>
-              <td>Removed as a staff role. New files land in analyst intake. The coordinator stays as a contact on the file.</td>
-              <td>Done in the combined prototype</td>
-            </tr>
-            <tr>
-              <td>A disabled Send looked broken</td>
-              <td>Every Send control says why it is disabled.</td>
-              <td>Done</td>
-            </tr>
-            <tr>
-              <td>The mentor percent lived in another system</td>
-              <td>Shown on the deal, marked as set on the agent profile.</td>
-              <td>Done on the analyst desk</td>
-            </tr>
-            <tr>
-              <td>Notes repeated the log</td>
-              <td>The change log records the step. The analyst does not keep a parallel note.</td>
-              <td>Done on the analyst desk</td>
-            </tr>
-            <tr>
-              <td>Mismatches were retyped</td>
-              <td>Side-by-side review, and the analyst picks.</td>
-              <td>Done on the analyst desk</td>
-            </tr>
-            <tr>
-              <td>Approvals on every file slowed the US path</td>
-              <td>US approvals only on triggers. Canada still reviews more broadly.</td>
-              <td>Decided in the August demo</td>
-            </tr>
-            <tr>
-              <td>Send could proceed with an open underpayment</td>
-              <td>Gate send on critical alerts, and gate disbursed on a zero variance or an approved write-off.</td>
-              <td>On the fix list</td>
-            </tr>
-            <tr>
-              <td>Resolve was a single click</td>
-              <td>A reason, and who, on every resolve. The step cannot complete while alerts remain.</td>
-              <td>On the fix list</td>
-            </tr>
-            <tr>
-              <td>No confirm before Send</td>
-              <td>A confirm, and one name for the sent state.</td>
-              <td>On the fix list</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="case-copy">The later desk audit, separate from the 7 / 6 / 1 journey count, landed at 6 covered, 9 partial, and 4 missing. The missing four were manager approval, a combined statement and check, Canada’s closing-analyst flow, and the in-app workflow guide. The biggest gaps were the Settle step itself, and how an error shows up after the file already says settled.</p>
-    </section>
-
-    <section class="case-block wrap case-reveal" id="outcomes" aria-labelledby="outcomes-heading">
-      <p class="case-eyebrow">Outcomes and what is next</p>
-      <h2 id="outcomes-heading">What the desk is aimed at. The score comes after launch.</h2>
-      <p class="case-copy">This work was still in prototype and demo in the sources I have. I am not going to invent a before-and-after on minutes per deal, screens per settlement, or support contacts. What I can account for is the shape of the design, and the counts from the maps and the audits.</p>
-      <ul class="case-themes">
-        <li><b><span class="case-count" data-count="19" style="--digits: 2">19</span> personas</b> Five agent roles and fourteen staff roles, plus the systems I treated as actors.</li>
-        <li><b><span class="case-count" data-count="14" style="--digits: 2">14</span> journeys</b> 7 covered, 6 partial, 1 missing in the prototype check.</li>
-        <li><b><span class="case-count" data-count="57" style="--digits: 2">57</span> settlement steps</b> 38 live in the demo, 10 in progress, 5 proposed, 4 open.</li>
-        <li><b><span class="case-count" data-count="40" style="--digits: 2">40</span> flows</b> Each branch, from a mismatch to a post-settlement error, has a decision and a next step.</li>
-        <li><b><span class="case-count" data-count="29" style="--digits: 2">29</span> discovery docs</b> Read with the war rooms, the demo, and the program archive.</li>
-        <li><b><span class="case-count" data-count="15" style="--digits: 2">15</span> of 28 tensions</b> Staff idea-marketplace items that sit on this desk. Status truth was the hottest.</li>
-      </ul>
-      <p class="case-copy">On the journey sheet, the demo flow reaches the accounting service in about 3 seconds. That is a demo-path timing, not a production service level. I also logged 24 open questions and 10 places the sources disagreed, so the conflict stayed visible.</p>
-      <p class="case-copy">The design is aimed at fewer screens per deal, one desk for agents and staff, less manual checking, a status anyone on the file can see, and a faster path through a guided fix, a retry, or a clear escalation. Those are intentions until we measure them. The measures I want after launch are screens per deal, time to settle, and how often an agent has to ask where the deal is.</p>
-      <h3 style="margin-top:28px">What I would do next</h3>
-      <ol class="case-steps is-2">
-        <li>
-          <span class="case-num">01</span>
-          <h3>The real Settle step</h3>
-          <p>A confirm, a payment date, a demonstrated block when the close dates disagree, and one name for the end state.</p>
-        </li>
-        <li>
-          <span class="case-num">02</span>
-          <h3>Errors after “settled”</h3>
-          <p>An automatic, time-boxed flag in Deal Desk and Task Center, visible to support, cleared when someone marks it manually handled.</p>
-        </li>
-        <li>
-          <span class="case-num">03</span>
-          <h3>Approval, and Canada</h3>
-          <p>Manager approval on the US triggers, an approve-all path for Canada, and the closing-analyst flow taken from the spreadsheet walkthroughs.</p>
-        </li>
-        <li>
-          <span class="case-num">04</span>
-          <h3>The file that is two documents</h3>
-          <p>Statement and check in one upload, once the rule is decided, plus the workflow guide on the file and a change log that shows the old value, the new value, and the reason.</p>
-        </li>
-      </ol>
-      <p class="case-copy">Still open, and I would rather leave them open than guess: which source wins when document AI and the deal disagree; whether a combined file is one task or two; how long a post-settlement flag stays up and who clears it; when document AI will read the check, and what stays in SkySlope until then; whether a manual note still has a job beside the log; and how an overpayment works. The sources describe underpayment and a non-zero variance. They do not describe the overpayment path.</p>
-    </section>
-
-    <section class="case-block wrap case-reveal" id="reflection" aria-labelledby="reflection-heading">
-      <p class="case-eyebrow">Reflection</p>
-      <h2 id="reflection-heading">What I will carry to the next desk.</h2>
-      <ol class="case-list">
-        <li>
-          <span class="case-num">01</span>
-          <div>
-            <h3>Map the systems, not only the screens</h3>
-            <p>The pain sat in the hand-offs. A webhook, a control, a send to accounting. Those systems had to be actors in the journey, or the screen would hide the failure.</p>
-          </div>
-        </li>
-        <li>
-          <span class="case-num">02</span>
-          <div>
-            <h3>Write the rule before the picture</h3>
-            <p>Estimate until settled. Append-only after. The coordinator is not the analyst. Those three sentences prevented a class of wrong screens.</p>
-          </div>
-        </li>
-        <li>
-          <span class="case-num">03</span>
-          <div>
-            <h3>Design the exception first</h3>
-            <p>The happy path is short. Trust is the retry, the escalate, the not-paid flag, and the correction that does not rewrite history.</p>
-          </div>
-        </li>
-        <li>
-          <span class="case-num">04</span>
-          <div>
-            <h3>A fast prototype can be confidently wrong</h3>
-            <p>Lovable and Claude made a desk I could click the same day. The journey sheet was the thing that kept those clicks honest. Placeholder fees from a model are not a fee schedule.</p>
-          </div>
-        </li>
-        <li>
-          <span class="case-num">05</span>
-          <div>
-            <h3>Leave the disagreement on the table</h3>
-            <p>Open questions, with an owner, moved faster than a polished screen that had silently picked a side. Deferring the unsettled split was a decision. So was extending a teammate’s prototype instead of starting over.</p>
-          </div>
-        </li>
-      </ol>
-    </section>
-
-    <section class="case-next wrap case-reveal" aria-labelledby="next-project-heading">
-      <p class="case-eyebrow">Next project</p>
-      <h2 id="next-project-heading" class="sr-only">Next project</h2>
-      <a href="/work/agent-transactions/">Agent Transactions</a>
-      <p class="case-copy" style="margin-top: 0">The agent-facing transaction workspace that sits on the other side of this desk.</p>
-    </section>
-    <footer class="case-foot wrap case-reveal">
-      <a href="/#work">← Back to all work</a>
-      <a href="/#contact">Contact</a>
-    </footer>
-  </main>
-
-<div class="cursor" id="cursor" hidden aria-hidden="true">
-    <div class="cursor-sprite">
-      <svg viewBox="0 0 28 28" aria-hidden="true">
-        <path d="M6 3 L22 14 L13 15.5 L10.5 24 Z" fill="#FFFDFB" stroke="#2B3236" stroke-width="1.6" stroke-linejoin="round"/>
-      </svg>
-    </div>
-    <p class="cursor-bubble"></p>
+<nav class="cs-nav"><div class="wrap">
+  <a class="back" href="https://suvarnamyneni-project.github.io/">← All work</a>
+  <div class="links">
+    <a href="#role">My Role</a><a href="#design">Design Process</a><a href="#problem">Problem</a><a href="#stakeholders">Stakeholders</a><a href="#users">End Users</a><a href="#research">Research</a><a href="#competitive">Competitive</a><a href="#personas">Personas</a><a href="#decisions">Decisions</a><a href="#prototype">Prototype</a><a href="#uikit">UI Kit</a><a href="#final">Final Design</a><a href="#outcome">Outcome</a><a href="#metrics">Metrics</a>
   </div>
-  <script src="../../js/case.js"></script>
-  <script>
-    (function () {
-      var chip = document.querySelector(".brand-chip");
-      if (chip) chip.setAttribute("href", "/#work");
-      var stack = document.documentElement.classList.contains("is-stack");
-      var sources = stack
-        ? ["../../js/effects.js"]
-        : ["../../js/vendor/lenis.min.js", "../../js/effects.js"];
-      var index = 0;
-      function next() {
-        if (index >= sources.length) {
-          if (window.initCaseScroll) window.initCaseScroll();
-          return;
-        }
-        var script = document.createElement("script");
-        script.src = sources[index++];
-        script.onload = next;
-        script.onerror = next;
-        document.body.appendChild(script);
-      }
-      next();
-    })();
-  </script>
+</div></nav>
+
+<header class="cs-hero"><div class="wrap">
+  <div class="eyebrow">Case Study · eXp Realty</div>
+  <h1>Deal Desk</h1>
+  <p class="lede">One deal, one platform, one desk. Deal Desk is eXp’s Transactions Re-imagined platform, the agntOS transaction desk. I led the staff and settlement experience so a deal can move from submitted to paid in one place, for agents and for every staff role in between, under US and Canadian rules.</p>
+  <dl class="meta">
+    <div><dt>Role</dt><dd>UX lead, staff and settlement</dd></div>
+    <div><dt>Timeline</dt><dd>2025–2026 · prototype</dd></div>
+    <div><dt>Team</dt><dd>Product, engineering, operations, accounting, analysts, compliance, support</dd></div>
+    <div><dt>Platform</dt><dd>Web · US and Canada</dd></div>
+    <div><dt>Tools</dt><dd>Grok, Claude, Cursor, GitHub, Lovable, Miro</dd></div>
+  </dl>
+  <figure class="cs-cover"><img src="../../assets/case/deal-desk/hero.webp" width="1600" height="1011" alt="Transaction Analyst queue in the Deal Desk prototype, on a laptop. Deals show a stage, a next action, and a critical or asked-agent status. The people, addresses, and amounts are fictional demo data." fetchpriority="high" decoding="async">
+    <figcaption>The analyst queue in the prototype. Addresses, people, and dollar amounts on every screen in this study are fictional demo data. The work is designed and prototyped. Production results are still ahead.</figcaption>
+  </figure>
+</div></header>
+
+<main>
+<section class="cs-section" id="role"><div class="wrap">
+  <div class="head"><div class="num">01</div><div><h2>My Role</h2><p>Suvarna Myneni, AI-Native UX Designer. UX lead for staff and settlement on Deal Desk.</p></div></div>
+  <div class="body">
+    <p>I extended an analyst prototype a teammate had started, and I owned the flows from the queue through disbursement. The work was journey mapping, UX design, AI in the product, and prototypes. Agents are meant to work inside the agent platform. Staff work Deal Desk and Task Center. In 2025–2026 the work was still in prototype and demo.</p>
+    <div class="grid g3">
+      <article class="card"><h3>Staff and settlement</h3><p>I designed the spine from submit through disbursement, with the exception lane drawn at the same time as the happy path. Validation gates and document AI sit on the file.</p></article>
+      <article class="card"><h3>A teammate’s prototype</h3><p>I extended an analyst prototype instead of starting over. On October 5, 2026 I built the combined Agent and Staff prototype on top of that direction: one shared state, and a path a teammate could run.</p></article>
+      <article class="card"><h3>The map the team decided from</h3><p>I read the program archive, mapped 19 personas and 14 journeys in Miro, and turned months of demos and war rooms into a picture product and operations could point at.</p></article>
+      <article class="card"><h3>The agent side of the same desk</h3><p>Home, inbox, and the deal page live inside the agent platform, on the same visual system as staff, so “where is my deal?” has the same timeline on both sides.</p></article>
+      <article class="card"><h3>Rules before pictures</h3><p>Estimate until settled. Append-only after. The coordinator is not the analyst. I wrote those rules before the screens, and I left unsettled rules open instead of inventing a winner.</p></article>
+      <article class="card"><h3>Checks against the journeys</h3><p>I checked the clickable desk against the journey sheet and ran a role-by-role pass. Where the checks disagreed, I logged the disagreement instead of picking a quiet winner.</p></article>
+    </div>
+  </div>
+</div></section>
+
+<section class="cs-section" id="design"><div class="wrap">
+  <div class="head"><div class="num">02</div><div><h2>Design Process</h2><p>End-to-end, from discovery to delivery.</p></div></div>
+  <div class="body"><div class="process">
+    <div class="step"><b>Discover</b><span>I watched the settlement before I drew a screen: the August 6, 2026 demo, about 22 war-room decodes, 29 discovery documents, and the staff idea marketplace.</span></div>
+    <div class="step"><b>Define</b><span>Two maps on purpose. Fourteen numbered settlement journeys, and a wider to-be swimlane. One lifecycle, an alias table, and five principles with product and operations.</span></div>
+    <div class="step"><b>Ideate</b><span>One shared desk, oldest work first, structured fees instead of notes, guided alerts, and one shell for the US and Canada.</span></div>
+    <div class="step"><b>Prototype</b><span>Claude Design for the visual system. On October 5, 2026, a Lovable prototype the same day, then a Cursor brief for a local app a teammate could clone.</span></div>
+    <div class="step"><b>Test &amp; Deliver</b><span>Journey check: 7 covered, 6 partial, 1 missing. A role-by-role pass, then a later desk audit. Still prototype and demo. The score comes after launch.</span></div>
+  </div></div>
+</div></section>
+
+<section class="cs-section" id="problem"><div class="wrap">
+  <div class="head"><div class="num">03</div><div><h2>Problem</h2><p>A paid deal lived in several systems, and in the notes between them.</p></div></div>
+  <div class="body">
+    <p class="callout">How might a Transaction Analyst take one deal from submission to the accounting hand-off, with every number traceable and every error visible?</p>
+    <p>The program set out to deliver an AI-native transaction platform for the US and Canada, designed to replace TRX and SkySlope. In the work I watched, a Transaction Analyst still settled a deal by moving between Task Center, Deal Desk, document AI, and SkySlope. Fee details sat in free-text notes. Staff re-keyed them. After a file said settled, an accounting error could stay invisible to the person the agent calls.</p>
+    <p>Agents already felt that fragmentation. To move a file forward they filled fields that did not apply to the deal, sometimes with placeholder text, because the screen would not accept the document until the form was complete. MLS data did not always arrive with the file, so they typed it again. A rejected document did not ping them. Staff could not write to the agent inside the tool, so missing items went out as a hand-built email. Canada’s closing analysts were still sharing spreadsheets with finance.</p>
+    <div class="grid g3">
+      <article class="card"><h3>Checking, then deciding</h3><p>Most of the effort was comparing dates and amounts across a document and the deal. The judgment was the short part.</p></article>
+      <article class="card"><h3>Handoffs that waited</h3><p>Work passed from a coordinator to an analyst and got checked twice. The wait did not add a decision.</p></article>
+      <article class="card"><h3>Where is my deal?</h3><p>Status was hard to see, so agents asked support. The old payment question ran from the agent, to support, to the analyst, to accounting.</p></article>
+      <article class="card"><h3>Exceptions were the job</h3><p>Mismatches, a failed posting, and a changed close date were ordinary. Recovery was ad hoc.</p></article>
+      <article class="card"><h3>Regions are different products</h3><p>Canada uses a lawyer or conveyancer, firm and closed stages, and a closing analyst who settles after the analyst prepares. A label swap would have lied.</p></article>
+      <article class="card"><h3>Alerts had lost their meaning</h3><p>In the August 6, 2026 settlement demo, the group named 80 critical alerts blocking automatic disbursement authorizations.</p></article>
+    </div>
+    <p>Status truth was the loudest theme in the staff idea marketplace I reviewed: 15 of 28 active tensions sat on this desk, and the hottest was a file approved in document AI that could still show the wrong status in SkySlope and Task Center. In that same August demo, an August launch in Arkansas was postponed because bugs and feature requests were still open, and stakeholders worried the new process would add screens. Leadership also priced the SkySlope document library and APIs at about $12,000 a year, about 1% of that vendor bill, and chose a phased interface: a new UI, with that library and those APIs kept as the backend for a time.</p>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/before-after.webp" width="1600" height="608" alt="Before and after diagram. Before, a deal waits between agent, coordinator, and analyst. After, the analyst owns the review, with coordination steps, guided alerts, and details revealed when needed." loading="lazy" decoding="async">
+      <figcaption>The handoff I proposed removing: coordinator steps move into the analyst role. The busier screen stays manageable with guided alerts and progressive disclosure.</figcaption>
+    </figure>
+  </div>
+</div></section>
+
+<section class="cs-section" id="stakeholders"><div class="wrap">
+  <div class="head"><div class="num">04</div><div><h2>Stakeholders</h2><p>Product, engineering, operations, accounting, the analysts, compliance, and production support. I worked with the people who already touched the file.</p></div></div>
+  <div class="body">
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th>Stakeholder</th><th>What they need</th><th>How I worked with them</th></tr></thead>
+      <tbody>
+        <tr><td>Product</td><td>One lifecycle they can point at, and open rules left visible instead of silently decided.</td><td>Shared the 19-persona set as common language. Built one status list and an alias table where Settle, Mark Disbursed, Disbursed, Settlement Complete, and Closed (Paid) had been used for different moments.</td></tr>
+        <tr><td>Engineering, transaction and accounting services</td><td>Controls that wait, explain themselves, or stay hidden, and a screen that is honest about which system is in charge that week.</td><td>Designed against their rules in plain language. On October 20, 2026 I attended the schema war room. The workshop I was invited to that night turned into a backend walkthrough, so the task-card questions on the agenda stayed open.</td></tr>
+        <tr><td>Operations</td><td>Fee rules and splits that match how a deal actually pays, including the ones that were still unconfirmed.</td><td>Put the August demo’s fee rules on the file. Held ownership-percentage splits until operations confirmed the rule. Checked the staff idea marketplace: 15 of 28 active tensions sat on this desk.</td></tr>
+        <tr><td>Accounting</td><td>A hand-off that cannot carry a bad number, and a disbursed file that is not edited in place.</td><td>Variance blocks the whole submission downstream. A disbursed file is read-only. A correction is a new post-close record with a reason, because accounting has already been told.</td></tr>
+        <tr><td>Transaction analysts</td><td>One queue, the next action on the row, and gates that say how to open.</td><td>I watched the August 6 settlement end to end before drawing the desk, then owned the flows from the queue through disbursement.</td></tr>
+        <tr><td>Closing analysts, Canada</td><td>A real handoff. The analyst prepares. The closing analyst settles. Overrides want an approval.</td><td>Kept Canada as its own flow. The prototype has Canada deals and a handoff. The approve-everything path is still missing, on purpose, until the spreadsheet walkthroughs are designed in.</td></tr>
+        <tr><td>Compliance</td><td>Needs review, escalated, and approved. Settlement is not their job.</td><td>Settlement stays view-only. They can approve, send the file back to the agent or the analyst with a reason, or escalate. A send-back returns the file to analyst intake.</td></tr>
+        <tr><td>Production support</td><td>To see a failure after the file already says settled, before the agent calls.</td><td>Designed automatic error alerts, a support view, and retry versus restart. The payload is referenced, not shown. The post-settlement flag is still a proposal.</td></tr>
+        <tr><td>Brokers and broker compliance</td><td>Oversight of files that can settle with an open compliance item and then wait on a broker approval.</td><td>The role-by-role pass failed this view: there was no distinct oversight screen. The pipeline view is the start of one.</td></tr>
+        <tr><td>Agents</td><td>One place, attention before a file list, and a status they do not have to request from support.</td><td>Worked from kickoff notes and a home and inbox spec. Home leads with what needs them. The deal page uses the same timeline as staff.</td></tr>
+        <tr><td>Leadership</td><td>A launch that does not add screens for their own sake, and a document backend they had already priced.</td><td>Recorded the constraint: an August Arkansas launch was postponed while bugs and requests were open, and the SkySlope library and APIs stayed, at about $12,000 a year, about 1% of that vendor bill.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div></section>
+
+<section class="cs-section" id="users"><div class="wrap">
+  <div class="head"><div class="num">05</div><div><h2>End Users</h2><p>Five agent personas and fourteen staff personas, plus the systems that act on the file.</p></div></div>
+  <div class="body">
+    <p>A transaction coordinator is agent-hired, a payee on the file, and a different person from the Transaction Analyst. Systems count as actors too: document AI, SkySlope, Task Center, the accounting service, Oracle, and Enterprise, where mentor configuration lives. Of the 57 settlement steps, 20 are fully automated, and most failures sit in the hand-off between those actors.</p>
+    <div class="grid g3">
+      <article class="card"><h3>Transaction analysts</h3><p>They take a sale from a Ready for Settlement queue through the check, the dates, the balance, and disbursement. The exception is the job: mismatches, a changed close date, a failed posting.</p></article>
+      <article class="card"><h3>Agents</h3><p>Listing and buyer’s agents, and the wider set of five agent roles. They submit a deal, answer what the desk asks, and need a status that does not require a call. They were unhappy with SkySlope’s upload flow and with questions that did not apply.</p></article>
+      <article class="card"><h3>Transaction coordinators</h3><p>Hired by the agent. A contact and a payee, not a staff role on the desk. New files land in analyst intake. The coordinator stays on the file as a contact, including when they have not been named yet.</p></article>
+      <article class="card"><h3>Compliance reviewers</h3><p>They see needs review, escalated, and approved. They approve, send back with a reason, or escalate. They do not settle. A file can still settle with an open compliance item, then sit in a separate review bucket until a broker approval archives it.</p></article>
+      <article class="card"><h3>Closing analysts, Canada</h3><p>The analyst prepares and the closing analyst settles. Firm and closed stages, and a lawyer or conveyancer, are part of the product. They were still sharing spreadsheets with finance.</p></article>
+      <article class="card"><h3>Production support</h3><p>They catch the error after settle: a variance, a failed posting, “I haven’t been paid.” Recovery is either a restart from a failed middle step or a retry of a failed last step.</p></article>
+      <article class="card"><h3>Brokers and operations</h3><p>Transactions managers, broker compliance, and the managing broker watch the file across listing, sale, lease, referral, and the lighter types that are meant to auto-settle. The analyst handles the exception.</p></article>
+      <article class="card"><h3>Post-close</h3><p>A correction analyst takes a single-file delta after disbursement. The history stays. The change is a new record with a reason, because the accounting service has already been told.</p></article>
+      <article class="card"><h3>The systems on the file</h3><p>Document AI reads. The accounting service creates receivables and payables. TRX, SkySlope, Task Center, Oracle, and Enterprise still hold pieces of the truth. The screen has to say which one is speaking.</p></article>
+    </div>
+  </div>
+</div></section>
+
+<section class="cs-section" id="research"><div class="wrap">
+  <div class="head"><div class="num">06</div><div><h2>Research Methods</h2><p>The material was already months deep. My first job was to turn it into a map the team could decide from.</p></div></div>
+  <div class="body">
+    <p>I read 29 discovery documents, a 345-page program archive, the settlement end-to-end demo from August 6, 2026, and about 22 war-room decodes from September 2026. I mapped journeys in Miro, sorted an affinity of staff and agent notes, and checked the staff idea marketplace.</p>
+    <div class="grid g2">
+      <article class="card"><span class="tag">Demo walkthrough</span><h3>Settlement, end to end</h3><p>The August 6 demo walked a sale through bonuses, concessions, coordinator fees, the check, dates, the accounting service, and mentor fees. I treated the open questions in that room as part of the design. The group named 80 critical alerts blocking automatic disbursement authorizations.</p></article>
+      <article class="card"><span class="tag">War room</span><h3>War rooms and a workshop</h3><p>About 22 war-room decodes from September 2026. On October 20, 2026 I attended the schema war room. The workshop I was invited to that night turned into a backend walkthrough, so the task-card questions on the agenda stayed open.</p></article>
+      <article class="card"><span class="tag">Journey mapping</span><h3>Two maps, on purpose</h3><p>One sheet is 14 numbered settlement journeys. Another is a to-be swimlane for every transaction type, from listing to cancel. I used both. They are related, and they are not the same document. I flagged any step where the rule, the owner, or the source of truth was still unsettled.</p></article>
+      <article class="card"><span class="tag">Document review</span><h3>The program archive</h3><p>29 discovery documents and a 345-page archive. I used Grok to work through the archive, the war-room notes, and the journey material, and to pull rules, conflicts, and open questions into a form I could design against. Every rule went back to the source before it reached a screen.</p></article>
+      <article class="card"><span class="tag">Affinity</span><h3>Staff notes and the idea marketplace</h3><p>I sorted an affinity of staff and agent notes. Status truth was the loudest theme: 15 of 28 active tensions sat on this desk. The hottest was a file approved in document AI that could still show the wrong status in SkySlope and Task Center.</p></article>
+      <article class="card"><span class="tag">Agent feedback</span><h3>US and Canada</h3><p>Kickoff notes and a home and inbox spec kept pulling the same way: one place, attention before a file list, and structured fields where notes used to be. Canada’s closing analysts were still sharing spreadsheets with finance.</p></article>
+    </div>
+    <p>The to-be workflow map is wider than those 14 journeys. It swims a listing, a sale, a lease, four kinds of referral, a broker price opinion, ShowGo, and a catch-all for fees and installments, across the agent, the system, the analyst, a transactions manager, broker compliance, and the managing broker. Most of the lighter types are meant to auto-settle. The analyst handles the exception. Settlement itself has two phases: first the analyst settles from a Ready for Settlement queue, then an approved file can auto-settle, with an Unable to Settle queue when it cannot. A post-close correction is a single-file delta, routed to a correction analyst. A withdrawn sale can come back as a reactivated listing.</p>
+    <p>Across the settlement journeys I counted 57 steps. In the demo, 38 were live, 10 were in progress, 5 were proposed, and 4 were still an open decision. A later check of the prototype against the 14-journey sheet came out 7 covered, 6 partial, and 1 missing. That table is in the prototype section, next to the other checks.</p>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/journey-map.webp" width="1600" height="715" alt="Fourteen journeys in five phases: submit, review, settle, disburse, and after close. Steps with an open question are marked." loading="lazy" decoding="async">
+      <figcaption>Submit, review, settle, disburse, and after close. A marked step is one where a rule, an owner, or a data source was still open.</figcaption>
+    </figure>
+  </div>
+</div></section>
+
+<section class="cs-section" id="competitive"><div class="wrap">
+  <div class="head"><div class="num">07</div><div><h2>Competitive Analysis</h2><p>The tools a deal already moved through. This is the landscape from the demos and the decision notes, not a separate market study.</p></div></div>
+  <div class="body">
+    <p>The program set out to replace TRX and SkySlope. In the work I watched, replacement was not a clean cut. The analyst still left the desk, and leadership kept the SkySlope document library and APIs as the backend for a time.</p>
+    <div class="table-scroll">
+    <table>
+      <caption>What each system already did, and the gap this desk was designed against.</caption>
+      <thead><tr><th>Product</th><th>What it was doing</th><th>What it already gave the team</th><th>Gap the desk responds to</th></tr></thead>
+      <tbody>
+        <tr><td>SkySlope</td><td>Documents, agent upload, and the notes where fees were hiding.</td><td>A document library and APIs leadership priced at about $12,000 a year, about 1% of that vendor bill, and chose to keep for a time.</td><td>Status could disagree with document AI and Task Center. Advances, extended hand, and coordinator fees lived in notes. Agents disliked the upload flow and questions that did not apply. A rejected document did not ping them.</td></tr>
+        <tr><td>TRX</td><td>Legacy transactions, invoicing, and the first home for settlement rules.</td><td>The current invoice path. A decision document recommended staying on TRX for the MVP and designing an accounting service in parallel. That service, the document argued, could cut duplicated rules by more than 90%, and was too heavy for the first release.</td><td>Not one source of truth. An agent flagged in Enterprise uses the new calculator, and TRX ignores that agent’s incoming SkySlope transactions. Migrated deals stay view-only in TRX.</td></tr>
+        <tr><td>Task Center</td><td>The staff task list beside the file.</td><td>Work already arrived as tasks. A task can deep-link back with the role and the transaction still attached. Task Center stays a separate app.</td><td>Status and the file lived elsewhere, so the payment question bounced from the agent, to support, to the analyst, to accounting.</td></tr>
+        <tr><td>Document AI</td><td>Classification, extraction, and checks against the deal.</td><td>It reads dates, amounts, and check details, and it can flag a missing signature or initial. The analyst sees both values and picks.</td><td>It is asynchronous, on the order of 30 seconds, so the screen needs a real processing state. Being down is a named risk. It does not decide. Combined statement-and-check files were not split.</td></tr>
+        <tr><td>Deal Desk, this design</td><td>One staff and agent desk, from submitted to paid, with legacy systems still visible.</td><td>A role-based queue, provenance on the numbers, gates that fail closed, and the same timeline for the agent and the analyst.</td><td>Still a prototype. The journey check was 7 covered, 6 partial, and 1 missing. Manager approval, Canada’s approve-all flow, the combined file, and the in-app workflow guide were still open.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div></section>
+
+<section class="cs-section" id="personas"><div class="wrap">
+  <div class="head"><div class="num">08</div><div><h2>User Personas</h2><p>Nineteen roles on the map. Five representative personas below, composed from that map. They are not interview participants, and they are not the fictional people on the prototype screens.</p></div></div>
+  <div class="body">
+    <p>Five agent personas and fourteen staff personas, from listing and buyer’s agents through compliance, the analyst, Canada’s closing analyst, production support, and post-close. I used the set as shared language with product and operations. Role names on the map are generalized.</p>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/personas.webp" width="1600" height="589" alt="Nineteen personas: five agent roles and fourteen staff roles, grouped as coordination and review, operations and oversight, and support and after close." loading="lazy" decoding="async">
+      <figcaption>The persona set. Role names are generalized. Every role that touches a deal, from submission to post-close.</figcaption>
+    </figure>
+    <div class="grid g2">
+      <article class="card persona"><div class="avatar">RH</div><div>
+        <h3>Remy Holt, Transaction Analyst</h3>
+        <p>US residential settlement. Representative.</p>
+        <p><b>Goals.</b> Take one file from the queue to a balanced disbursement without leaving for a check copy and a notes field.</p>
+        <p><b>Frustrations.</b> Fees in free-text notes. A file that says settled while an accounting error stays invisible. Critical alerts that block the disbursement authorization. The August 6 demo named 80 of them.</p>
+        <p><b>Needs.</b> Oldest work first, the next action on the row, compare-and-pick instead of retype, and a Send control that says why it is disabled.</p>
+      </div></article>
+      <article class="card persona"><div class="avatar">AC</div><div>
+        <h3>Avery Cole, buyer’s agent</h3>
+        <p>Submits the deal and then has to live with the status. Representative.</p>
+        <p><b>Goals.</b> Know where the deal is, and move it without typing fields that do not apply.</p>
+        <p><b>Frustrations.</b> SkySlope’s upload flow. Placeholder text so a form will accept a document. MLS data typed again. A rejected document that does not ping. A missing item that arrives as a hand-built email.</p>
+        <p><b>Needs.</b> A home that leads with what needs them, a commission labeled provisional, one conversation per transaction, and the same status timeline staff use.</p>
+      </div></article>
+      <article class="card persona"><div class="avatar">NK</div><div>
+        <h3>Noor Khalil, compliance reviewer</h3>
+        <p>Reviews the file. Does not settle it. Representative.</p>
+        <p><b>Goals.</b> Approve, send back with a reason, or escalate, without becoming the person who moves the money.</p>
+        <p><b>Frustrations.</b> In the combined prototype, compliance actions could be disabled with no reason. A blocked authorization looked like a broken button.</p>
+        <p><b>Needs.</b> A queue of needs review, escalated, and approved. Settlement stays view-only. A send-back returns the file to analyst intake, and the reason is inline.</p>
+      </div></article>
+      <article class="card persona"><div class="avatar">SB</div><div>
+        <h3>Simone Bouchard, closing analyst</h3>
+        <p>Canada. Settles after the analyst prepares. Representative.</p>
+        <p><b>Goals.</b> Close under Canadian practice: a lawyer or conveyancer, firm and closed stages, and a review of overrides.</p>
+        <p><b>Frustrations.</b> Spreadsheets shared with finance. A US label swapped onto a Canadian file would have lied. The approve-everything flow is still missing in the prototype.</p>
+        <p><b>Needs.</b> A handoff from the analyst, an approve-all path, and steps that can be visible before Canada’s accounting integration, which had a March 2027 constraint.</p>
+      </div></article>
+      <article class="card persona"><div class="avatar">PT</div><div>
+        <h3>Parker Trent, production support</h3>
+        <p>The person an unpaid agent eventually reaches. Representative.</p>
+        <p><b>Goals.</b> See an accounting failure before the agent is the first monitor.</p>
+        <p><b>Frustrations.</b> A variance or a failed posting after Settle, on a file that still looks finished. Retry and restart are different recoveries. Today the error flag is still a manual report.</p>
+        <p><b>Needs.</b> Automatic error alerts, a support view, a reference to the payload without showing the payload, and a time-boxed flag cleared when someone marks the error manually handled.</p>
+      </div></article>
+    </div>
+  </div>
+</div></section>
+
+<section class="cs-section" id="decisions"><div class="wrap">
+  <div class="head"><div class="num">09</div><div><h2>Design Decisions</h2><p>Six things the desk had to respect, then the rules I would not draw past.</p></div></div>
+  <div class="body">
+    <p>With product and operations I held five principles: one desk, validate before you act, guide the fix, status always visible, and one design system for agent and staff. The rule on every AI and validation gate is the same. The system checks. A person decides.</p>
+    <div class="grid g2">
+      <article class="card"><h3>The work is not in one place</h3><p>Analysts still left the desk for a check copy and for notes. A faster screen that sends them somewhere else is a slower process. Decision: one file from the queue to disbursed, with legacy accounting and the document system still visible. Pretending they were gone would have made the status a lie. Trade-off: the screen is busier. Guided alerts and progressive disclosure carry it.</p></article>
+      <article class="card"><h3>Notes were the hidden integration</h3><p>Advances, extended hand, and coordinator fees lived in SkySlope notes. The change log already recorded the review. The notes were a second, worse copy. Decision: structured lines, with a source on each one. Trade-off: a rule that operations had not confirmed, such as ownership-percentage splits, waited. I did not draw the split early.</p></article>
+      <article class="card"><h3>Settled hid the failure</h3><p>A variance or an accounting failure could happen after Settle while the analyst still saw a finished file. The unpaid-agent call starts there. Decision: disbursed is allowed only at a zero variance, or at an approved write-off. After that the file is read-only. Trade-off: a correction is a new post-close record, not an edit.</p></article>
+      <article class="card"><h3>Money is provisional until it settles</h3><p>Commission and cap depend on close order. Decision: anything shown before settlement says it is an estimate, including why the number might move, and a timestamp for how fresh it is. Trade-off: the agent home cannot show a single confident payout.</p></article>
+      <article class="card"><h3>One shell, two countries</h3><p>In Canada the analyst prepares and the closing analyst settles, and overrides want an approval. The US demo revised approvals so they fire on triggers, such as a company-commission change or a personal sale over the threshold. Trade-off: Canada’s approve-everything flow is still missing. A label swap would have lied.</p></article>
+      <article class="card"><h3>One “who has the ball”</h3><p>The October workshop described agent, broker compliance, analyst, and trust accounting moving at once. A clear-to-settle set, including a W-9 when a referral is paid, can block the disbursement authorization even when another lane is done. The file can still settle with an open compliance item, then sit until a broker approval archives it. Decision: the header shows the blockers that still lock Send.</p></article>
+      <article class="card"><h3>The coordinator is not staff</h3><p>A transaction coordinator is agent-hired, a payee, and a different person from the Transaction Analyst. Decision: removed as a switchable staff role on October 5, 2026. New files land in analyst intake. The coordinator stays as a contact. Trade-off: coordination steps move into the analyst role.</p></article>
+      <article class="card"><h3>Two sources, the analyst picks</h3><p>A mismatch opens a compare: who entered each number, when, and where in the document the extract came from. The analyst picks one. Commission recalculates. The choice stays visible and reversible, with a timestamp. Which source wins by default is still open. I left that undecided instead of inventing a winner.</p></article>
+      <article class="card"><h3>Gates fail closed, and they say how to open</h3><p>A disabled Send looked broken, and a send could proceed with an open underpayment. Decision: every Send control says why. Waiting on compliance, N blockers still open, or the authorization was already sent. Trade-off: more friction on the happy path. US approvals only on triggers, so not every file waits.</p></article>
+      <article class="card"><h3>Oldest work first</h3><p>The queue is role-based. A row carries status, stage, and the next action, so an aging file is visible before anyone opens it. The journey sheet still wanted an explicit oldest-first sort. I kept that as a gap, not as a feature I would claim was done.</p></article>
+    </div>
+
+    <h3>The screen had to tell the truth about the systems behind it</h3>
+    <p>Engineering owns the accounting service. I designed the controls a Transaction Analyst sees, including when a control has to wait, explain itself, or stay hidden.</p>
+    <div class="grid g2">
+      <article class="card"><h3>One transaction record</h3><p>The program’s rule is a single source of truth for price, commission, and dates. Accounting, commission, and Task Center read that record. They do not read the raw document or the legacy system as a second authority. Provenance chips exist because document AI, the agent, and staff all write, and trust is seeing who said what.</p></article>
+      <article class="card"><h3>Where the rules live</h3><p>A decision document weighed two homes for settlement rules. Keep them in TRX for the first release, which is faster and keeps the current invoice path. Or build an accounting service with template-driven rules. The document argued that path could cut duplicated rules by more than 90%, and that it was too heavy for the first release. The recommendation was to stay on TRX for the MVP and design the accounting service in parallel. By the August demo, that service was creating receivables and payables and comparing line totals to the aggregate before anything went to Oracle. The interface had to stay honest about which system was in charge that week.</p></article>
+      <article class="card"><h3>Variance stops the hand-off</h3><p>Variance is the gap between the actual total on a payable or receivable and the expected amount at settlement. If any record is off, the whole submission downstream is blocked, so a bad number cannot travel quietly. A tiny rounding remainder is treated as zero so a clean file is not blocked by how computers store decimals. A real shortfall is a failure, stored, and shown to production support.</p></article>
+      <article class="card"><h3>Retry and restart are different</h3><p>If a middle step fails, and later steps depend on it, the run stops. Recovery is a restart from that point. If a last step fails, and nothing after it depends on it, retry touches only the failed records. A success response that omits data a later step needs counts as a failure. The desk’s job is to make those two actions look different, and to show a reference to the payload without showing the payload itself.</p></article>
+      <article class="card"><h3>Migration had to be reversible</h3><p>An agent is flagged in Enterprise as using the new calculator instead of TRX. TRX ignores that agent’s incoming SkySlope transactions. The first release starts with a one-agent smoke test: their cap-period deals copy over, stay view-only in TRX, and raise the settlement task in the new tool. If settlement fails, the flag comes off, TRX goes back to edit, and the new tasks are deleted. Later waves use a file of beta agents, then residential states, commercial, and the referral division. A deal whose co-agent is not in the program stays out. Thousands of in-flight files, and about 19,800 pre-contracts, are part of the product, not a cleanup project for later.</p></article>
+      <article class="card"><h3>Settled is append-only</h3><p>A disbursed file does not get edited in place. A correction is a new post-close record with a reason. The change log records who did what. Migration itself needs the same habit: who ran a conversion, when, what was skipped, and a business sign-off. Task Center stays a separate app, so a task deep-links back with the role and the transaction still attached.</p></article>
+    </div>
+    <p>A few constraints shaped the UI more than any visual preference. Association forms cannot be blank templates we draft ourselves, because of how those forms are licensed, so a forms partner does the legal document and our AI checks the data. Document AI is asynchronous, on the order of 30 seconds, so the screen needs a real processing state. Canada’s accounting integration had a March 2027 constraint, so Canadian steps can be visible before that backend is finished. Document AI being down is a named risk: until it can read a check, the analyst still types the check from the checklist, and the field shows that a person entered it.</p>
+    <p>Status names disagreed across the sources: Settle, Mark Disbursed, Disbursed, Settlement Complete, Closed (Paid). I built one lifecycle and an alias table so product, engineering, and operations could point at the same moment. On the staff side the states run from created, to ready for the disbursement authorization, sent, waiting on closing documents, documents received, settlement started, settled, and closed. Withdrawn and in correction stay on that same file.</p>
+    <div class="table-scroll">
+    <table>
+      <caption>Rules from the settlement demo and the accounting notes, and what I did with each on the desk.</caption>
+      <thead><tr><th>Rule</th><th>What the desk shows</th></tr></thead>
+      <tbody>
+        <tr><td>$100 fee on a non-preferred third-party advance, and $50 on extended hand</td><td>Automatic fee lines, visible, not re-keyed from a note.</td></tr>
+        <tr><td>Mentor fee under $250</td><td>Waived, with the percent from the agent profile and an alert that does not block Send.</td></tr>
+        <tr><td>US approvals</td><td>Only on triggers, such as a company-commission change or a personal sale over the threshold. Canada still wants a review of the overrides.</td></tr>
+        <tr><td>Close dates</td><td>Scheduled and actual have to match, or Settle stays disabled. A changed date revises the authorization.</td></tr>
+        <tr><td>Variance other than zero</td><td>The accounting hand-off is blocked. The file shows the gap. Disbursed waits on a true balance or an approved write-off.</td></tr>
+        <tr><td>Unapproved, set by the analyst or by broker compliance</td><td>A hard block on sending the authorization, including a revised one.</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div></section>
+
+<section class="cs-section" id="prototype"><div class="wrap">
+  <div class="head"><div class="num">10</div><div><h2>Prototype</h2><p>I checked the clickable desk against the journeys, then changed the gates.</p></div></div>
+  <div class="body">
+    <p>The tools and the product feature are different jobs. I used AI to read a large archive and to make clickable desks. The product uses AI to read a document and stop before the decision. I kept those jobs separate so a fast prototype could not quietly become a business rule.</p>
+    <div class="grid g3">
+      <article class="card"><span class="tag">Research</span><h3>Grok, for the reading</h3><p>I used Grok to work through the program archive, the war-room notes, and the journey material, and to pull rules, conflicts, and open questions into a form I could design against. Every rule went back to the source before it reached a screen. Miro stayed the place the journeys and the ecosystem map lived: SkySlope into TRX, then the payment queue, then payables, plus the deep link from a SkySlope file into splits with the person’s role still attached.</p></article>
+      <article class="card"><span class="tag">Visual system</span><h3>Claude, Lovable, Cursor, GitHub</h3><p>Claude Design held the visual system and the long canvases. Agent, analyst, and compliance were each explored as a 105-page file, plus a seven-slide happy path from an agent submit to a disbursed file on the broker view. One deck filled in its own placeholder splits and fees. I treated those figures as stand-ins.</p></article>
+      <article class="card"><span class="tag">Same day</span><h3>A clickable desk</h3><p>On October 5, 2026 I built the combined Agent and Staff prototype in Lovable: one shared state, a role switcher, and a path from a new purchase through intake, compliance, disbursement, and the broker pipeline. The same day I removed the coordinator as a switchable staff role, and I put a reason under every disabled Send control.</p></article>
+    </div>
+    <p>I then wrote a Cursor brief to rebuild that mock as a local app a teammate could clone from GitHub and run: Agent and Transaction Analyst, queues, disbursement issues, settlement alerts, and retry and restart on the downstream accounting pipeline. Mock data only. No backend, and no secrets. The brief’s test was simple. A fresh clone installs, runs, and builds. There is no public prototype URL on this study. The screens below are from that work.</p>
+    <p>Inside the product, document AI classifies a file, pulls dates and amounts, and checks them against the deal. Compliance checks can flag a missing signature or initial and hold the file until the agent uploads a correction. The analyst sees both values and picks. Upload by the agent, full extraction on every file, and splitting a combined statement-and-check file are planned, not done. The long-term workflow map goes further: an AI reviewer comments and flags first, and auto-approves later. Auto-settle is phase two, when the clear-to-settle documents match and nothing is flagged. Phase one is still a person, with an SLA and an assignee on the task. Review starts on the first document, not on a finished package, because finance wants a new file visible for forecasting immediately. Read, then check, then a person chooses. Settle stays locked until the checks that matter have passed.</p>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/flow.webp" width="1600" height="758" alt="Flow diagram of a deal from submit through review, settlement, disbursement, and the exception paths beside the happy path." loading="lazy" decoding="async">
+      <figcaption>The spine I designed against: submit, review, settle, disburse, with exceptions beside the happy path.</figcaption>
+    </figure>
+    <p>Two checks, on purpose. The journey sheet versus the feature list, in the table below. Then a pass over the Transaction Analyst desk against the demo, and a role-by-role pass over the combined prototype. They do not agree on every item. I logged the disagreement instead of picking a quiet winner. I led the journey map in Miro and flagged an open question on any step where the rule, the owner, or the source of truth was still unsettled. Those flags mattered as much as the happy path.</p>
+    <div class="table-scroll">
+    <table>
+      <caption>Each journey, and what the prototype still owed it when I checked the sheet. 7 covered, 6 partial, 1 missing.</caption>
+      <thead><tr><th>Journey</th><th>Status</th><th>What the check found</th></tr></thead>
+      <tbody>
+        <tr><td>J1 Settlement docs arrive and a task is created</td><td>Partial</td><td>The queue shows extracted dates and the check. Agent upload, and a task created by that upload, are still missing.</td></tr>
+        <tr><td>J2 The analyst gets the deal ready</td><td>Covered</td><td>Financials cover bonuses, concessions, the advance, extended hand, the coordinator fee, and automatic fee lines.</td></tr>
+        <tr><td>J3 The analyst settles</td><td>Covered</td><td>Confirm the disbursement package, enter the check, match the dates, balance the money, then settle.</td></tr>
+        <tr><td>J4 Accounting after settle</td><td>Covered</td><td>The receivable, the payable, and the accounting timeline are there. The nightly bank match is not shown. Controls are only implied.</td></tr>
+        <tr><td>J5 Production support catches an error</td><td>Covered</td><td>Automatic error alerts, a support view, and retry. A payload viewer and an explicit escalate step are still thin.</td></tr>
+        <tr><td>J6 “I haven’t been paid”</td><td>Covered</td><td>An automatic flag, a support view, and “manually handled” with a reason. The agent-side contact and a time box on the alert are gaps.</td></tr>
+        <tr><td>J7 A mentee deal shows mentor fees</td><td>Covered</td><td>The mentor fee is in financials. The check still asks that the program fee and the percent are visible on the deal.</td></tr>
+        <tr><td>J8 Mentor fee under the minimum</td><td>Covered</td><td>A $250 minimum waives the fee and raises a non-blocking alert.</td></tr>
+        <tr><td>J9 Override the fee and graduate</td><td>Partial</td><td>The override request and the change log exist. An approver, and a graduated marker, are missing.</td></tr>
+        <tr><td>J10 Extracted value versus the deal</td><td>Partial</td><td>Review lets the analyst pick a value. Which source wins by default is still an open decision.</td></tr>
+        <tr><td>J11 Statement and check in one file</td><td>Missing</td><td>No split logic. Agent upload is out of scope in this prototype.</td></tr>
+        <tr><td>J12 Oldest first</td><td>Partial</td><td>Tabs and search exist. An explicit sort by oldest created time is not listed among the features.</td></tr>
+        <tr><td>J13 Fewer screens</td><td>Partial</td><td>One desk, a change log, and a workflow guide. Document AI inside the desk, and sync back to SkySlope, are not there yet.</td></tr>
+        <tr><td>J14 Canada’s closing analyst settles</td><td>Partial</td><td>Canada deals and a handoff to the closing analyst exist. The approve-everything flow is missing.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="table-scroll">
+    <table>
+      <caption>Role-by-role pass on the combined Agent and Staff prototype.</caption>
+      <thead><tr><th>Role</th><th>Result</th><th>What I found</th></tr></thead>
+      <tbody>
+        <tr><td>Agent</td><td>Fail</td><td>An agent could land in the staff interface on someone else’s deal. Agents now bounce from the staff queue back to their own deal.</td></tr>
+        <tr><td>Compliance</td><td>Partial</td><td>The view was right. Actions could be disabled with no reason. The reason is now inline.</td></tr>
+        <tr><td>Transaction Analyst</td><td>Mixed</td><td>The path works end to end. The controls were too loose, including a send that could proceed with an open underpayment.</td></tr>
+        <tr><td>Broker and operations</td><td>Fail</td><td>There was no distinct oversight screen. The pipeline view is the start of one.</td></tr>
+        <tr><td>Timeline</td><td>Pass</td><td>Status stayed in sync as the role changed.</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="table-scroll">
+    <table>
+      <caption>What changed in the prototype, and what is still a fix.</caption>
+      <thead><tr><th>Finding</th><th>Change</th><th>Where it stands</th></tr></thead>
+      <tbody>
+        <tr><td>The coordinator is agent-hired, not staff</td><td>Removed as a staff role. New files land in analyst intake. The coordinator stays as a contact on the file.</td><td>Done in the combined prototype</td></tr>
+        <tr><td>A disabled Send looked broken</td><td>Every Send control says why it is disabled.</td><td>Done</td></tr>
+        <tr><td>The mentor percent lived in another system</td><td>Shown on the deal, marked as set on the agent profile.</td><td>Done on the analyst desk</td></tr>
+        <tr><td>Notes repeated the log</td><td>The change log records the step. The analyst does not keep a parallel note.</td><td>Done on the analyst desk</td></tr>
+        <tr><td>Mismatches were retyped</td><td>Side-by-side review, and the analyst picks.</td><td>Done on the analyst desk</td></tr>
+        <tr><td>Approvals on every file slowed the US path</td><td>US approvals only on triggers. Canada still reviews more broadly.</td><td>Decided in the August demo</td></tr>
+        <tr><td>Send could proceed with an open underpayment</td><td>Gate send on critical alerts, and gate disbursed on a zero variance or an approved write-off.</td><td>On the fix list</td></tr>
+        <tr><td>Resolve was a single click</td><td>A reason, and who, on every resolve. The step cannot complete while alerts remain.</td><td>On the fix list</td></tr>
+        <tr><td>No confirm before Send</td><td>A confirm, and one name for the sent state.</td><td>On the fix list</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>The later desk audit, separate from the 7 / 6 / 1 journey count, landed at 6 covered, 9 partial, and 4 missing. The missing four were manager approval, a combined statement and check, Canada’s closing-analyst flow, and the in-app workflow guide. The biggest gaps were the Settle step itself, and how an error shows up after the file already says settled.</p>
+  </div>
+</div></section>
+
+<section class="cs-section" id="uikit"><div class="wrap">
+  <div class="head"><div class="num">11</div><div><h2>UI Kit</h2><p>The project's own visual language, shown as a specimen.</p></div></div>
+  <div class="body">
+    <p>Deal Desk uses one visual system for the agent and for staff. Claude Design held that system. The swatches below are sampled from the prototype screens in this study. They are the product’s colors. This page around them uses the shared case-study palette. Titles on the product are a serif. Labels, tables, and controls are a sans. I am not naming a foundry the screens do not identify.</p>
+    <div class="swatches">
+      <div class="swatch"><i style="background:#FBF9F5"></i><span>Canvas<br>#FBF9F5</span></div>
+      <div class="swatch"><i style="background:#FFFFFF"></i><span>Surface<br>#FFFFFF</span></div>
+      <div class="swatch"><i style="background:#111224"></i><span>Ink / primary<br>#111224</span></div>
+      <div class="swatch"><i style="background:#E8ECF4"></i><span>Hero wash<br>#E8ECF4</span></div>
+      <div class="swatch"><i style="background:#306080"></i><span>Pipeline blue<br>#306080</span></div>
+      <div class="swatch"><i style="background:#C89898"></i><span>Critical<br>#C89898</span></div>
+      <div class="swatch"><i style="background:#E9C2C4"></i><span>Critical wash<br>#E9C2C4</span></div>
+      <div class="swatch"><i style="background:#A08860"></i><span>Asked agent<br>#A08860</span></div>
+      <div class="swatch"><i style="background:#F8F0D8"></i><span>Attention wash<br>#F8F0D8</span></div>
+      <div class="swatch"><i style="background:#809088"></i><span>Stage sage<br>#809088</span></div>
+      <div class="swatch"><i style="background:#D8F0E0"></i><span>Sage wash<br>#D8F0E0</span></div>
+      <div class="swatch"><i style="background:#8090A0"></i><span>Muted<br>#8090A0</span></div>
+    </div>
+    <div class="grid g2">
+      <article class="card">
+        <p class="type-label" style="color:#8090A0">Display · serif</p>
+        <p class="type-display" style="color:#111224">1420 Alder Street</p>
+        <p>Deal titles and the agent greeting. The specimen face here is a stand-in serif, so the scale is visible on this page.</p>
+      </article>
+      <article class="card">
+        <p class="type-label" style="color:#8090A0">UI · sans</p>
+        <p class="type-ui" style="font-size:28px;font-weight:600;letter-spacing:-.02em;color:#111224">My queue</p>
+        <p class="type-ui">11 transactions waiting on transaction analyst review.</p>
+        <p class="type-label">Next action · label</p>
+        <p>Buttons, table headers, tabs, and provenance chips use the sans. Primary actions are filled ink. Secondary actions are a quiet outline: Message agent, Ask agent.</p>
+      </article>
+    </div>
+    <div class="grid g3">
+      <article class="card"><h3>Status chips</h3><p>Critical is a dusty rose. Asked agent is sand. Stage chips, such as DA sent, TA settlement, and Analyst intake, sit in a pale sage. Informational alerts never use the blocking color. The mentor minimum says no action is required.</p></article>
+      <article class="card"><h3>Provenance chips</h3><p>Agent-provided and Extracted sit on the value itself. A check read by document AI is tagged extracted. A row the analyst types is tagged as entered by them. The analyst uses a value. They do not retype it.</p></article>
+      <article class="card"><h3>Gates</h3><p>The primary button stays disabled until the blockers are clear, and the control says why: waiting on compliance, N blockers still open, or the authorization was already sent. Provisional money is labeled, with a timestamp.</p></article>
+    </div>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/alerts.webp" width="1600" height="628" alt="Critical alerts on a deal, with a sale-price mismatch and a seller-name mismatch, each offering a review. Demo data." loading="lazy" decoding="async">
+      <figcaption>Specimen: alert cards, provenance chips, a filled primary (Review &amp; choose, Send DA), and a quiet secondary (Ask agent, Message agent).</figcaption>
+    </figure>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/queue.webp" width="1600" height="1114" alt="Analyst queue with filters for new files, documents, action, disbursement authorization, and settlement. Each row has a next action. Demo data." loading="lazy" decoding="async">
+      <figcaption>Specimen: the queue table, lifecycle tabs, Critical and Asked agent chips, and the next action on the row. Demo data.</figcaption>
+    </figure>
+  </div>
+</div></section>
+
+<section class="cs-section dark" id="final"><div class="wrap">
+  <div class="head"><div class="num">12</div><div><h2>Final Design</h2><p>From the queue to disbursed, on one file. These are the prototype screens. People, addresses, and amounts are fictional demo data.</p></div></div>
+  <div class="body">
+    <p>I designed the spine from submit through disbursement, with the exception lane drawn at the same time as the happy path. Validation gates and document AI sit on the file. The queue is role-based: analyst, compliance, and operations each see their own work. Filters follow the lifecycle, including new from the agent, needs documents, needs action, ready for the disbursement authorization, and in settlement.</p>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/overview.webp" width="1600" height="1114" alt="Deal overview with the file header, open items that lock sending the disbursement authorization, and a what-is-happening timeline. Demo data." loading="lazy" decoding="async">
+      <figcaption>Deal overview. Send stays disabled until the open items are clear, and the screen says why. One header: the parties, the close date, the price, and the blockers that still lock Send. Tabs carry counts.</figcaption>
+    </figure>
+    <p>Opening a file shows missing information in context, such as a coordinator who has not been named. The October schema session added a rule I folded in here: a staff task is an approval step, and it should appear when approval is what remains. Non-approval steps can be marked complete, not needed, or skipped with a comment. Approval is the step that cannot be skipped. A listing stays as the core workflow. A sale is an attempt that can be discarded and replaced if the offer falls through.</p>
+    <div class="grid g2">
+      <article class="card">
+        <h3>Checklist before money</h3>
+        <p>Intake is documents first. The analyst can ask the agent for what is missing. That request shows up on the agent’s home as something that needs them. Marking the checklist complete moves the file toward compliance. Financials stay locked until that gate, or until the demo path says compliance can review in parallel.</p>
+        <img src="../../assets/case/deal-desk/ta-checklist.webp" width="762" height="565" alt="Checklist on a deal, with items to complete before the file is ready for compliance. Demo data." loading="lazy" decoding="async">
+      </article>
+      <article class="card">
+        <h3>Compliance, then the analyst</h3>
+        <p>Compliance sees needs review, escalated, and approved. They can approve, send the file back to the agent or the analyst with a reason, or escalate. Settlement stays view-only for them. A send-back returns the file to analyst intake.</p>
+        <img src="../../assets/case/deal-desk/ta-compliance.webp" width="787" height="565" alt="Compliance queue filtered to files that need review. Demo data." loading="lazy" decoding="async">
+      </article>
+    </div>
+    <p>Critical alerts explain the problem and point at the fix. A mismatch between the agent’s value and the extracted value opens a compare: who entered each number, when, and where in the document the extract came from. The analyst picks one. Commission recalculates from that choice. If they are not sure, they ask the agent. The choice stays visible and reversible, with a timestamp, because the audit trail is the point. Informational alerts never block. Under a $250 minimum the mentor fee is waived, the math is shown, and the alert says it does not block Send.</p>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/mismatch.webp" width="1600" height="1114" alt="Side-by-side compare of an agent-entered sale price and the price extracted from the contract, with the source page visible. The analyst chooses one value. Demo data." loading="lazy" decoding="async">
+      <figcaption>Review and choose. The extract cites the document, the page, and the section. The analyst uses a value. They do not retype it. A seller-name mismatch will be rejected at disbursement until the legal names match.</figcaption>
+    </figure>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/ta-mentor.webp" width="778" height="565" alt="Resolved mismatches, plus an informational mentor alert that says no action is required and that sending the disbursement authorization is not blocked. Demo data." loading="lazy" decoding="async">
+      <figcaption>Resolved choices stay on the file. The mentor minimum is informational: the fee is waived, and Send is allowed.</figcaption>
+    </figure>
+    <p>Financials are prefilled from the agent desk and from extracts. The analyst edits what changed. Bonuses and concessions come from the contract. The advance, extended hand, and coordinator fee are structured lines, with a source on each one, because those used to live in notes. The August demo’s rules are on the file: a $100 fee on a non-preferred third-party advance, a $50 extended-hand fee, and the mentor percent pulled from the agent profile so nobody opens another system to see it. Multiple parties and team splits are supported. Ownership-percentage splits waited until operations confirmed the rule.</p>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/financials.webp" width="1600" height="1114" alt="Financials tab with sale price, commission, and line items that show where each value came from. Demo data." loading="lazy" decoding="async">
+      <figcaption>Financials. Prefilled, with provenance. The analyst edits the line that changed.</figcaption>
+    </figure>
+    <p>Send stays disabled until compliance has approved and the blockers are clear. Every Send control says why. The package confirms payees, roles, amounts, and method, and it checks that payees total the expected funds. Expected funds come from financials. There is no second entry. A changed close date creates a revised version. A skip covers a file that does not need an authorization. Version history stays on the file.</p>
+    <div class="grid g2">
+      <article class="card">
+        <h3>The package</h3>
+        <p>Draft template, closing entity, expected funds, and a payee total that has to match.</p>
+        <img src="../../assets/case/deal-desk/disbursement.webp" width="1600" height="956" alt="Disbursement tab with the authorization package, expected funds, and payees. Demo data." loading="lazy" decoding="async">
+      </article>
+      <article class="card">
+        <h3>Confirm, then wait for funds</h3>
+        <p>Confirming the package moves the file to sent. Settlement waits on the money. The message thread stays available.</p>
+        <img src="../../assets/case/deal-desk/ta-confirm.webp" width="776" height="565" alt="Confirm disbursement authorization, with payees, amounts, and payment methods, and a check that the total matches expected funds. Demo data." loading="lazy" decoding="async">
+      </article>
+    </div>
+    <p>Settlement adds the payment. A check read by document AI is tagged as extracted. A row the analyst types is tagged as entered by them. Dates have to match before settle unlocks. The balance has to match. In the demo, a $500 underpayment is the case that should keep the file from being called reconciled. I recommended that disbursed be allowed only at a zero variance, or at an approved write-off. An unsigned or unmatched document can be re-uploaded or overridden, and the override is visible.</p>
+    <div class="grid g2">
+      <article class="card">
+        <h3>Awaiting funds</h3>
+        <img src="../../assets/case/deal-desk/ta-settle.webp" width="776" height="565" alt="Settlement tab while the file is awaiting funds, with expected and actual amounts. Demo data." loading="lazy" decoding="async">
+      </article>
+      <article class="card">
+        <h3>Mark disbursed</h3>
+        <img src="../../assets/case/deal-desk/ta-mark.webp" width="776" height="565" alt="Settlement ready to mark disbursed once funds are reconciled. Demo data." loading="lazy" decoding="async">
+      </article>
+    </div>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/settlement.webp" width="1600" height="1114" alt="Settlement screen with payments, a variance between expected and actual funds, and the steps from funds received to disbursed. Demo data." loading="lazy" decoding="async">
+      <figcaption>Settlement. Variance is shown live. Balanced is a state the file earns, not a label someone types.</figcaption>
+    </figure>
+    <p>Once disbursed, the file is read-only. Corrections go out as a post-close correction with a reason, a new version, and the history intact, because accounting has already been told. The analyst can report an issue, which flags a post-settlement error for production support and leaves the file locked. The task then leaves the active queue. Today that error flag is still a manual report. The proposal, from the demo, is an informational, time-boxed flag that support clears when they mark the error manually handled, visible to the support team so an agent is not the first monitor.</p>
+    <figure class="figure">
+      <img src="../../assets/case/deal-desk/ta-after.webp" width="788" height="565" alt="Analyst queue after a file has been disbursed, with the demo path set to disbursed and file complete. Demo data." loading="lazy" decoding="async">
+      <figcaption>Back on the queue. A disbursed file is complete for this pass. The next one is still the oldest that needs a person.</figcaption>
+    </figure>
+    <h3>The agent side of the same desk</h3>
+    <p>The agent desk lives inside the agent platform, on the same visual system as staff. Home leads with what needs them, then an estimated commission that says why it might change, and a timestamp for how fresh the numbers are. Inbox is one conversation per transaction, professional parties only. Submitting to the desk is one step. The deal page shows the same status timeline staff use, which is the answer to “where is my deal?”</p>
+    <p>Creating a deal can start from a document or from scratch. Document AI reads what it can, the agent reviews it, and then they submit. A missing-document notification has to land on the filtered checklist. That was a confirmed bug in the old path, and it is a requirement on this one. Wizard order stays fluid. Money-first and property-first are both real.</p>
+    <div class="grid g2">
+      <article class="card">
+        <h3>Home</h3>
+        <p>Attention first. Commission is labeled provisional. Submit to the desk is the action on the file that is ready.</p>
+        <img src="../../assets/case/deal-desk/agent-home.webp" width="1600" height="951" alt="Agent home with needs-your-attention, a provisional commission, and a submit-to-Deal-Desk action. Demo account and demo figures." loading="lazy" decoding="async">
+      </article>
+      <article class="card">
+        <h3>The deal</h3>
+        <p>One status line from submitted, through the analyst checklist and compliance, to the disbursement authorization and settlement.</p>
+        <img src="../../assets/case/deal-desk/agent-deal.webp" width="1600" height="952" alt="Agent deal page with a status timeline from submitted to settlement disbursed, and the documents on the file. Demo data." loading="lazy" decoding="async">
+      </article>
+    </div>
+  </div>
+</div></section>
+
+<section class="cs-section" id="outcome"><div class="wrap">
+  <div class="head"><div class="num">13</div><div><h2>Outcome</h2><p>What the desk is aimed at. The score comes after launch.</p></div></div>
+  <div class="body">
+    <p>This work was still in prototype and demo in the sources I have. I am not going to invent a before-and-after on minutes per deal, screens per settlement, or support contacts. What I can account for is the shape of the design, and the counts from the maps and the audits.</p>
+    <div class="grid g2">
+      <article class="card"><h3>What the prototype holds</h3><p>19 personas, five agent roles and fourteen staff roles, plus the systems I treated as actors. 14 journeys: 7 covered, 6 partial, 1 missing in the prototype check. 57 settlement steps: 38 live in the demo, 10 in progress, 5 proposed, 4 open. 40 flows, each branch from a mismatch to a post-settlement error with a decision and a next step. 29 discovery documents, read with the war rooms, the demo, and the program archive. 15 of 28 staff idea-marketplace tensions sit on this desk. Status truth was the hottest.</p></article>
+      <article class="card"><h3>What I logged instead of smoothing over</h3><p>On the journey sheet, the demo flow reaches the accounting service in about 3 seconds. That is a demo-path timing, not a production service level. I also logged 24 open questions and 10 places the sources disagreed, so the conflict stayed visible. A later desk audit, separate from the journey count, landed at 6 covered, 9 partial, and 4 missing.</p></article>
+    </div>
+    <p>The design is aimed at fewer screens per deal, one desk for agents and staff, less manual checking, a status anyone on the file can see, and a faster path through a guided fix, a retry, or a clear escalation. Those are intentions until we measure them. The measures I want after launch are screens per deal, time to settle, and how often an agent has to ask where the deal is. No numeric target was set for those three.</p>
+    <h3>What I would do next</h3>
+    <div class="grid g2">
+      <article class="card"><h3>The real Settle step</h3><p>A confirm, a payment date, a demonstrated block when the close dates disagree, and one name for the end state.</p></article>
+      <article class="card"><h3>Errors after “settled”</h3><p>An automatic, time-boxed flag in Deal Desk and Task Center, visible to support, cleared when someone marks it manually handled.</p></article>
+      <article class="card"><h3>Approval, and Canada</h3><p>Manager approval on the US triggers, an approve-all path for Canada, and the closing-analyst flow taken from the spreadsheet walkthroughs.</p></article>
+      <article class="card"><h3>The file that is two documents</h3><p>Statement and check in one upload, once the rule is decided, plus the workflow guide on the file and a change log that shows the old value, the new value, and the reason.</p></article>
+    </div>
+    <p>Still open, and I would rather leave them open than guess: which source wins when document AI and the deal disagree; whether a combined file is one task or two; how long a post-settlement flag stays up and who clears it; when document AI will read the check, and what stays in SkySlope until then; whether a manual note still has a job beside the log; and how an overpayment works. The sources describe underpayment and a non-zero variance. They do not describe the overpayment path.</p>
+    <h3>What I will carry to the next desk</h3>
+    <div class="grid g2">
+      <article class="card"><h3>Map the systems, not only the screens</h3><p>The pain sat in the hand-offs. A webhook, a control, a send to accounting. Those systems had to be actors in the journey, or the screen would hide the failure.</p></article>
+      <article class="card"><h3>Write the rule before the picture</h3><p>Estimate until settled. Append-only after. The coordinator is not the analyst. Those three sentences prevented a class of wrong screens.</p></article>
+      <article class="card"><h3>Design the exception first</h3><p>The happy path is short. Trust is the retry, the escalate, the not-paid flag, and the correction that does not rewrite history.</p></article>
+      <article class="card"><h3>A fast prototype can be confidently wrong</h3><p>Lovable and Claude made a desk I could click the same day. The journey sheet was the thing that kept those clicks honest. Placeholder fees from a model are not a fee schedule.</p></article>
+      <article class="card"><h3>Leave the disagreement on the table</h3><p>Open questions, with an owner, moved faster than a polished screen that had silently picked a side. Deferring the unsettled split was a decision. So was extending a teammate’s prototype instead of starting over.</p></article>
+    </div>
+  </div>
+</div></section>
+
+<section class="cs-section" id="metrics"><div class="wrap">
+  <div class="head"><div class="num">14</div><div><h2>Metrics</h2><p>Counts from the maps, the demo, and the audits. The three aims at the end have no number yet.</p></div></div>
+  <div class="body">
+    <div class="grid g4">
+      <div class="metric"><div class="v">19</div><div class="l">Personas mapped, 5 agent and 14 staff</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">14</div><div class="l">Settlement journeys on the sheet</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">7/6/1</div><div class="l">Journeys covered, partial, missing</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">57</div><div class="l">Settlement steps across the journeys</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">38</div><div class="l">Steps live in the August demo</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">10</div><div class="l">Steps in progress in the demo</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">5</div><div class="l">Steps proposed</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">4</div><div class="l">Steps still an open decision</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">20</div><div class="l">Of 57 steps fully automated</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">40</div><div class="l">Flows with a decision and a next step</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">29</div><div class="l">Discovery documents read</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">15/28</div><div class="l">Staff tensions that sit on this desk</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">80</div><div class="l">Critical alerts named in the August 6 demo</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">24</div><div class="l">Open questions logged</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">10</div><div class="l">Places the sources disagreed</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">6/9/4</div><div class="l">Later desk audit: covered, partial, missing</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">~3s</div><div class="l">Demo path to the accounting service</div><div class="n">Measured</div></div>
+      <div class="metric"><div class="v">Fewer</div><div class="l">Screens per deal, after launch</div><div class="n">Target</div></div>
+      <div class="metric"><div class="v">Shorter</div><div class="l">Time to settle, after launch</div><div class="n">Target</div></div>
+      <div class="metric"><div class="v">Fewer</div><div class="l">“Where is my deal?” contacts, after launch</div><div class="n">Target</div></div>
+    </div>
+    <p>The ~3 second figure is the demo-path timing from the journey sheet, not a production service level. Fewer screens, a shorter time to settle, and fewer agent contacts asking where the deal is are the measures I want after launch. No numeric target was set, so those three are labelled Target and carry the aim in words. I did not invent a before-and-after on minutes, screens, or support contacts.</p>
+  </div>
+</div></section>
+</main>
+
+<div class="cs-next"><div class="wrap">
+  <div><small>Previous</small><a href="https://suvarnamyneni-project.github.io/agntos-case-study/">AgntOS</a></div>
+  <div style="text-align:right"><small>Next project</small><a href="https://suvarnamyneni-project.github.io/amazon-prime-music-case-study/">Amazon Prime Music</a></div>
+</div></div>
+<footer class="cs-foot"><div class="wrap">© 2026 Suvarna Myneni · <a href="https://www.linkedin.com/in/suvarnamyneni/">LinkedIn</a></div></footer>
 </body>
 </html>
