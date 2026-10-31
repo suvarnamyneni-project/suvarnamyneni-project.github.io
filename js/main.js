@@ -527,7 +527,6 @@ function initZoom() {
 }
 
 function fitStackSky() {
-  if (document.documentElement.classList.contains("is-editorial")) return;
   if (!document.documentElement.classList.contains("is-stack")) return;
   const shift = document.querySelector(".scene-shift");
   const copy = document.querySelector(".hero-copy");
@@ -607,9 +606,9 @@ function initRestGlass() {
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
 }
 
-if (!document.documentElement.classList.contains("is-editorial") && !reduceMotion && document.documentElement.classList.contains("has-zoom")) {
+if (!reduceMotion && document.documentElement.classList.contains("has-zoom")) {
   initZoom();
-} else if (!document.documentElement.classList.contains("is-editorial")) {
+} else {
   initRestGlass();
 }
 if (window.bindRound2) window.bindRound2();
