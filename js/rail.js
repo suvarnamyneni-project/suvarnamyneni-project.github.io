@@ -18,8 +18,8 @@
   ];
   const PATH_STOPS = [
     { year: "2023", rail: "2023", label: "eXp Realty, February 2023 to present" },
-    { year: "2020", rail: "2020", label: "Amazon, July 2020 to 2023" },
-    { year: "2018", rail: "ICICI", label: "ICICI Bank, October 2018 to June 2020" },
+    { year: "2020", rail: "2020", label: "Amazon, Aug 2020 – Feb 2023" },
+    { year: "2018", rail: "ICICI", label: "ICICI Bank, Oct 2018 – Aug 2020" },
     { year: "2018", rail: "Manipal", label: "Manipal Academy of Higher Education, PG Diploma in Design, 2018" },
     { year: "2017", rail: "2017", label: "Osmania University, M.C.A., 2017" },
     { year: "2014", rail: "2014", label: "Andhra University, B.Sc Computers, 2014" },
