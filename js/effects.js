@@ -293,10 +293,21 @@
       steam.style.top = `${placed.top}%`;
     }
     requestAnimationFrame(() => {
+      const hero = document.querySelector(".hero-stage");
+      const zooming = root.classList.contains("is-zooming") || (hero && hero.classList.contains("is-unfolding"));
       document.querySelectorAll(".hotspot").forEach((spot) => {
         if (spot.dataset.unplaced) {
           spot.hidden = true;
           spot.tabIndex = -1;
+          return;
+        }
+        /* hidden collapses the box to 0, so a spot cropped during the
+           laptop zoom could never measure as visible again. Clear it
+           before reading geometry. While the scene is scaled, boxes
+           sit offscreen on purpose; CSS already ignores them. */
+        spot.hidden = false;
+        if (zooming) {
+          spot.removeAttribute("tabindex");
           return;
         }
         const rect = spot.getBoundingClientRect();

@@ -411,6 +411,7 @@
       if (inPath) buttons[next].focus();
     });
     window.addEventListener("wheel", (event) => {
+      if (pathIsSnap()) return;
       if (event.ctrlKey || event.altKey || event.metaKey) return;
       if (!pathEngaged()) return;
       const horizontal = event.shiftKey || Math.abs(event.deltaX) > Math.abs(event.deltaY);
