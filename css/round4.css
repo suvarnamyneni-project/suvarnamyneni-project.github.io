@@ -3886,3 +3886,178 @@ html.has-rail #work > .wrap > .project.feature,
     font-size: clamp(1.85rem, 8.4vw, 2.35rem);
   }
 }
+
+/* The desk is one picture in the page. It does not pin, zoom, or cover later sections. */
+
+html.is-editorial {
+  scroll-padding-top: 96px;
+}
+
+html.is-editorial .hero-spacer,
+html.is-editorial .unfold,
+html.is-editorial .veil,
+html.is-editorial .seed-field,
+html.is-editorial .hover-hint,
+html.is-editorial .scroll-pill,
+html.is-editorial .mobile-top-fade,
+html.is-editorial .mode-switch-dock {
+  display: none !important;
+}
+
+html.is-editorial .nav-menu .mode-switch-menu {
+  display: flex;
+}
+
+html.is-editorial .hero-stage {
+  position: relative !important;
+  inset: auto !important;
+  z-index: 0;
+  width: min(1120px, calc(100% - 40px));
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 auto 48px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #f6d7c6;
+}
+
+html.is-editorial .scene,
+html.is-editorial .scene-bob,
+html.is-editorial .scene-tilt,
+html.is-editorial .scene-shift,
+html.is-editorial .scene picture,
+html.is-editorial .scene img {
+  position: relative !important;
+  inset: auto !important;
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+  max-width: none;
+  transform: none !important;
+  animation: none !important;
+}
+
+html.is-editorial .scene img {
+  object-fit: cover;
+  object-position: center 78%;
+  aspect-ratio: 16 / 9;
+}
+
+html.is-editorial .hotspots {
+  position: absolute;
+  inset: 0;
+}
+
+html.is-editorial .hero-copy {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  width: auto !important;
+  padding: 16px 20px 20px;
+  transform: none !important;
+  pointer-events: auto;
+}
+
+html.is-editorial .hero-copy .hero-desk-title {
+  font-size: clamp(1.15rem, 2vw, 1.45rem) !important;
+  max-width: 28em;
+}
+
+html.is-editorial #path .path-pin,
+html.is-editorial #path .path-stick {
+  display: block !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 0 !important;
+}
+
+html.is-editorial #path .path-head,
+html.is-editorial #path .path-scrub {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  width: min(1120px, calc(100% - 40px));
+  height: auto !important;
+  margin: 0 auto;
+}
+
+html.is-editorial #path .path-track {
+  display: flex !important;
+  flex-direction: column !important;
+  width: min(1120px, calc(100% - 40px)) !important;
+  height: auto !important;
+  margin: 12px auto 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  transform: none !important;
+}
+
+html.is-editorial #path .path-ep {
+  display: grid !important;
+  grid-template-columns: 120px minmax(0, 1fr) !important;
+  align-items: center;
+  gap: 24px;
+  flex: none !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 24px 0 !important;
+  overflow: visible !important;
+  border-top: 1px solid rgba(43, 50, 54, 0.14);
+  scroll-margin-top: 110px;
+}
+
+html.is-editorial #path .path-yr,
+html.is-editorial #path .path-art {
+  grid-column: 1;
+}
+
+html.is-editorial #path .path-copy {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+
+html.is-editorial #path .path-art,
+html.is-editorial #path .path-art img {
+  width: 120px !important;
+  height: 120px !important;
+  margin: 0 !important;
+  object-fit: contain;
+}
+
+html.is-editorial #path .path-yr {
+  position: static !important;
+  font-size: 1.25rem !important;
+  color: #b15e3e !important;
+  -webkit-text-stroke: 0 !important;
+}
+
+html.is-editorial #path .path-copy {
+  max-width: none !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+
+html.is-editorial #path .path-weave,
+html.is-editorial #path .path-plane {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  html.is-editorial #path .path-ep {
+    grid-template-columns: 1fr !important;
+  }
+
+  html.is-editorial #path .path-copy {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  html.is-editorial .scene img {
+    aspect-ratio: 4 / 5;
+    object-position: center 70%;
+  }
+}
