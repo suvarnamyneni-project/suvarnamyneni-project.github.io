@@ -186,22 +186,33 @@
       </span>
     </a>
     <nav class="site-nav" aria-label="Primary">
-      <div id="nav-menu" class="nav-menu">
-        <a href="#work" data-caption="Selected work">Work</a>
-        <a href="#about" data-caption="About">About</a>
-        <a href="#path" data-caption="Experience">Experience</a>
-        <a href="#skills" data-caption="Skills">Skills</a>
-        <a href="assets/Suvarna-Myneni-Resume.pdf" download data-caption="Resume">Resume</a>
-        <a href="#contact" data-caption="Contact">Contact</a>
+      <div class="nav-menu nav-menu-bar">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#path">Experience</a>
+        <a href="#skills">Skills</a>
+        <a href="assets/Suvarna-Myneni-Resume.pdf" download>Resume</a>
+        <a href="#contact">Contact</a>
         <div class="mode-switch mode-switch-menu" role="group" aria-label="Portfolio">
           <a href="#top" aria-current="page">Interactive</a>
           <a href="https://motiveux.wixsite.com/my-site-3" rel="noopener" title="Classic portfolio on Wix">Classic</a>
         </div>
       </div>
-      <a class="nav-contact" href="#contact">Contact</a>
-      <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu">
-        Menu
-      </button>
+      <details class="nav-fold">
+        <summary class="nav-summary">Menu</summary>
+        <div class="nav-menu">
+          <a href="#work">Work</a>
+          <a href="#about">About</a>
+          <a href="#path">Experience</a>
+          <a href="#skills">Skills</a>
+          <a href="assets/Suvarna-Myneni-Resume.pdf" download>Resume</a>
+          <a href="#contact">Contact</a>
+          <div class="mode-switch mode-switch-menu" role="group" aria-label="Portfolio">
+            <a href="#top" aria-current="page">Interactive</a>
+            <a href="https://motiveux.wixsite.com/my-site-3" rel="noopener" title="Classic portfolio on Wix">Classic</a>
+          </div>
+        </div>
+      </details>
     </nav>
   </header>
   <div class="mode-switch mode-switch-dock" role="group" aria-label="Portfolio">
@@ -722,28 +733,35 @@
       <div class="wrap">
         <div class="section-head">
           <h2 id="skills-heading">Skills and tools</h2>
-          <p>Grouped as on the resume.</p>
         </div>
         <div class="skill-groups">
           <article>
-            <h3>Experience Design &amp; CX</h3>
-            <p>Customer journey mapping, service blueprinting, persona development, design thinking, experience strategy, design systems, accessibility (WCAG).</p>
+            <h3>Design</h3>
+            <ul>
+              <li>Product and UX design</li>
+              <li>AI and conversational UX</li>
+              <li>Design systems</li>
+              <li>Journey mapping and service blueprints</li>
+              <li>Research and usability testing</li>
+              <li>Accessibility (WCAG)</li>
+            </ul>
           </article>
           <article>
-            <h3>User Research</h3>
-            <p>Qualitative and quantitative research, stakeholder interviews, usability testing, heuristic evaluation, behavioural analysis.</p>
-          </article>
-          <article>
-            <h3>Design &amp; Prototyping</h3>
-            <p>Figma, Figma Make, FigJam, Sketch, Adobe XD, HTML/CSS, wireframing, interactive prototyping.</p>
-          </article>
-          <article>
-            <h3>AI &amp; Automation</h3>
-            <p>Cursor, Claude, Lovable, Stitch, ChatGPT, AI workflow automation, AI-assisted research synthesis, agent-driven prototyping.</p>
+            <h3>AI and prototyping</h3>
+            <ul>
+              <li>Figma</li>
+              <li>Cursor</li>
+              <li>Claude</li>
+              <li>Lovable</li>
+              <li>ChatGPT</li>
+            </ul>
           </article>
           <article>
             <h3>Collaboration</h3>
-            <p>Miro, Jira, Confluence, stakeholder management.</p>
+            <ul>
+              <li>Miro</li>
+              <li>Jira</li>
+            </ul>
           </article>
         </div>
       </div>
