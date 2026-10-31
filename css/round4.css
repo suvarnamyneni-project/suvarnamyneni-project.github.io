@@ -4,6 +4,145 @@
    1px light border, inset highlight, soft shadow. Overlay surfaces that sit
    on photos or the night sky use a higher tint so charcoal text stays AA. */
 
+.recruiter {
+  position: relative;
+  z-index: 4;
+  padding: 108px 0 36px;
+  background: #fdf0e2;
+  color: #2b3236;
+}
+.recruiter-kicker {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.recruiter h1 {
+  max-width: 16em;
+  margin: 10px 0 14px;
+  font-size: clamp(2.3rem, 4.6vw, 4.1rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+.recruiter-support {
+  margin: 0 0 8px;
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  line-height: 1.35;
+}
+.recruiter-lede {
+  max-width: 40rem;
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: #41484c;
+}
+.recruiter-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 22px 0 16px;
+}
+.cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #2b3236;
+  border-radius: 999px;
+  background: transparent;
+  color: #2b3236;
+  font-weight: 600;
+  text-decoration: none;
+}
+.cta-pri {
+  background: #2b3236;
+  color: #fdf0e2;
+}
+.recruiter-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.recruiter-highlights li {
+  padding: 6px 12px;
+  border: 1px solid rgba(43, 50, 54, 0.22);
+  border-radius: 999px;
+  font-size: 0.95rem;
+}
+.project .card-role,
+.project .card-facts {
+  margin: 0;
+}
+.project .card-role {
+  color: #2b3236;
+  font-weight: 600;
+}
+.card-facts {
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+.skill-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px 28px;
+}
+.skill-groups article {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(43, 50, 54, 0.18);
+}
+.skill-groups h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+.skill-groups p {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+.contact-plain {
+  margin: 10px 0 0;
+}
+.contact-plain a,
+.bar-resume {
+  color: #a34728;
+  font-weight: 600;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #a34728;
+  outline-offset: 3px;
+}
+@media (max-width: 759px) {
+  .site-header {
+    flex-wrap: wrap;
+  }
+  .site-header .nav-menu,
+  .nav-menu {
+    display: flex !important;
+    position: static !important;
+    flex-flow: row wrap;
+    width: 100%;
+    min-width: 0;
+    padding: 6px 0 0;
+    background: transparent;
+    box-shadow: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .recruiter,
+  .project,
+  .hotspot,
+  .cta {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 h1,
 h2,
 h3,
@@ -2536,7 +2675,13 @@ html.is-night .brand-chip {
   }
 
   .site-header .nav-menu {
-    display: none;
+    display: flex;
+    position: static;
+    flex-flow: row wrap;
+    width: 100%;
+    padding: 6px 0 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   .mode-switch.mode-switch-dock {
@@ -3629,5 +3774,115 @@ html.is-path-snap .path-scrub {
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .path-scrub {
     background: #fffdfb;
+  }
+}
+
+/* Editorial homepage: a readable stack, a nav that works without a script. */
+
+#top,
+#desk,
+#work,
+#path,
+#about,
+#skills,
+#contact {
+  scroll-margin-top: 96px;
+}
+
+#work .wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+html.has-rail #work > .wrap > .project.feature,
+#work > .wrap > .project.feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(260px, 0.95fr);
+  width: auto;
+  max-width: none;
+  max-height: none;
+  flex: none;
+  height: auto;
+  align-items: stretch;
+}
+
+#work .project .thumb.art-slot {
+  min-height: 220px;
+  height: 100%;
+}
+
+#work .project-body > h3 + p {
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+}
+
+@media (max-width: 1100px) {
+  html .site-header {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  html .site-header .brand-role {
+    display: none;
+  }
+
+  html .site-header .site-nav {
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  html .site-header .nav-menu,
+  html .site-header .site-nav.is-open .nav-menu {
+    display: flex !important;
+    position: static !important;
+    flex-flow: row wrap;
+    width: 100%;
+    min-width: 0;
+    padding: 4px;
+    background: transparent;
+    box-shadow: none;
+    border: 0;
+  }
+
+  html .site-header .nav-toggle,
+  html .site-header .nav-contact {
+    display: none !important;
+  }
+
+  .recruiter {
+    padding-top: 148px;
+  }
+}
+
+@media (max-width: 800px) {
+  html.has-rail #work > .wrap > .project.feature,
+  #work > .wrap > .project.feature {
+    grid-template-columns: 1fr;
+  }
+
+  #work .project .thumb.art-slot {
+    height: auto;
+  }
+
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .section-head p {
+    max-width: 36rem;
+  }
+}
+
+@media (max-width: 759px) {
+  .recruiter {
+    padding-top: 168px;
+  }
+
+  .recruiter h1 {
+    font-size: clamp(1.85rem, 8.4vw, 2.35rem);
   }
 }

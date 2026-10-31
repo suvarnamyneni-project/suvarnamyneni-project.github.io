@@ -693,7 +693,7 @@
     function readObstacles() {
       const canvasRect = canvas.getBoundingClientRect();
       const specs = [
-        [".hero-copy h1", 24],
+        [".hero-copy h1, .hero-desk-title", 24],
         [".hero-sub", 24],
         [".site-nav", 12],
         [".brand-chip", 12],
